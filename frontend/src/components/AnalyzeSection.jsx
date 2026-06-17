@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import ResultSection from './ResultSection'
 
 function useTilt() {
   const ref = useRef(null)
@@ -33,14 +34,93 @@ const roles = [
   { value: 'android', label: 'Android Developer', icon: '📱' },
 ]
 
+const mockResult = {
+  matchScore: 72,
+  matchedSkills: ['C#', 'ASP.NET', 'SQL Server', 'REST API', 'Git'],
+  missingSkills: ['Docker', 'Azure', 'CI/CD', 'Redis', 'Microservices'],
+  suggestions: [
+    'Add quantifiable achievements — e.g. "Reduced API response time by 30%"',
+    'Include GitHub profile link with your projects',
+    'Add a strong professional summary at the top',
+    'Use more action verbs — Built, Developed, Optimized, Designed',
+  ],
+  questions: [
+    'What is the difference between ASP.NET MVC and Web API?',
+    'Explain Entity Framework and Code First approach.',
+    'What are the SOLID principles? Give an example.',
+    'How does dependency injection work in .NET Core?',
+    'What is the difference between IEnumerable and IQueryable?',
+  ],
+  coverLetter: `Dear Hiring Manager,
+
+I am excited to apply for this position. With my experience in C#, ASP.NET, and SQL Server, I am confident in my ability to contribute effectively to your team.
+
+During my experience, I have developed strong skills in building REST APIs, working with MVC architecture, and writing optimized SQL queries. I am a quick learner and passionate about writing clean, maintainable code.
+
+I would love the opportunity to discuss how my skills align with your team's goals.
+
+Warm regards,
+[Your Name]`,
+
+hrMessage: `Hi [Hiring Manager's Name],
+
+I came across your opening for a .NET Developer and I'm very interested in this opportunity.
+
+I have hands-on experience with C#, ASP.NET MVC, SQL Server, and REST APIs. I've built and maintained web applications and am comfortable working in agile environments.
+
+I'd love to connect and discuss how I can contribute to your team.
+
+Best regards,
+[Your Name]
+[LinkedIn Profile]
+[Phone Number]`,
+
+resumeBullets: [
+  '• Developed and maintained RESTful APIs using ASP.NET Web API, improving response time by 25%',
+  '• Designed and optimized SQL Server databases, reducing query execution time by 30%',
+  '• Implemented MVC architecture using ASP.NET MVC for scalable web applications',
+  '• Collaborated with cross-functional teams using Agile/Scrum methodology',
+  '• Integrated third-party APIs and services to enhance application functionality',
+]
+}
+
 function AnalyzeSection() {
   const [selectedRole, setSelectedRole] = useState(null)
   const [dropdownOpen, setDropdownOpen] = useState(false)
   const [resume, setResume] = useState('')
   const [jobDescription, setJobDescription] = useState('')
+  const [result, setResult] = useState(null)
+  const [loading, setLoading] = useState(false)
 
+  const resultRef = useRef(null)
   const tiltResume = useTilt()
   const tiltJD = useTilt()
+
+  const handleAnalyze = () => {
+    if (!selectedRole) {
+      alert('Please select your target role first!')
+      return
+    }
+    if (!resume.trim()) {
+      alert('Please paste your resume!')
+      return
+    }
+    if (!jobDescription.trim()) {
+      alert('Please paste the job description!')
+      return
+    }
+
+    setLoading(true)
+    setResult(null)
+
+    setTimeout(() => {
+      setResult(mockResult)
+      setLoading(false)
+      setTimeout(() => {
+        resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 100)
+    }, 2500)
+  }
 
   return (
     <div style={{
@@ -79,7 +159,6 @@ function AnalyzeSection() {
           SELECT YOUR TARGET ROLE
         </label>
 
-        {/* Dropdown Trigger */}
         <div
           onClick={() => setDropdownOpen(!dropdownOpen)}
           style={{
@@ -117,7 +196,6 @@ function AnalyzeSection() {
           </span>
         </div>
 
-        {/* Dropdown List */}
         {dropdownOpen && (
           <div style={{
             position: 'absolute',
@@ -198,11 +276,11 @@ function AnalyzeSection() {
 
         {/* Resume Card */}
         <div
-            ref={tiltResume.ref}
-            onMouseMove={tiltResume.handleMouseMove}
-            onMouseLeave={tiltResume.handleMouseLeave}
-            className="tilt-card"
-         >
+          ref={tiltResume.ref}
+          onMouseMove={tiltResume.handleMouseMove}
+          onMouseLeave={tiltResume.handleMouseLeave}
+          className="tilt-card"
+        >
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
@@ -278,11 +356,11 @@ Experience: 1 year at ABC Corp"
 
         {/* JD Card */}
         <div
-            ref={tiltJD.ref}
-            onMouseMove={tiltJD.handleMouseMove}
-            onMouseLeave={tiltJD.handleMouseLeave}
-            className="tilt-card"
-            >
+          ref={tiltJD.ref}
+          onMouseMove={tiltJD.handleMouseMove}
+          onMouseLeave={tiltJD.handleMouseLeave}
+          className="tilt-card"
+        >
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',
@@ -362,6 +440,7 @@ Requirements:
       <div style={{ textAlign: 'center' }}>
         <button
           className="btn-primary"
+          onClick={handleAnalyze}
           style={{
             padding: '16px 56px',
             fontSize: '18px',
@@ -369,7 +448,7 @@ Requirements:
             letterSpacing: '0.5px',
             borderRadius: '12px',
           }}>
-          ✨ Analyze Now
+          {loading ? '⏳ Analyzing...' : '✨ Analyze Now'}
         </button>
         <p style={{
           marginTop: '12px',
@@ -378,6 +457,45 @@ Requirements:
         }}>
           Free to use · No signup required
         </p>
+      </div>
+
+      {/* Loading Animation */}
+      {loading && (
+        <div className="fade-in" style={{
+          textAlign: 'center',
+          padding: '48px',
+          marginTop: '32px',
+        }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            border: '3px solid rgba(56,189,248,0.2)',
+            borderTop: '3px solid #38bdf8',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite',
+            margin: '0 auto 16px',
+          }} />
+          <p style={{
+            color: 'var(--text-secondary)',
+            fontSize: '16px',
+            fontWeight: '500'
+          }}>
+            AI is analyzing your resume...
+          </p>
+          <p style={{
+            color: 'var(--text-secondary)',
+            fontSize: '13px',
+            marginTop: '8px',
+            opacity: '0.6'
+          }}>
+            Matching skills, finding gaps, preparing suggestions
+          </p>
+        </div>
+      )}
+
+      {/* Result Section */}
+      <div ref={resultRef}>
+        <ResultSection result={result} />
       </div>
 
     </div>

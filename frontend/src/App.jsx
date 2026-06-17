@@ -4,6 +4,7 @@ import Hero from './components/Hero'
 import Carousel from './components/Carousel'
 import HowItWorks from './components/HowItWorks'
 import AnalyzeSection from './components/AnalyzeSection'
+import JobsSection from './components/JobsSection'
 import Footer from './components/Footer'
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
       <Carousel />
       <HowItWorks />
       <AnalyzeSection />
+      <JobsSection />
       <Footer />
     </div>
   )

@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import ResultSection from './ResultSection'
+import ResumeUploader from './ResumeUploader'
 
 function useTilt() {
   const ref = useRef(null)
@@ -281,6 +282,7 @@ function AnalyzeSection() {
           onMouseLeave={tiltResume.handleMouseLeave}
           className="tilt-card"
         >
+          <ResumeUploader onTextExtracted={(text) => setResume(text)} />
           <div style={{
             display: 'flex',
             justifyContent: 'space-between',

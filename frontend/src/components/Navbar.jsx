@@ -9,6 +9,7 @@ function Navbar() {
   const toolsLinks = [
     { label: '✨ Analyze Resume', path: '/analyze' },
     { label: '📊 Resume Score', path: '/resume-score' },
+    { label: '🛠️ Resume Builder', path: '/resume-builder' },
     { label: '📄 Resume Templates', path: '/resume-templates' },
     { label: '💬 Message Generator', path: '/messages' },
     { label: '📧 Email Templates', path: '/email-templates' },

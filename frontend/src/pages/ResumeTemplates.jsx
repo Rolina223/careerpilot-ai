@@ -1,143 +1,92 @@
-import { useState } from 'react';
-
-const templates = [
-  {
-    id: 1,
-    name: "Professional ATS",
-    icon: "💼",
-    color: "#1e40af",
-    type: "ATS Friendly"
-  },
-  {
-    id: 2,
-    name: "Modern Tech",
-    icon: "💻",
-    color: "#0ea5e9",
-    type: "Developer"
-  },
-  {
-    id: 3,
-    name: "Executive",
-    icon: "👔",
-    color: "#4338ca",
-    type: "Premium"
-  },
-  {
-    id: 4,
-    name: "Creative",
-    icon: "🎨",
-    color: "#c026d3",
-    type: "Creative"
-  }
-];
+import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import ResumePreview from '../components/ResumePreview';
+import TemplateCard from '../components/TemplateCard';
+import { exportResumeToPdf } from '../utils/pdfExport';
+import { getStoredResume, getStoredTemplate, resumeTemplates, saveSelectedTemplate } from '../utils/resumeStorage';
 
 function ResumeTemplates() {
-  const [selected, setSelected] = useState(null);
+  const [resumeData, setResumeData] = useState(null);
+  const [selectedTemplate, setSelectedTemplate] = useState(getStoredTemplate());
+  const previewRef = useRef(null);
 
-  // Demo User Data (baad mein ResumeAnalyzer se connect karenge)
-  const userData = {
-    name: "Aarav Sharma",
-    title: "Software Engineer | CSE Fresher",
-    contact: "contact@aarav.dev | +91 98765 43210",
-    education: "B.Tech Computer Science & Engineering - NIT Trichy (CGPA 8.75)",
-    skills: "React, Node.js, Python, Django, Machine Learning, SQL, Git, AWS",
-    projects: "CareerPilot AI - AI Powered Resume Builder & Job Tracker"
-  };
+  useEffect(() => {
+    setResumeData(getStoredResume());
+  }, []);
 
-  const downloadAsPDF = (template) => {
-    const resumeHTML = `
-      <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 50px; background: white; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
-        <div style="text-align: center; border-bottom: 4px solid ${template.color}; padding-bottom: 25px;">
-          <h1 style="margin:0; color: ${template.color};">${userData.name}</h1>
-          <p style="margin:10px 0; color:#333;">${userData.title}</p>
-          <p style="color:#555;">${userData.contact}</p>
-        </div>
+  useEffect(() => {
+    saveSelectedTemplate(selectedTemplate);
+  }, [selectedTemplate]);
 
-        <h3 style="color:${template.color}; margin-top:30px;">EDUCATION</h3>
-        <p>${userData.education}</p>
-
-        <h3 style="color:${template.color}; margin-top:25px;">SKILLS</h3>
-        <p>${userData.skills}</p>
-
-        <h3 style="color:${template.color}; margin-top:25px;">PROJECTS</h3>
-        <p>${userData.projects}</p>
-      </div>
-    `;
-
-    const win = window.open('', '_blank');
-    win.document.write(`<html><head><title>${userData.name} - ${template.name}</title></head><body>${resumeHTML}</body></html>`);
-    win.document.close();
-    setTimeout(() => win.print(), 600);
+  const downloadTemplatePdf = async () => {
+    if (!previewRef.current || !resumeData) return;
+    await exportResumeToPdf(previewRef.current, resumeData.personalInfo.fullName || 'careerpilot_resume');
   };
 
   return (
-    <div style={{ maxWidth: '1300px', margin: '0 auto', padding: '60px 32px', minHeight: '100vh' }}>
-      <div style={{ textAlign: 'center', marginBottom: '60px' }}>
-        <h1 style={{ fontSize: '44px', fontWeight: '800', background: 'var(--gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-          Choose Your Resume Template
+    <div style={{ maxWidth: '1300px', margin: '0 auto', padding: '60px 24px', minHeight: '100vh' }}>
+      <header style={{ textAlign: 'center', marginBottom: '48px' }}>
+        <h1 style={{ fontSize: '44px', fontWeight: 800, background: 'var(--gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+          Resume Templates
         </h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '18px' }}>Professional • ATS Friendly • Instant Download</p>
-      </div>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '18px', maxWidth: '760px', margin: '0 auto' }}>
+          Select the best template for your career stage. Your resume data is loaded from the Resume Builder automatically.
+        </p>
+      </header>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '32px' }}>
-        {templates.map((template) => (
-          <div
-            key={template.id}
-            onClick={() => setSelected(template)}
-            style={{
-              background: 'rgba(15,23,42,0.9)',
-              borderRadius: '24px',
-              overflow: 'hidden',
-              border: selected?.id === template.id ? '3px solid #38bdf8' : '1px solid rgba(148,163,184,0.2)',
-              transition: 'all 0.4s'
-            }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-12px)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-          >
-            {/* Preview */}
-            <div style={{ height: '460px', background: 'white', padding: '30px', color: '#111' }}>
-              <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                <span style={{ fontSize: '48px' }}>{template.icon}</span>
-                <h3 style={{ color: template.color }}>{template.name}</h3>
-                <p style={{ color: '#666' }}>{template.type}</p>
-              </div>
+      <section style={{ marginBottom: '36px' }}>
+        <h2 style={{ fontSize: '22px', fontWeight: 800, marginBottom: '18px', color: 'var(--primary)' }}>Switch Templates</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '18px' }}>
+          {resumeTemplates.map((template) => (
+            <TemplateCard
+              key={template.id}
+              template={template}
+              active={selectedTemplate === template.id}
+              onSelect={setSelectedTemplate}
+            />
+          ))}
+        </div>
+      </section>
 
-              <div style={{ fontSize: '14.5px', lineHeight: '1.65' }}>
-                <strong>{userData.name}</strong><br />
-                {userData.title}<br />
-                {userData.contact}<br /><br />
-
-                <strong style={{ color: template.color }}>EDUCATION</strong><br />
-                {userData.education}<br /><br />
-
-                <strong style={{ color: template.color }}>SKILLS</strong><br />
-                {userData.skills}<br /><br />
-
-                <strong style={{ color: template.color }}>PROJECT</strong><br />
-                {userData.projects}
-              </div>
+      {!resumeData ? (
+        <div style={{ padding: '32px', borderRadius: '24px', background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+          <h2 style={{ fontSize: '22px', color: 'var(--text-primary)' }}>No resume data found</h2>
+          <p style={{ color: 'var(--text-secondary)', marginBottom: '18px' }}>Please complete the Resume Builder first so your selected template can render live content.</p>
+          <Link to="/resume-builder" style={{ display: 'inline-block', padding: '12px 20px', borderRadius: '12px', background: 'var(--primary)', color: '#fff', textDecoration: 'none' }}>
+            Open Resume Builder
+          </Link>
+        </div>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: '1.35fr 0.65fr', gap: '28px' }}>
+          <div>
+            <div style={{ padding: '24px', borderRadius: '20px', background: 'var(--bg-card)', border: '1px solid var(--border)', marginBottom: '22px' }}>
+              <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: 'var(--primary)' }}>Template Preview</h3>
+              <p style={{ margin: '12px 0 0', color: 'var(--text-secondary)' }}>Preview the selected resume layout using the shared builder data.</p>
             </div>
-
-            <div style={{ padding: '24px' }}>
-              <button
-                onClick={(e) => { e.stopPropagation(); downloadAsPDF(template); }}
-                style={{
-                  width: '100%',
-                  padding: '18px',
-                  background: '#38bdf8',
-                  color: '#000',
-                  border: 'none',
-                  borderRadius: '14px',
-                  fontWeight: '700',
-                  fontSize: '16.5px'
-                }}
-              >
-                📥 Download as PDF
-              </button>
+            <div style={{ padding: '24px', borderRadius: '24px', background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <ResumePreview ref={previewRef} resumeData={resumeData} selectedTemplate={selectedTemplate} />
             </div>
           </div>
-        ))}
-      </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
+            <div style={{ padding: '24px', borderRadius: '24px', background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: 'var(--primary)' }}>Download</h3>
+              <p style={{ margin: '12px 0 18px', color: 'var(--text-secondary)' }}>Export this template as a professional PDF with your saved data.</p>
+              <button onClick={downloadTemplatePdf} style={{ padding: '14px 18px', borderRadius: '14px', border: 'none', background: 'var(--primary)', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>
+                Download PDF
+              </button>
+            </div>
+
+            <div style={{ padding: '24px', borderRadius: '24px', background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+              <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: 'var(--primary)' }}>Manage Resume Data</h3>
+              <p style={{ margin: '12px 0 16px', color: 'var(--text-secondary)' }}>Your resume data is shared between Resume Builder and Templates. Any updates in the builder persist here.</p>
+              <Link to="/resume-builder" style={{ display: 'inline-block', padding: '12px 20px', borderRadius: '14px', background: 'var(--secondary)', color: '#fff', textDecoration: 'none', fontWeight: 700 }}>
+                Edit Resume in Builder
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

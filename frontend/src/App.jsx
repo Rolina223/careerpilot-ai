@@ -11,6 +11,7 @@ import Messages from './pages/Messages'
 import EmailTemplates from './pages/EmailTemplates'
 import ResumeScore from './pages/ResumeScore'
 import ResumeTemplates from './pages/ResumeTemplates'
+import ResumeBuilder from './pages/ResumeBuilder'
 import InterviewPractice from './pages/InterviewPractice'
 import AptitudePrep from './pages/AptitudePrep'
 import CodingPrep from './pages/CodingPrep'
@@ -29,6 +30,7 @@ function App() {
           <Route path="/messages" element={<Messages />} />
           <Route path="/email-templates" element={<EmailTemplates />} />
           <Route path="/resume-score" element={<ResumeScore />} />
+          <Route path="/resume-builder" element={<ResumeBuilder />} />
           <Route path="/resume-templates" element={<ResumeTemplates />} />
           <Route path="/interview" element={<InterviewPractice />} />
           <Route path="/aptitude" element={<AptitudePrep />} />

@@ -24,6 +24,71 @@ function Navbar() {
   const isToolsActive = toolsLinks.some(l => l.path === location.pathname)
   const isPracticeActive = practiceLinks.some(l => l.path === location.pathname)
 
+  const navLink = (to, label) => (
+    <Link to={to} style={{
+      padding: '8px 14px',
+      color: location.pathname === to ? '#38bdf8' : '#94a3b8',
+      textDecoration: 'none',
+      fontSize: '14px',
+      fontWeight: location.pathname === to ? '600' : '500',
+      borderRadius: '8px',
+      transition: 'all 0.2s ease',
+      backgroundColor: location.pathname === to ? 'rgba(56,189,248,0.08)' : 'transparent',
+    }}
+      onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(56,189,248,0.08)'}
+      onMouseLeave={e => {
+        if (location.pathname !== to) e.currentTarget.style.backgroundColor = 'transparent'
+      }}
+    >
+      {label}
+    </Link>
+  )
+
+  const dropdownStyle = {
+    position: 'absolute',
+    top: 'calc(100% + 8px)',
+    left: '0',
+    width: '220px',
+    backgroundColor: '#0f1f35',
+    border: '1px solid rgba(56,189,248,0.2)',
+    borderRadius: '12px',
+    overflow: 'hidden',
+    boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+    backdropFilter: 'blur(20px)',
+    zIndex: '200',
+  }
+
+  const dropdownLink = (link) => (
+    <Link
+      key={link.path}
+      to={link.path}
+      onClick={() => { setToolsOpen(false); setPracticeOpen(false) }}
+      style={{
+        display: 'block',
+        padding: '12px 16px',
+        color: location.pathname === link.path ? '#38bdf8' : '#94a3b8',
+        textDecoration: 'none',
+        fontSize: '14px',
+        fontWeight: location.pathname === link.path ? '600' : '400',
+        backgroundColor: location.pathname === link.path ? 'rgba(56,189,248,0.08)' : 'transparent',
+        borderBottom: '1px solid rgba(255,255,255,0.05)',
+        transition: 'all 0.2s ease',
+      }}
+      onMouseEnter={e => {
+        e.currentTarget.style.backgroundColor = 'rgba(56,189,248,0.08)'
+        e.currentTarget.style.color = '#38bdf8'
+        e.currentTarget.style.paddingLeft = '20px'
+      }}
+      onMouseLeave={e => {
+        e.currentTarget.style.backgroundColor = location.pathname === link.path ? 'rgba(56,189,248,0.08)' : 'transparent'
+        e.currentTarget.style.color = location.pathname === link.path ? '#38bdf8' : '#94a3b8'
+        e.currentTarget.style.paddingLeft = '16px'
+      }}
+    >
+      {link.label}
+    </Link>
+  )
+
   return (
     <nav style={{
       display: 'flex',
@@ -56,24 +121,8 @@ function Navbar() {
       {/* Links */}
       <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
 
-        {/* Home */}
-        <Link to="/" style={{
-          padding: '8px 14px',
-          color: location.pathname === '/' ? '#38bdf8' : '#94a3b8',
-          textDecoration: 'none',
-          fontSize: '14px',
-          fontWeight: location.pathname === '/' ? '600' : '500',
-          borderRadius: '8px',
-          transition: 'all 0.2s ease',
-          backgroundColor: location.pathname === '/' ? 'rgba(56,189,248,0.08)' : 'transparent',
-        }}
-          onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(56,189,248,0.08)'}
-          onMouseLeave={e => {
-            if (location.pathname !== '/') e.currentTarget.style.backgroundColor = 'transparent'
-          }}
-        >
-          Home
-        </Link>
+        {navLink('/', 'Home')}
+        {navLink('/dashboard', '🗂️ Dashboard')}
 
         {/* Tools Dropdown */}
         <div style={{ position: 'relative' }}>
@@ -106,93 +155,15 @@ function Navbar() {
               display: 'inline-block',
             }}>▾</span>
           </button>
-
-          {/* Tools Dropdown Menu */}
           {toolsOpen && (
-            <div style={{
-              position: 'absolute',
-              top: 'calc(100% + 8px)',
-              left: '0',
-              width: '220px',
-              backgroundColor: '#0f1f35',
-              border: '1px solid rgba(56,189,248,0.2)',
-              borderRadius: '12px',
-              overflow: 'hidden',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
-              backdropFilter: 'blur(20px)',
-              zIndex: '200',
-            }}>
-              {toolsLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setToolsOpen(false)}
-                  style={{
-                    display: 'block',
-                    padding: '12px 16px',
-                    color: location.pathname === link.path ? '#38bdf8' : '#94a3b8',
-                    textDecoration: 'none',
-                    fontSize: '14px',
-                    fontWeight: location.pathname === link.path ? '600' : '400',
-                    backgroundColor: location.pathname === link.path ? 'rgba(56,189,248,0.08)' : 'transparent',
-                    borderBottom: '1px solid rgba(255,255,255,0.05)',
-                    transition: 'all 0.2s ease',
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.backgroundColor = 'rgba(56,189,248,0.08)'
-                    e.currentTarget.style.color = '#38bdf8'
-                    e.currentTarget.style.paddingLeft = '20px'
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.backgroundColor = location.pathname === link.path ? 'rgba(56,189,248,0.08)' : 'transparent'
-                    e.currentTarget.style.color = location.pathname === link.path ? '#38bdf8' : '#94a3b8'
-                    e.currentTarget.style.paddingLeft = '16px'
-                  }}
-                >
-                  {link.label}
-                </Link>
-              ))}
+            <div style={dropdownStyle}>
+              {toolsLinks.map(dropdownLink)}
             </div>
           )}
         </div>
 
-        {/* Jobs */}
-        <Link to="/jobs" style={{
-          padding: '8px 14px',
-          color: location.pathname === '/jobs' ? '#38bdf8' : '#94a3b8',
-          textDecoration: 'none',
-          fontSize: '14px',
-          fontWeight: location.pathname === '/jobs' ? '600' : '500',
-          borderRadius: '8px',
-          transition: 'all 0.2s ease',
-          backgroundColor: location.pathname === '/jobs' ? 'rgba(56,189,248,0.08)' : 'transparent',
-        }}
-          onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(56,189,248,0.08)'}
-          onMouseLeave={e => {
-            if (location.pathname !== '/jobs') e.currentTarget.style.backgroundColor = 'transparent'
-          }}
-        >
-          Jobs
-        </Link>
-
-        {/* Tracker */}
-        <Link to="/tracker" style={{
-          padding: '8px 14px',
-          color: location.pathname === '/tracker' ? '#38bdf8' : '#94a3b8',
-          textDecoration: 'none',
-          fontSize: '14px',
-          fontWeight: location.pathname === '/tracker' ? '600' : '500',
-          borderRadius: '8px',
-          transition: 'all 0.2s ease',
-          backgroundColor: location.pathname === '/tracker' ? 'rgba(56,189,248,0.08)' : 'transparent',
-        }}
-          onMouseEnter={e => e.currentTarget.style.backgroundColor = 'rgba(56,189,248,0.08)'}
-          onMouseLeave={e => {
-            if (location.pathname !== '/tracker') e.currentTarget.style.backgroundColor = 'transparent'
-          }}
-        >
-          Tracker
-        </Link>
+        {navLink('/jobs', 'Jobs')}
+        {navLink('/tracker', 'Tracker')}
 
         {/* Practice Dropdown */}
         <div style={{ position: 'relative' }}>
@@ -225,52 +196,9 @@ function Navbar() {
               display: 'inline-block',
             }}>▾</span>
           </button>
-
-          {/* Practice Dropdown Menu */}
           {practiceOpen && (
-            <div style={{
-              position: 'absolute',
-              top: 'calc(100% + 8px)',
-              left: '0',
-              width: '200px',
-              backgroundColor: '#0f1f35',
-              border: '1px solid rgba(56,189,248,0.2)',
-              borderRadius: '12px',
-              overflow: 'hidden',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
-              backdropFilter: 'blur(20px)',
-              zIndex: '200',
-            }}>
-              {practiceLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setPracticeOpen(false)}
-                  style={{
-                    display: 'block',
-                    padding: '12px 16px',
-                    color: location.pathname === link.path ? '#38bdf8' : '#94a3b8',
-                    textDecoration: 'none',
-                    fontSize: '14px',
-                    fontWeight: location.pathname === link.path ? '600' : '400',
-                    backgroundColor: location.pathname === link.path ? 'rgba(56,189,248,0.08)' : 'transparent',
-                    borderBottom: '1px solid rgba(255,255,255,0.05)',
-                    transition: 'all 0.2s ease',
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.backgroundColor = 'rgba(56,189,248,0.08)'
-                    e.currentTarget.style.color = '#38bdf8'
-                    e.currentTarget.style.paddingLeft = '20px'
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.backgroundColor = location.pathname === link.path ? 'rgba(56,189,248,0.08)' : 'transparent'
-                    e.currentTarget.style.color = location.pathname === link.path ? '#38bdf8' : '#94a3b8'
-                    e.currentTarget.style.paddingLeft = '16px'
-                  }}
-                >
-                  {link.label}
-                </Link>
-              ))}
+            <div style={{ ...dropdownStyle, width: '200px' }}>
+              {practiceLinks.map(dropdownLink)}
             </div>
           )}
         </div>

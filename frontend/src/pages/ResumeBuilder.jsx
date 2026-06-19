@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { validators } from '../utils/validation';
 import ResumePreview from '../components/ResumePreview';
 import TemplateCard from '../components/TemplateCard';
 import { exportResumeToPdf } from '../utils/pdfExport';
@@ -9,20 +10,43 @@ function ResumeBuilder() {
   const [resumeData, setResumeData] = useState(defaultResumeData);
   const [selectedTemplate, setSelectedTemplate] = useState(getStoredTemplate());
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
   const previewRef = useRef(null);
 
-  useEffect(() => {
-    const stored = getStoredResume();
-    setResumeData(stored);
-  }, []);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  useEffect(() => {
-    saveResumeData(resumeData);
-  }, [resumeData]);
+useEffect(() => {
+  const stored = getStoredResume();
+  setResumeData(stored);
+  setIsLoaded(true);
+}, []);
+
+useEffect(() => {
+  if (!isLoaded) return;
+  saveResumeData(resumeData);
+}, [resumeData, isLoaded]);
 
   useEffect(() => {
     saveSelectedTemplate(selectedTemplate);
   }, [selectedTemplate]);
+
+  const validateField = (fieldName, value, label) => {
+  let errorMsg = '';
+  if (validators[fieldName]) {
+    errorMsg = validators[fieldName](value, label);
+  }
+  setErrors((prev) => ({ ...prev, [fieldName]: errorMsg }));
+  return errorMsg;
+};
+
+const validateArrayField = (section, index, field, value, validatorKey, label) => {
+  let errorMsg = '';
+  if (validators[validatorKey]) {
+    errorMsg = validators[validatorKey](value, label);
+  }
+  setErrors((prev) => ({ ...prev, [`${section}-${index}-${field}`]: errorMsg }));
+  return errorMsg;
+};
 
   const updatePersonalInfo = (field, value) => {
     setResumeData((prev) => ({
@@ -173,6 +197,20 @@ function ResumeBuilder() {
     fontFamily: 'Inter, sans-serif',
   };
 
+  const errorTextStyle = {
+  color: '#fb7185',
+  fontSize: '12px',
+  marginTop: '-12px',
+  marginBottom: '14px',
+  display: 'block',
+};
+
+const getInputStyle = (hasError) => ({
+  ...inputStyle,
+  border: hasError ? '1px solid #fb7185' : '1px solid var(--border)',
+  marginBottom: hasError ? '6px' : '16px',
+});
+
   const buttonStyle = {
     padding: '12px 18px',
     borderRadius: '14px',
@@ -226,39 +264,94 @@ function ResumeBuilder() {
             <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '18px', color: 'var(--primary)' }}>Personal Information</h2>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '18px' }}>
               <div>
-                <label style={labelStyle}>Full Name</label>
-                <input value={resumeData.personalInfo.fullName} onChange={(e) => updatePersonalInfo('fullName', e.target.value)} style={inputStyle} placeholder="John Doe" />
-              </div>
-              <div>
-                <label style={labelStyle}>Email</label>
-                <input type="email" value={resumeData.personalInfo.email} onChange={(e) => updatePersonalInfo('email', e.target.value)} style={inputStyle} placeholder="john@example.com" />
-              </div>
-              <div>
-                <label style={labelStyle}>Phone</label>
-                <input value={resumeData.personalInfo.phone} onChange={(e) => updatePersonalInfo('phone', e.target.value)} style={inputStyle} placeholder="+1 (555) 123-4567" />
-              </div>
-              <div>
-                <label style={labelStyle}>Location</label>
-                <input value={resumeData.personalInfo.location} onChange={(e) => updatePersonalInfo('location', e.target.value)} style={inputStyle} placeholder="New York, NY" />
-              </div>
-              <div>
-                <label style={labelStyle}>LinkedIn URL</label>
-                <input type="url" value={resumeData.personalInfo.linkedin} onChange={(e) => updatePersonalInfo('linkedin', e.target.value)} style={inputStyle} placeholder="https://linkedin.com/in/username" />
-              </div>
-              <div>
-                <label style={labelStyle}>GitHub URL</label>
-                <input type="url" value={resumeData.personalInfo.github} onChange={(e) => updatePersonalInfo('github', e.target.value)} style={inputStyle} placeholder="https://github.com/username" />
-              </div>
-              <div>
-                <label style={labelStyle}>Portfolio Website</label>
-                <input type="url" value={resumeData.personalInfo.portfolio} onChange={(e) => updatePersonalInfo('portfolio', e.target.value)} style={inputStyle} placeholder="https://yourportfolio.com" />
-              </div>
-              <div>
-                <label style={labelStyle}>Profile Photo</label>
-                <input type="file" accept="image/*" onChange={handlePhotoUpload} style={inputStyle} />
-              </div>
+  <label style={labelStyle}>Full Name</label>
+  <input
+    value={resumeData.personalInfo.fullName}
+    onChange={(e) => updatePersonalInfo('fullName', e.target.value)}
+    onBlur={(e) => validateField('fullName', e.target.value)}
+    style={getInputStyle(errors.fullName)}
+    placeholder="John Doe"
+  />
+  {errors.fullName && <span style={errorTextStyle}>⚠ {errors.fullName}</span>}
+</div>
+<div>
+  <label style={labelStyle}>Email</label>
+  <input
+    type="email"
+    value={resumeData.personalInfo.email}
+    onChange={(e) => updatePersonalInfo('email', e.target.value)}
+    onBlur={(e) => validateField('email', e.target.value)}
+    style={getInputStyle(errors.email)}
+    placeholder="john@example.com"
+  />
+  {errors.email && <span style={errorTextStyle}>⚠ {errors.email}</span>}
+</div>
+<div>
+  <label style={labelStyle}>Phone</label>
+  <input
+    value={resumeData.personalInfo.phone}
+    onChange={(e) => updatePersonalInfo('phone', e.target.value)}
+    onBlur={(e) => validateField('phone', e.target.value)}
+    style={getInputStyle(errors.phone)}
+    placeholder="+91 98765 43210"
+  />
+  {errors.phone && <span style={errorTextStyle}>⚠ {errors.phone}</span>}
+</div>
+<div>
+  <label style={labelStyle}>Location</label>
+  <input
+    value={resumeData.personalInfo.location}
+    onChange={(e) => updatePersonalInfo('location', e.target.value)}
+    onBlur={(e) => validateField('location', e.target.value)}
+    style={getInputStyle(errors.location)}
+    placeholder="New York, NY"
+  />
+  {errors.location && <span style={errorTextStyle}>⚠ {errors.location}</span>}
+</div>
+<div>
+  <label style={labelStyle}>LinkedIn URL</label>
+  <input
+    type="url"
+    value={resumeData.personalInfo.linkedin}
+    onChange={(e) => updatePersonalInfo('linkedin', e.target.value)}
+    onBlur={(e) => validateField('linkedin', e.target.value)}
+    style={getInputStyle(errors.linkedin)}
+    placeholder="https://linkedin.com/in/username"
+  />
+  {errors.linkedin && <span style={errorTextStyle}>⚠ {errors.linkedin}</span>}
+</div>
+<div>
+  <label style={labelStyle}>GitHub URL</label>
+  <input
+    type="url"
+    value={resumeData.personalInfo.github}
+    onChange={(e) => updatePersonalInfo('github', e.target.value)}
+    onBlur={(e) => validateField('github', e.target.value)}
+    style={getInputStyle(errors.github)}
+    placeholder="https://github.com/username"
+  />
+  {errors.github && <span style={errorTextStyle}>⚠ {errors.github}</span>}
+</div>
+<div>
+  <label style={labelStyle}>Portfolio Website</label>
+  <input
+    type="url"
+    value={resumeData.personalInfo.portfolio}
+    onChange={(e) => updatePersonalInfo('portfolio', e.target.value)}
+    onBlur={(e) => validateField('portfolio', e.target.value)}
+    style={getInputStyle(errors.portfolio)}
+    placeholder="https://yourportfolio.com"
+  />
+ {errors.portfolio && <span style={errorTextStyle}>⚠ {errors.portfolio}</span>}
+</div>
+<div>
+  <label style={labelStyle}>Profile Photo</label>
+  <input type="file" accept="image/*" onChange={handlePhotoUpload} style={inputStyle} />
+</div>
+<div>
             </div>
           </div>
+        </div>
 
           <div style={sectionStyle}>
             <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '18px', color: 'var(--primary)' }}>Professional Summary</h2>

@@ -4,6 +4,7 @@ import ScrollToTop from './ScrollToTop'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
+import Dashboard from './pages/Dashboard'
 import Analyze from './pages/Analyze'
 import Jobs from './pages/Jobs'
 import TrackerPage from './pages/TrackerPage'
@@ -24,6 +25,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/analyze" element={<Analyze />} />
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/tracker" element={<TrackerPage />} />

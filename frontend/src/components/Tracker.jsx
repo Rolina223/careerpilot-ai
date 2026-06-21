@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { fetchApplications, createApplication, updateApplication, deleteApplication, updateApplicationStatus, mapDbRowToApp } from '../utils/trackerStorage'
+import { useAuth } from '../AuthProvider'
 
 const statusConfig = {
   Applied: { color: '#38bdf8', bg: 'rgba(56,189,248,0.1)', border: 'rgba(56,189,248,0.3)' },
@@ -18,16 +20,35 @@ const emptyForm = {
 }
 
 function Tracker() {
-  const [applications, setApplications] = useState([
-    { id: 1, company: 'TCS', role: '.NET Developer', location: 'Bangalore', status: 'Applied', appliedDate: '2025-06-10', followUp: '2025-06-17', notes: 'Applied via Naukri' },
-    { id: 2, company: 'Infosys', role: 'React Developer', location: 'Pune', status: 'Interview', appliedDate: '2025-06-08', followUp: '2025-06-15', notes: 'HR round scheduled' },
-    { id: 3, company: 'Wipro', role: 'Full Stack Dev', location: 'Hyderabad', status: 'Offer', appliedDate: '2025-06-01', followUp: '', notes: 'Offer received 4.5 LPA' },
-  ])
+  const { user } = useAuth()
+  const [applications, setApplications] = useState([])
+  const [isLoadingApps, setIsLoadingApps] = useState(true)
+  const [actionError, setActionError] = useState('')
 
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState(emptyForm)
   const [editId, setEditId] = useState(null)
   const [filterStatus, setFilterStatus] = useState('All')
+
+  useEffect(() => {
+    async function loadApps() {
+      if (!user) {
+        setApplications([])
+        setIsLoadingApps(false)
+        return
+      }
+      setIsLoadingApps(true)
+      const { data, error } = await fetchApplications()
+      if (error) {
+        console.error('fetchApplications error:', error)
+        setActionError('Could not load your applications.')
+      } else {
+        setApplications(data.map(mapDbRowToApp))
+      }
+      setIsLoadingApps(false)
+    }
+    loadApps()
+  }, [user])
 
   const stats = {
     total: applications.length,
@@ -41,16 +62,35 @@ function Tracker() {
     ? applications
     : applications.filter(a => a.status === filterStatus)
 
-  const handleSubmit = () => {
+const handleSubmit = async () => {
     if (!form.company || !form.role) {
       alert('Company and Role are required!')
       return
     }
+    if (!user) {
+      setActionError('Please log in to save applications.')
+      return
+    }
+
+    setActionError('')
+
     if (editId) {
-      setApplications(prev => prev.map(a => a.id === editId ? { ...form, id: editId } : a))
+      const { data, error } = await updateApplication(editId, form)
+      if (error) {
+        console.error('updateApplication error:', error)
+        setActionError('Could not update application.')
+        return
+      }
+      setApplications(prev => prev.map(a => a.id === editId ? mapDbRowToApp(data) : a))
       setEditId(null)
     } else {
-      setApplications(prev => [...prev, { ...form, id: Date.now() }])
+      const { data, error } = await createApplication(form)
+      if (error) {
+        console.error('createApplication error:', error)
+        setActionError('Could not save application.')
+        return
+      }
+      setApplications(prev => [mapDbRowToApp(data), ...prev])
     }
     setForm(emptyForm)
     setShowForm(false)
@@ -62,18 +102,32 @@ function Tracker() {
     setShowForm(true)
   }
 
-const handleDelete = (id) => {
-  const app = applications.find(a => a.id === id)
-  const confirm = window.confirm(
-    `⚠️ Are you sure you want to delete?\n\n🏢 Company: ${app.company}\n💼 Role: ${app.role}\n\nThis action cannot be undone.`
-  )
-  if (confirm) {
+  const handleDelete = async (id) => {
+    const app = applications.find(a => a.id === id)
+    const confirm = window.confirm(
+      `⚠️ Are you sure you want to delete?\n\n🏢 Company: ${app.company}\n💼 Role: ${app.role}\n\nThis action cannot be undone.`
+    )
+    if (!confirm) return
+
+    const { error } = await deleteApplication(id)
+    if (error) {
+      console.error('deleteApplication error:', error)
+      setActionError('Could not delete application.')
+      return
+    }
     setApplications(prev => prev.filter(a => a.id !== id))
   }
-}
 
-  const handleStatusChange = (id, newStatus) => {
+  const handleStatusChange = async (id, newStatus) => {
+    const previous = applications
     setApplications(prev => prev.map(a => a.id === id ? { ...a, status: newStatus } : a))
+
+    const { error } = await updateApplicationStatus(id, newStatus)
+    if (error) {
+      console.error('updateApplicationStatus error:', error)
+      setActionError('Could not update status.')
+      setApplications(previous)
+    }
   }
 
   return (
@@ -110,9 +164,23 @@ const handleDelete = (id) => {
         }}>
           Application Tracker
         </h2>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '16px' }}>
+       <p style={{ color: 'var(--text-secondary)', fontSize: '16px' }}>
           Track every job you apply to — never miss a follow up
         </p>
+        {actionError && (
+          <p style={{
+            marginTop: '16px',
+            fontSize: '14px',
+            color: '#fb7185',
+            padding: '10px 16px',
+            background: 'rgba(244,63,94,0.1)',
+            border: '1px solid rgba(244,63,94,0.3)',
+            borderRadius: '10px',
+            display: 'inline-block',
+          }}>
+            ⚠️ {actionError}
+          </p>
+        )}
       </div>
 
       {/* Stats Row */}
@@ -419,8 +487,27 @@ const handleDelete = (id) => {
       )}
 
       {/* Applications List */}
+   {/* Applications List */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        {filteredApps.length === 0 ? (
+        {isLoadingApps ? (
+          <div style={{
+            textAlign: 'center',
+            padding: '48px',
+            color: 'var(--text-secondary)',
+            fontSize: '15px',
+          }}>
+            Loading your applications...
+          </div>
+        ) : !user ? (
+          <div style={{
+            textAlign: 'center',
+            padding: '48px',
+            color: 'var(--text-secondary)',
+            fontSize: '15px',
+          }}>
+            Please log in to track your job applications.
+          </div>
+        ) : filteredApps.length === 0 ? (
           <div style={{
             textAlign: 'center',
             padding: '48px',

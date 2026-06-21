@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { fetchQuestionSets, fetchQuestionsForSet } from '../utils/questionBankStorage'
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
 
 const questionBank = [
@@ -56,6 +57,45 @@ function AptitudePrep() {
   const [selectedOption, setSelectedOption] = useState(null)
   const [showAnswer, setShowAnswer] = useState(false)
   const [results, setResults] = useState([])
+
+  const [dbSets, setDbSets] = useState([])
+  const [loadingSets, setLoadingSets] = useState(true)
+  const [loadingSetId, setLoadingSetId] = useState(null)
+  const [setsError, setSetsError] = useState('')
+
+  useEffect(() => {
+    async function loadSets() {
+      const { data, error } = await fetchQuestionSets('aptitude')
+      if (error) {
+        console.error('fetchQuestionSets error:', error)
+        setSetsError('Could not load extra question sets.')
+      } else {
+        setDbSets(data)
+      }
+      setLoadingSets(false)
+    }
+    loadSets()
+  }, [])
+
+  const startDbSet = async (set) => {
+    setLoadingSetId(set.id)
+    const { data, error } = await fetchQuestionsForSet(set.id)
+    setLoadingSetId(null)
+
+    if (error || data.length === 0) {
+      setSetsError('Could not load this question set. Please try another.')
+      return
+    }
+
+    const shuffled = [...data].sort(() => Math.random() - 0.5)
+    setSelectedCompany({ name: set.title, color: '#818cf8', icon: '🧠' })
+    setQuestions(shuffled)
+    setCurrentIndex(0)
+    setResults([])
+    setSelectedOption(null)
+    setShowAnswer(false)
+    setScreen('test')
+  }
 
   const getCompanyQuestionCount = (companyName) => {
     return questionBank.filter(q => q.companies.includes(companyName)).length
@@ -219,9 +259,85 @@ function AptitudePrep() {
             )
           })}
         </div>
+
+        {/* Database-backed Practice Sets */}
+        <div style={{ marginTop: '48px' }}>
+          <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '8px', color: 'var(--text-primary)' }}>
+            More Practice Sets
+          </h3>
+          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '20px' }}>
+            Freshly curated mixed sets — quant, logical & verbal
+          </p>
+
+          {setsError && (
+            <p style={{ color: '#fb7185', fontSize: '14px', marginBottom: '16px' }}>⚠️ {setsError}</p>
+          )}
+
+          {loadingSets ? (
+            <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>Loading sets...</p>
+          ) : dbSets.length === 0 ? (
+            <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>No extra sets available yet.</p>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
+              {dbSets.map((set) => (
+                <div
+                  key={set.id}
+                  onClick={() => loadingSetId ? null : startDbSet(set)}
+                  style={{
+                    padding: '24px',
+                    backgroundColor: 'rgba(255,255,255,0.02)',
+                    border: '1px solid rgba(129,140,248,0.25)',
+                    borderRadius: '18px',
+                    cursor: loadingSetId ? 'wait' : 'pointer',
+                    transition: 'all 0.3s ease',
+                    opacity: loadingSetId && loadingSetId !== set.id ? 0.5 : 1,
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = 'translateY(-4px)'
+                    e.currentTarget.style.borderColor = 'rgba(129,140,248,0.6)'
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = 'translateY(0)'
+                    e.currentTarget.style.borderColor = 'rgba(129,140,248,0.25)'
+                  }}
+                >
+                  <div style={{
+                    width: '52px', height: '52px', borderRadius: '14px',
+                    background: 'linear-gradient(135deg, rgba(129,140,248,0.25), rgba(129,140,248,0.08))',
+                    border: '1px solid rgba(129,140,248,0.33)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '24px', marginBottom: '16px',
+                  }}>
+                    🧠
+                  </div>
+                  <p style={{ fontSize: '17px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '8px' }}>
+                    {set.title}
+                  </p>
+                  <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+                    {set.difficulty ? `Difficulty: ${set.difficulty}` : 'Mixed difficulty'}
+                  </p>
+                  <div style={{
+                    display: 'inline-block',
+                    padding: '6px 14px',
+                    backgroundColor: 'rgba(129,140,248,0.12)',
+                    border: '1px solid rgba(129,140,248,0.3)',
+                    borderRadius: '100px',
+                    fontSize: '12px',
+                    color: '#818cf8',
+                    fontWeight: '700',
+                  }}>
+                    {loadingSetId === set.id ? 'Loading...' : 'Start →'}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     )
   }
+
+  // TEST SCREEN
 
   // TEST SCREEN
   if (screen === 'test') {

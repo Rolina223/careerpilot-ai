@@ -6,6 +6,7 @@ import Footer from './components/Footer'
 import Home from './pages/Home'
 import Dashboard from './pages/Dashboard'
 import Login from './pages/Login'
+import AuthCallback from './pages/AuthCallback'
 import Analyze from './pages/Analyze'
 import Jobs from './pages/Jobs'
 import TrackerPage from './pages/TrackerPage'
@@ -30,6 +31,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/auth/v1/callback" element={<AuthCallback />} />
           <Route path="/jobs" element={<Jobs />} />
           <Route path="/tracker" element={<TrackerPage />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />

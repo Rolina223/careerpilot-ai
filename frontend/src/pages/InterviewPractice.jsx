@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { fetchQuestionSets, fetchQuestionsForSet } from '../utils/questionBankStorage'
 
 // --- STRUCTURED QUESTION BANK (Exactly 5 Questions per Level) ---
 const questionBank = {
@@ -210,6 +211,20 @@ function InterviewPractice() {
   const [screen, setScreen] = useState('setup') // setup, practice, transition, result
   const [selectedRole, setSelectedRole] = useState('dotnet')
   const [currentLevel, setCurrentLevel] = useState('beginner')
+  const [dbInterviewQuestions, setDbInterviewQuestions] = useState([])
+
+  useEffect(() => {
+    async function loadDbInterviewQuestions() {
+      const { data: sets } = await fetchQuestionSets('interview')
+      const all = []
+      for (const set of sets) {
+        const { data } = await fetchQuestionsForSet(set.id)
+        all.push(...data.map(q => ({ ...q, _role: set.role || 'dotnet', _difficulty: set.difficulty || 'beginner' })))
+      }
+      setDbInterviewQuestions(all)
+    }
+    loadDbInterviewQuestions()
+  }, [])
   const [questions, setQuestions] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
   const [answers, setAnswers] = useState([])
@@ -256,9 +271,12 @@ function InterviewPractice() {
   }, [cameraActive, stopCamera])
 
   const startPracticeSession = (levelToUse = currentLevel) => {
-    const targetPool = questionBank[selectedRole]?.[levelToUse] || []
-    const selectedQuestions = [...targetPool].slice(0, 5) // Grab the 5 level questions
-    
+    const staticPool = questionBank[selectedRole]?.[levelToUse] || []
+    const dbPool = dbInterviewQuestions.filter(q => q._role === selectedRole && q._difficulty === levelToUse)
+    const combinedPool = [...staticPool, ...dbPool]
+    const shuffled = combinedPool.sort(() => Math.random() - 0.5)
+    const selectedQuestions = shuffled.slice(0, 5) // Grab 5 questions, now from a bigger combined pool
+
     setQuestions(selectedQuestions)
     setCurrentIndex(0)
     setAnswers([])
@@ -430,6 +448,9 @@ function InterviewPractice() {
               <h1 style={{ fontSize: '38px', fontWeight: '800', marginTop: '16px', color: '#f8fafc' }}>
                 AI Interview Practice Module
               </h1>
+              <p style={{ color: '#64748b', fontSize: '14px', marginTop: '8px' }}>
+                Every session pulls a fresh random set — practice as many times as you want without repeats
+              </p>
             </div>
 
             {/* Role Track Options */}
@@ -480,7 +501,17 @@ function InterviewPractice() {
                         {lvl.label}
                       </div>
                       <p style={{ fontSize: '12px', color: '#64748b', marginTop: '4px', margin: 0 }}>
-                        {lvl.isPremium ? 'Advanced Architecture & System Challenges.' : '5 technical questions to test competency.'}
+                        {lvl.isPremium
+                          ? 'Advanced Architecture & System Challenges.'
+                          : (() => {
+                              const staticCount = questionBank[selectedRole]?.[lvl.value]?.length || 0
+                              const dbCount = dbInterviewQuestions.filter(q => q._role === selectedRole && q._difficulty === lvl.value).length
+                              const total = staticCount + dbCount
+                              return total > 5
+                                ? `${total} questions in pool · 5 random per session`
+                                : '5 technical questions to test competency.'
+                            })()
+                        }
                       </p>
                     </div>
                   )

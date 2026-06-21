@@ -4,27 +4,65 @@ import ResumePreview from '../components/ResumePreview';
 import TemplateCard from '../components/TemplateCard';
 import { exportResumeToPdf } from '../utils/pdfExport';
 import { generateProfessionalSummary, improveExperienceDescription, suggestSkills } from '../services/aiService';
-import { defaultResumeData, getStoredResume, getStoredTemplate, resumeTemplates, saveResumeData, saveSelectedTemplate } from '../utils/resumeStorage';
+import { defaultResumeData, getStoredResume, getStoredTemplate, resumeTemplates, saveResumeData, saveSelectedTemplate, loadResumeFromDb, saveResumeToDb } from '../utils/resumeStorage';
+import { useAuth } from '../AuthProvider';
 
 function ResumeBuilder() {
+  const { user } = useAuth();
   const [resumeData, setResumeData] = useState(defaultResumeData);
   const [selectedTemplate, setSelectedTemplate] = useState(getStoredTemplate());
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [aiError, setAiError] = useState('');
   const previewRef = useRef(null);
 
   const [isLoaded, setIsLoaded] = useState(false);
+  const [resumeId, setResumeId] = useState(null);
+  const [saveStatus, setSaveStatus] = useState(''); // '', 'saving', 'saved', 'error'
 
 useEffect(() => {
-  const stored = getStoredResume();
-  setResumeData(stored);
-  setIsLoaded(true);
-}, []);
+  async function loadInitialResume() {
+    if (user) {
+      const dbResume = await loadResumeFromDb();
+      if (dbResume) {
+        setResumeData(dbResume.resume_data);
+        setSelectedTemplate(dbResume.selected_template || getStoredTemplate());
+        setResumeId(dbResume.id);
+        setIsLoaded(true);
+        return;
+      }
+    }
+    const stored = getStoredResume();
+    setResumeData(stored);
+    setIsLoaded(true);
+  }
+  loadInitialResume();
+}, [user]);
 
 useEffect(() => {
   if (!isLoaded) return;
   saveResumeData(resumeData);
 }, [resumeData, isLoaded]);
+
+const handleSaveToCloud = async () => {
+  if (!user) {
+    setSaveStatus('error');
+    setAiError('Please log in to save your resume to the cloud.');
+    return;
+  }
+  setSaveStatus('saving');
+  const { data, error } = await saveResumeToDb(resumeId, resumeData, selectedTemplate);
+  if (error) {
+    console.error('Save error:', error);
+    setSaveStatus('error');
+    return;
+  }
+  if (data?.id && !resumeId) {
+    setResumeId(data.id);
+  }
+  setSaveStatus('saved');
+  setTimeout(() => setSaveStatus(''), 2500);
+};
 
   useEffect(() => {
     saveSelectedTemplate(selectedTemplate);
@@ -139,28 +177,43 @@ const validateArrayField = (section, index, field, value, validatorKey, label) =
     reader.readAsDataURL(file);
   };
 
-  const generateProfessionalSummaryHandler = async () => {
+const generateProfessionalSummaryHandler = async () => {
     setIsLoading(true);
-    const summary = await generateProfessionalSummary(resumeData.personalInfo, resumeData.experience, resumeData.education);
-    setResumeData((prev) => ({
-      ...prev,
-      personalInfo: { ...prev.personalInfo, summary },
-    }));
+    setAiError('');
+    try {
+      const summary = await generateProfessionalSummary(resumeData.personalInfo, resumeData.experience, resumeData.education);
+      setResumeData((prev) => ({
+        ...prev,
+        personalInfo: { ...prev.personalInfo, summary },
+      }));
+    } catch (err) {
+      setAiError(err.message || 'Failed to generate summary.');
+    }
     setIsLoading(false);
   };
 
   const generateSuggestedSkills = async () => {
     setIsLoading(true);
-    const suggestions = await suggestSkills(resumeData.experience, resumeData.projects, resumeData.certifications);
-    setResumeData((prev) => ({ ...prev, skills: suggestions }));
+    setAiError('');
+    try {
+      const suggestions = await suggestSkills(resumeData.experience, resumeData.projects, resumeData.certifications);
+      setResumeData((prev) => ({ ...prev, skills: suggestions }));
+    } catch (err) {
+      setAiError(err.message || 'Failed to suggest skills.');
+    }
     setIsLoading(false);
   };
 
   const handleImproveExperience = async (index) => {
     setIsLoading(true);
-    const experienceItem = resumeData.experience[index];
-    const improved = await improveExperienceDescription(experienceItem.description, experienceItem.achievements);
-    updateArrayItem('experience', index, 'description', improved);
+    setAiError('');
+    try {
+      const experienceItem = resumeData.experience[index];
+      const improved = await improveExperienceDescription(experienceItem.description, experienceItem.achievements);
+      updateArrayItem('experience', index, 'description', improved);
+    } catch (err) {
+      setAiError(err.message || 'Failed to improve description.');
+    }
     setIsLoading(false);
   };
 
@@ -244,9 +297,27 @@ const getInputStyle = (hasError) => ({
         <h1 style={{ fontSize: '48px', fontWeight: 800, background: 'var(--gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
           Resume Builder
         </h1>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '16px', maxWidth: '760px' }}>
+       <p style={{ color: 'var(--text-secondary)', fontSize: '16px', maxWidth: '760px' }}>
           Build a smarter resume with live templates, AI enhancements, and shared resume data across Builder and Templates.
         </p>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginTop: '18px' }}>
+          <button onClick={handleSaveToCloud} disabled={saveStatus === 'saving'} style={primaryButton}>
+            {saveStatus === 'saving' ? 'Saving...' : 'Save to Cloud'}
+          </button>
+          {saveStatus === 'saved' && (
+            <span style={{ color: '#4ade80', fontSize: '14px', fontWeight: 600 }}>✓ Saved</span>
+          )}
+          {saveStatus === 'error' && (
+            <span style={{ color: '#fb7185', fontSize: '14px', fontWeight: 600 }}>⚠ Save failed</span>
+          )}
+        </div>
+
+        {aiError && (
+          <p style={{ color: '#fb7185', fontSize: '14px', marginTop: '12px', padding: '12px 16px', background: 'rgba(244,63,94,0.1)', border: '1px solid rgba(244,63,94,0.3)', borderRadius: '10px', maxWidth: '760px' }}>
+            ⚠️ {aiError}
+          </p>
+        )}
       </header>
 
       <section style={{ marginBottom: '32px' }}>

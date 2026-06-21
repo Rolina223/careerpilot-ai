@@ -1,72 +1,76 @@
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+import { supabase } from '../supabaseClient';
 
-export async function generateProfessionalSummary(personalInfo, experience, education) {
-  await delay(300);
+const FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-resume-helper`;
 
-  const responsiveSummary = personalInfo.summary || '';
-  const focusedArea = experience.filter((item) => item.position || item.company).slice(0, 2);
-  const topSkills = personalInfo.linkedin || personalInfo.github || personalInfo.portfolio ? 'technology, teamwork, and communication' : 'technology, teamwork, and communication';
+async function callAiHelper(payload) {
+  const { data: sessionData } = await supabase.auth.getSession();
+  const accessToken = sessionData?.session?.access_token;
 
-  if (responsiveSummary.trim()) {
-    return `${responsiveSummary.trim()} This version is sharpened to highlight impact, collaboration, and measurable outcomes.`;
+  if (!accessToken) {
+    throw new Error('You must be logged in to use AI features.');
   }
 
-  const summaryParts = [
-    `${personalInfo.fullName || 'A driven professional'} with experience across modern web and product teams.`,
-    focusedArea.length
-      ? `Delivered results in roles such as ${focusedArea.map((item) => item.position || 'a key contributor').join(' and ')}.`
-      : 'Experienced in building polished digital products with customer-focused design.',
-    `Strong background in ${topSkills}.`,
-  ];
+  const response = await fetch(FUNCTION_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+      apikey: import.meta.env.VITE_SUPABASE_ANON_KEY,
+    },
+    body: JSON.stringify(payload),
+  });
 
-  return summaryParts.join(' ');
+  if (!response.ok) {
+    const errorBody = await response.json().catch(() => ({}));
+    throw new Error(errorBody.error || 'AI service failed. Please try again.');
+  }
+
+  const data = await response.json();
+  return data.result;
+}
+
+export async function generateProfessionalSummary(personalInfo, experience, education) {
+  try {
+    return await callAiHelper({
+      action: 'summary',
+      personalInfo,
+      experience,
+      education,
+    });
+  } catch (err) {
+    console.error('generateProfessionalSummary error:', err);
+    throw err;
+  }
 }
 
 export async function suggestSkills(experience, projects, certifications) {
-  await delay(300);
+  try {
+    const raw = await callAiHelper({
+      action: 'skills',
+      experience,
+      projects,
+      certifications,
+    });
 
-  const skillPool = new Set([
-    'React',
-    'Node.js',
-    'JavaScript',
-    'TypeScript',
-    'Python',
-    'AWS',
-    'Git',
-    'Figma',
-    'SQL',
-    'REST APIs',
-    'Problem Solving',
-    'Agile',
-    'Project Management',
-  ]);
-
-  experience.forEach((item) => {
-    if (item.position.toLowerCase().includes('product')) skillPool.add('Product Roadmap');
-    if (item.position.toLowerCase().includes('engineer')) skillPool.add('Software Development');
-    if (item.description.toLowerCase().includes('cloud')) skillPool.add('Cloud Architecture');
-    if (item.description.toLowerCase().includes('automation')) skillPool.add('Automation');
-  });
-
-  projects.forEach((project) => {
-    if (project.techStack.toLowerCase().includes('react')) skillPool.add('React');
-    if (project.techStack.toLowerCase().includes('node')) skillPool.add('Node.js');
-    if (project.techStack.toLowerCase().includes('python')) skillPool.add('Python');
-  });
-
-  certifications.forEach((cert) => {
-    if (cert.name.toLowerCase().includes('aws')) skillPool.add('AWS');
-    if (cert.name.toLowerCase().includes('scrum')) skillPool.add('Scrum');
-  });
-
-  return Array.from(skillPool).slice(0, 10);
+    // Gemini returns skills as a JSON array string, e.g. ["React","Node.js"]
+    const cleaned = raw.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(cleaned);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (err) {
+    console.error('suggestSkills error:', err);
+    throw err;
+  }
 }
 
 export async function improveExperienceDescription(description, achievements) {
-  await delay(300);
-
-  const base = description.trim() || 'Led key projects and delivered results with a focus on quality and speed.';
-  const achievementText = achievements.filter(Boolean).map((item) => `• ${item}`).join(' ');
-
-  return `${base} ${achievementText}`.trim();
+  try {
+    return await callAiHelper({
+      action: 'improve_bullet',
+      description,
+      achievements,
+    });
+  } catch (err) {
+    console.error('improveExperienceDescription error:', err);
+    throw err;
+  }
 }

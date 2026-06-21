@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import ResultSection from './ResultSection'
 import ResumeUploader from './ResumeUploader'
+import { analyzeResume } from '../services/analyzerService'
 
 function useTilt() {
   const ref = useRef(null)
@@ -35,55 +36,7 @@ const roles = [
   { value: 'android', label: 'Android Developer', icon: '📱' },
 ]
 
-const mockResult = {
-  matchScore: 72,
-  matchedSkills: ['C#', 'ASP.NET', 'SQL Server', 'REST API', 'Git'],
-  missingSkills: ['Docker', 'Azure', 'CI/CD', 'Redis', 'Microservices'],
-  suggestions: [
-    'Add quantifiable achievements — e.g. "Reduced API response time by 30%"',
-    'Include GitHub profile link with your projects',
-    'Add a strong professional summary at the top',
-    'Use more action verbs — Built, Developed, Optimized, Designed',
-  ],
-  questions: [
-    'What is the difference between ASP.NET MVC and Web API?',
-    'Explain Entity Framework and Code First approach.',
-    'What are the SOLID principles? Give an example.',
-    'How does dependency injection work in .NET Core?',
-    'What is the difference between IEnumerable and IQueryable?',
-  ],
-  coverLetter: `Dear Hiring Manager,
 
-I am excited to apply for this position. With my experience in C#, ASP.NET, and SQL Server, I am confident in my ability to contribute effectively to your team.
-
-During my experience, I have developed strong skills in building REST APIs, working with MVC architecture, and writing optimized SQL queries. I am a quick learner and passionate about writing clean, maintainable code.
-
-I would love the opportunity to discuss how my skills align with your team's goals.
-
-Warm regards,
-[Your Name]`,
-
-hrMessage: `Hi [Hiring Manager's Name],
-
-I came across your opening for a .NET Developer and I'm very interested in this opportunity.
-
-I have hands-on experience with C#, ASP.NET MVC, SQL Server, and REST APIs. I've built and maintained web applications and am comfortable working in agile environments.
-
-I'd love to connect and discuss how I can contribute to your team.
-
-Best regards,
-[Your Name]
-[LinkedIn Profile]
-[Phone Number]`,
-
-resumeBullets: [
-  '• Developed and maintained RESTful APIs using ASP.NET Web API, improving response time by 25%',
-  '• Designed and optimized SQL Server databases, reducing query execution time by 30%',
-  '• Implemented MVC architecture using ASP.NET MVC for scalable web applications',
-  '• Collaborated with cross-functional teams using Agile/Scrum methodology',
-  '• Integrated third-party APIs and services to enhance application functionality',
-]
-}
 
 function AnalyzeSection() {
   const [selectedRole, setSelectedRole] = useState(null)
@@ -92,12 +45,13 @@ function AnalyzeSection() {
   const [jobDescription, setJobDescription] = useState('')
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [analyzeError, setAnalyzeError] = useState('')
 
   const resultRef = useRef(null)
   const tiltResume = useTilt()
   const tiltJD = useTilt()
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
     if (!selectedRole) {
       alert('Please select your target role first!')
       return
@@ -113,14 +67,19 @@ function AnalyzeSection() {
 
     setLoading(true)
     setResult(null)
+    setAnalyzeError('')
 
-    setTimeout(() => {
-      setResult(mockResult)
-      setLoading(false)
+    try {
+      const aiResult = await analyzeResume(resume, jobDescription, selectedRole.label)
+      setResult(aiResult)
       setTimeout(() => {
         resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }, 100)
-    }, 2500)
+    } catch (err) {
+      setAnalyzeError(err.message || 'Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -439,10 +398,12 @@ Requirements:
       </div>
 
       {/* Analyze Button */}
+{/* Analyze Button */}
       <div style={{ textAlign: 'center' }}>
         <button
           className="btn-primary"
           onClick={handleAnalyze}
+          disabled={loading}
           style={{
             padding: '16px 56px',
             fontSize: '18px',
@@ -457,8 +418,23 @@ Requirements:
           fontSize: '13px',
           color: 'var(--text-secondary)'
         }}>
-          Free to use · No signup required
+          Free to use · Login required
         </p>
+        {analyzeError && (
+          <p style={{
+            marginTop: '16px',
+            fontSize: '14px',
+            color: '#fb7185',
+            padding: '12px 16px',
+            background: 'rgba(244,63,94,0.1)',
+            border: '1px solid rgba(244,63,94,0.3)',
+            borderRadius: '10px',
+            maxWidth: '500px',
+            margin: '16px auto 0',
+          }}>
+            ⚠️ {analyzeError}
+          </p>
+        )}
       </div>
 
       {/* Loading Animation */}

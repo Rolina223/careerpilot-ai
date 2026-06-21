@@ -28,28 +28,46 @@ function Login() {
       return
     }
 
+    // Basic email format check
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      setError('Sahi email format daalo (example@domain.com)')
+      return
+    }
+
     setLoading(true)
     setError('')
     setMessage('')
 
-    // Modified to force Supabase to use the 6-digit token layout from Resend
-    const { error: otpError } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        shouldCreateUser: true,
-        emailRedirectTo: undefined, 
-      },
-    })
+    try {
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+        email: email.trim().toLowerCase(),
+        options: {
+          shouldCreateUser: true,
+        },
+      })
 
-    setLoading(false)
+      setLoading(false)
 
-    if (otpError) {
-      setError(otpError.message)
-      return
+      if (otpError) {
+        // Proper error message display
+        if (otpError.message?.includes('rate limit') || otpError.status === 429) {
+          setError('Bahut zyada requests! Thodi der baad try karo.')
+        } else if (otpError.message?.includes('invalid')) {
+          setError('Yeh email valid nahi hai.')
+        } else {
+          setError(otpError.message || 'Kuch gadbad hui. Dobara try karo.')
+        }
+        return
+      }
+
+      setStep('otp')
+      setMessage('✅ OTP bhej diya! Email check karo — Spam folder bhi dekho.')
+
+    } catch (err) {
+      setLoading(false)
+      setError('Network error. Internet check karo aur dobara try karo.')
     }
-
-    setStep('otp')
-    setMessage('OTP bhejne ke liye apna email check karo. Spam folder bhi dekho.')
   }
 
   const handleOtpSubmit = async () => {
@@ -83,7 +101,7 @@ function Login() {
     setMessage('Login successful! Redirecting...')
   }
 
-  const handleGoogleLogin = async () => {
+const handleGoogleLogin = async () => {
     setLoading(true)
     setError('')
     setMessage('')
@@ -91,13 +109,12 @@ function Login() {
     const { error: googleError } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/dashboard`,
+        redirectTo: `${window.location.origin}/auth/callback`,
       },
     })
 
-    setLoading(false)
-
     if (googleError) {
+      setLoading(false)
       setError(googleError.message)
     }
   }

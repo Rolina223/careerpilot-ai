@@ -13,15 +13,14 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const initialize = async () => {
-      const { data } = await supabase.auth.getSession()
+    // Pehle URL mein token check karo
+    supabase.auth.getSession().then(({ data }) => {
       setSession(data?.session ?? null)
       setLoading(false)
-    }
+    })
 
-    initialize()
-
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, currentSession) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, currentSession) => {
+      console.log('AuthProvider event:', event, currentSession)
       setSession(currentSession)
       setLoading(false)
     })

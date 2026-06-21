@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
+import { fetchQuestionSets, fetchQuestionsForSet } from '../utils/questionBankStorage'
 
 const questionBank = [
   { id: 1, category: 'arrays', companies: ['TCS', 'Infosys', 'Generic'], q: 'What will be the output?\n\nint[] arr = {1, 2, 3, 4, 5};\nint sum = 0;\nfor(int i=0; i<arr.length; i++) {\n  sum += arr[i];\n}\nprint(sum);', options: ['10', '15', '20', '14'], answer: 1, explanation: 'Sum of 1+2+3+4+5 = 15' },
@@ -125,10 +126,61 @@ function CodingPrep() {
   const [results, setResults] = useState([])
 
   // Coding Problems state
+  // Coding Problems state
   const [problemCompany, setProblemCompany] = useState('Generic')
   const [expandedProblem, setExpandedProblem] = useState(null)
   const [showSolution, setShowSolution] = useState({})
   const [activeLang, setActiveLang] = useState({})
+
+  // Database-backed sets
+  const [dbMcqSets, setDbMcqSets] = useState([])
+  const [dbProblemSets, setDbProblemSets] = useState([])
+  const [dbProblems, setDbProblems] = useState([])
+  const [loadingSets, setLoadingSets] = useState(true)
+  const [loadingSetId, setLoadingSetId] = useState(null)
+  const [setsError, setSetsError] = useState('')
+
+  useEffect(() => {
+    async function loadSets() {
+      const [mcqRes, problemRes] = await Promise.all([
+        fetchQuestionSets('coding_mcq'),
+        fetchQuestionSets('coding_problem'),
+      ])
+      if (mcqRes.error || problemRes.error) {
+        setSetsError('Could not load extra question sets.')
+      }
+      setDbMcqSets(mcqRes.data);
+      setDbProblemSets(problemRes.data);
+
+      // Auto-load all problem sets' actual problems (since they're shown as a flat list, not a quiz)
+      const allProblems = [];
+      for (const set of problemRes.data) {
+        const { data } = await fetchQuestionsForSet(set.id);
+        allProblems.push(...data.map(p => ({ ...p, companies: ['Generic'], _fromDb: true })));
+      }
+      setDbProblems(allProblems);
+      setLoadingSets(false);
+    }
+    loadSets()
+  }, [])
+
+  const startDbMcqSet = async (set) => {
+    setLoadingSetId(set.id)
+    const { data, error } = await fetchQuestionsForSet(set.id)
+    setLoadingSetId(null)
+    if (error || data.length === 0) {
+      setSetsError('Could not load this question set. Please try another.')
+      return
+    }
+    const shuffled = [...data].sort(() => Math.random() - 0.5)
+    setSelectedCompany({ name: set.title, color: '#38bdf8', icon: '💻' })
+    setQuestions(shuffled)
+    setCurrentIndex(0)
+    setResults([])
+    setSelectedOption(null)
+    setShowAnswer(false)
+    setScreen('test')
+  }
 
   const getCompanyQuestionCount = (companyName) => {
     return questionBank.filter(q => q.companies.includes(companyName)).length
@@ -177,7 +229,9 @@ function CodingPrep() {
     else setCurrentIndex(prev => prev + 1)
   }
 
-  const filteredProblems = codingProblems.filter(p => p.companies.includes(problemCompany))
+  const filteredProblems = problemCompany === 'More Sets'
+    ? dbProblems
+    : codingProblems.filter(p => p.companies.includes(problemCompany))
 
   // ====== TOP TAB SWITCHER ======
   const TabSwitcher = () => (
@@ -242,7 +296,20 @@ function CodingPrep() {
               {c.icon} {c.name} ({getCompanyProblemCount(c.name)})
             </button>
           ))}
+          <button onClick={() => setProblemCompany('More Sets')} style={{
+            padding: '8px 18px',
+            backgroundColor: problemCompany === 'More Sets' ? 'rgba(129,140,248,0.15)' : 'rgba(255,255,255,0.03)',
+            border: problemCompany === 'More Sets' ? '1px solid rgba(129,140,248,0.5)' : '1px solid rgba(255,255,255,0.08)',
+            borderRadius: '100px', fontSize: '13px', fontWeight: '600', cursor: 'pointer',
+            color: problemCompany === 'More Sets' ? '#818cf8' : 'var(--text-secondary)',
+            transition: 'all 0.2s ease',
+          }}>
+            🧠 More Sets ({dbProblems.length})
+          </button>
         </div>
+        {loadingSets && problemCompany === 'More Sets' && (
+          <p style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '16px' }}>Loading...</p>
+        )}
 
         {/* Problems List */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -448,6 +515,71 @@ function CodingPrep() {
               </div>
             )
           })}
+        </div>
+
+        {/* Database-backed MCQ Sets */}
+        <div style={{ marginTop: '48px' }}>
+          <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '8px', color: 'var(--text-primary)' }}>
+            More Practice Sets
+          </h3>
+          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '20px' }}>
+            Freshly curated MCQ sets — arrays, strings & pseudocode
+          </p>
+
+          {setsError && (
+            <p style={{ color: '#fb7185', fontSize: '14px', marginBottom: '16px' }}>⚠️ {setsError}</p>
+          )}
+
+          {loadingSets ? (
+            <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>Loading sets...</p>
+          ) : dbMcqSets.length === 0 ? (
+            <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>No extra sets available yet.</p>
+          ) : (
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
+              {dbMcqSets.map((set) => (
+                <div
+                  key={set.id}
+                  onClick={() => loadingSetId ? null : startDbMcqSet(set)}
+                  style={{
+                    padding: '24px', backgroundColor: 'rgba(255,255,255,0.02)',
+                    border: '1px solid rgba(56,189,248,0.25)', borderRadius: '18px',
+                    cursor: loadingSetId ? 'wait' : 'pointer', transition: 'all 0.3s ease',
+                    opacity: loadingSetId && loadingSetId !== set.id ? 0.5 : 1,
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.transform = 'translateY(-4px)'
+                    e.currentTarget.style.borderColor = 'rgba(56,189,248,0.6)'
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.transform = 'translateY(0)'
+                    e.currentTarget.style.borderColor = 'rgba(56,189,248,0.25)'
+                  }}
+                >
+                  <div style={{
+                    width: '52px', height: '52px', borderRadius: '14px',
+                    background: 'linear-gradient(135deg, rgba(56,189,248,0.25), rgba(56,189,248,0.08))',
+                    border: '1px solid rgba(56,189,248,0.33)', display: 'flex',
+                    alignItems: 'center', justifyContent: 'center', fontSize: '24px', marginBottom: '16px',
+                  }}>
+                    💻
+                  </div>
+                  <p style={{ fontSize: '17px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '8px' }}>
+                    {set.title}
+                  </p>
+                  <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+                    {set.difficulty ? `Difficulty: ${set.difficulty}` : 'Mixed difficulty'}
+                  </p>
+                  <div style={{
+                    display: 'inline-block', padding: '6px 14px',
+                    backgroundColor: 'rgba(56,189,248,0.12)', border: '1px solid rgba(56,189,248,0.3)',
+                    borderRadius: '100px', fontSize: '12px', color: '#38bdf8', fontWeight: '700',
+                  }}>
+                    {loadingSetId === set.id ? 'Loading...' : 'Start →'}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     )

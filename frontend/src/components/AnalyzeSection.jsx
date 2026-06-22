@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import ResultSection from './ResultSection'
 import ResumeUploader from './ResumeUploader'
 import { analyzeResume } from '../services/analyzerService'
+import UpgradeButton from './upgradeButton';
 
 function useTilt() {
   const ref = useRef(null)
@@ -420,6 +421,9 @@ Requirements:
         }}>
           Free to use · Login required
         </p>
+        <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'center' }}>
+          <UpgradeButton />
+        </div>
         {analyzeError && (
           <p style={{
             marginTop: '16px',

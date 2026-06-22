@@ -1,3 +1,4 @@
+import UpgradeButton from '../components/upgradeButton';
 import { useEffect, useRef, useState } from 'react';
 import { validators } from '../utils/validation';
 import ResumePreview from '../components/ResumePreview';
@@ -301,10 +302,11 @@ const getInputStyle = (hasError) => ({
           Build a smarter resume with live templates, AI enhancements, and shared resume data across Builder and Templates.
         </p>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginTop: '18px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginTop: '18px', flexWrap: 'wrap' }}>
           <button onClick={handleSaveToCloud} disabled={saveStatus === 'saving'} style={primaryButton}>
             {saveStatus === 'saving' ? 'Saving...' : 'Save to Cloud'}
           </button>
+          <UpgradeButton />
           {saveStatus === 'saved' && (
             <span style={{ color: '#4ade80', fontSize: '14px', fontWeight: 600 }}>✓ Saved</span>
           )}

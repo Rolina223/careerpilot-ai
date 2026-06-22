@@ -22,6 +22,9 @@ async function callAiHelper(payload) {
 
   if (!response.ok) {
     const errorBody = await response.json().catch(() => ({}));
+    if (errorBody.error === 'FREE_LIMIT_REACHED') {
+      throw new Error(errorBody.message || 'Free limit reached. Upgrade to Premium for unlimited access.');
+    }
     throw new Error(errorBody.error || 'AI service failed. Please try again.');
   }
 

@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { generateMessage as generateMessageAI } from '../services/aiService'
+import { getCurrentUsage } from '../services/paymentService'
+import { useAuth } from '../AuthProvider'
 
 const messageTypes = [
   {
@@ -97,7 +100,9 @@ ${yourName || '[Your Name]'}`
 }
 
 function Messages() {
+  const { user } = useAuth()
   const [selectedType, setSelectedType] = useState('linkedin-connect')
+  const [level, setLevel] = useState('fresher')
   const [form, setForm] = useState({
     yourName: '',
     name: '',
@@ -108,8 +113,26 @@ function Messages() {
     interviewDate: '',
   })
   const [copied, setCopied] = useState(false)
+  const [aiMessage, setAiMessage] = useState('')
+  const [generating, setGenerating] = useState(false)
+  const [aiError, setAiError] = useState('')
+  const [isPremium, setIsPremium] = useState(false)
 
-  const message = generateMessage(selectedType, form)
+  useState(() => {
+    if (user) {
+      getCurrentUsage().then(u => setIsPremium(u.isPremium))
+    }
+  }, [user])
+
+  const actionMap = {
+    'linkedin-connect': 'linkedin_connect',
+    'linkedin-referral': 'referral_request',
+    'hr-cold': 'hr_cold',
+    'follow-up': 'follow_up_message',
+  }
+
+  const staticMessage = generateMessage(selectedType, form)
+  const message = aiMessage || staticMessage
 
   const handleCopy = () => {
     navigator.clipboard.writeText(message)
@@ -117,7 +140,28 @@ function Messages() {
     setTimeout(() => setCopied(false), 2000)
   }
 
+  const handleGenerateAI = async () => {
+    if (!isPremium) return
+    setGenerating(true)
+    setAiError('')
+    setAiMessage('')
+    try {
+      const action = actionMap[selectedType]
+      const result = await generateMessageAI(action, form, level)
+      setAiMessage(result)
+    } catch (err) {
+      setAiError(err.message || 'Failed to generate. Please try again.')
+    }
+    setGenerating(false)
+  }
+
   const selectedTypeData = messageTypes.find(t => t.id === selectedType)
+
+  const levels = [
+    { value: 'fresher', label: '🎓 Fresher', desc: '0-1 yr' },
+    { value: 'intermediate', label: '💼 Intermediate', desc: '1-3 yrs' },
+    { value: 'experienced', label: '🚀 Experienced', desc: '3+ yrs' },
+  ]
 
   return (
     <div style={{
@@ -243,10 +287,37 @@ function Messages() {
             fontSize: '13px',
             fontWeight: '600',
             letterSpacing: '1px',
-            marginBottom: '20px',
+            marginBottom: '16px',
           }}>
             📝 FILL IN DETAILS
           </p>
+
+          {/* Experience Level Selector */}
+          <div style={{ marginBottom: '20px' }}>
+            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: '600', marginBottom: '8px' }}>
+              YOUR EXPERIENCE LEVEL
+            </p>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              {levels.map(l => (
+                <button
+                  key={l.value}
+                  onClick={() => { setLevel(l.value); setAiMessage(''); }}
+                  style={{
+                    flex: 1, padding: '8px 4px', borderRadius: '8px', border: 'none',
+                    cursor: 'pointer', fontSize: '11px', fontWeight: '700',
+                    background: level === l.value
+                      ? 'linear-gradient(135deg, #6366f1, #8b5cf6)'
+                      : 'rgba(255,255,255,0.05)',
+                    color: level === l.value ? '#fff' : 'var(--text-secondary)',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  {l.label}<br/>
+                  <span style={{ fontSize: '10px', opacity: 0.8 }}>{l.desc}</span>
+                </button>
+              ))}
+            </div>
+          </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {[
@@ -292,6 +363,42 @@ function Messages() {
               </div>
             ))}
           </div>
+
+          {/* AI Generate Button */}
+          <div style={{ marginTop: '24px' }}>
+            {isPremium ? (
+              <button
+                onClick={handleGenerateAI}
+                disabled={generating}
+                style={{
+                  width: '100%', padding: '12px', borderRadius: '10px',
+                  border: 'none', cursor: generating ? 'wait' : 'pointer',
+                  background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                  color: '#fff', fontSize: '14px', fontWeight: '700',
+                  opacity: generating ? 0.7 : 1, transition: 'opacity 0.2s',
+                }}
+              >
+                {generating ? '✨ Generating...' : '✨ Generate with AI'}
+              </button>
+            ) : (
+              <div style={{
+                padding: '12px 16px', borderRadius: '10px',
+                background: 'rgba(99,102,241,0.08)',
+                border: '1px solid rgba(99,102,241,0.2)',
+                textAlign: 'center',
+              }}>
+                <p style={{ fontSize: '13px', color: '#818cf8', fontWeight: '600', margin: '0 0 4px' }}>
+                  ⭐ AI Generation is Premium
+                </p>
+                <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0 }}>
+                  Upgrade to ₹21/month for personalized AI messages
+                </p>
+              </div>
+            )}
+            {aiError && (
+              <p style={{ color: '#fb7185', fontSize: '13px', marginTop: '8px' }}>⚠️ {aiError}</p>
+            )}
+          </div>
         </div>
 
         {/* Right — Generated Message */}
@@ -318,6 +425,24 @@ function Messages() {
             }}>
               ✉️ GENERATED MESSAGE
             </p>
+            {aiMessage && isPremium && (
+              <button
+                onClick={handleGenerateAI}
+                disabled={generating}
+                style={{
+                  padding: '6px 14px', marginRight: '8px',
+                  backgroundColor: 'rgba(99,102,241,0.1)',
+                  color: '#818cf8',
+                  border: '1px solid rgba(99,102,241,0.3)',
+                  borderRadius: '8px', fontSize: '13px',
+                  cursor: generating ? 'wait' : 'pointer',
+                  fontWeight: '600', transition: 'all 0.2s ease',
+                }}
+              >
+                {generating ? '...' : '🔄 Regenerate'}
+              </button>
+            )}
+         
             <button
               onClick={handleCopy}
               style={{

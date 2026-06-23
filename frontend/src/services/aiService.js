@@ -77,3 +77,58 @@ export async function improveExperienceDescription(description, achievements) {
     throw err;
   }
 }
+
+export async function generateMessage(action, fields, level = 'fresher') {
+  try {
+    return await callAiHelper({
+      action,
+      level,
+      yourName: fields.yourName,
+      targetName: fields.targetName || fields.name,
+      company: fields.company,
+      role: fields.role,
+      skills: fields.skills,
+      interviewDate: fields.interviewDate,
+      joiningDate: fields.joiningDate,
+      newJoiningDate: fields.newJoiningDate,
+      currentCTC: fields.currentCTC,
+      expectedCTC: fields.expectedCTC,
+      reason: fields.reason,
+    });
+  } catch (err) {
+    console.error('generateMessage error:', err);
+    throw err;
+  }
+}
+
+export async function generateEmail(action, fields, level = 'fresher') {
+  try {
+    const raw = await callAiHelper({
+      action,
+      level,
+      yourName: fields.yourName,
+      targetName: fields.hrName || fields.targetName,
+      company: fields.company,
+      role: fields.role,
+      skills: fields.skills,
+      interviewDate: fields.interviewDate,
+      joiningDate: fields.joiningDate,
+      newJoiningDate: fields.newJoiningDate,
+      currentCTC: fields.currentCTC,
+      expectedCTC: fields.expectedCTC,
+      reason: fields.reason,
+    });
+
+    // Email actions return JSON with subject + body
+    try {
+      const cleaned = raw.replace(/```json|```/g, '').trim();
+      return JSON.parse(cleaned);
+    } catch {
+      // If parsing fails, return raw as body
+      return { subject: '', body: raw };
+    }
+  } catch (err) {
+    console.error('generateEmail error:', err);
+    throw err;
+  }
+}

@@ -1,147 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { supabase } from '../supabaseClient'
 
-const allJobs = [
-  {
-    id: 1,
-    company: 'TCS',
-    role: '.NET Developer',
-    location: 'Bangalore',
-    experience: '0-2 years',
-    salary: '3-5 LPA',
-    type: 'Full Time',
-    tags: ['.NET', 'C#', 'SQL'],
-    category: 'dotnet',
-    logo: '🏢',
-    posted: '2 days ago',
-    link: 'https://www.tcs.com/careers',
-  },
-  {
-    id: 2,
-    company: 'Infosys',
-    role: 'React Developer',
-    location: 'Pune',
-    experience: '0-1 year',
-    salary: '3-4 LPA',
-    type: 'Full Time',
-    tags: ['React', 'JavaScript', 'CSS'],
-    category: 'frontend',
-    logo: '🌐',
-    posted: '1 day ago',
-    link: 'https://www.infosys.com/careers',
-  },
-  {
-    id: 3,
-    company: 'Wipro',
-    role: 'Full Stack Developer',
-    location: 'Hyderabad',
-    experience: '0-2 years',
-    salary: '4-6 LPA',
-    type: 'Full Time',
-    tags: ['React', '.NET', 'SQL'],
-    category: 'fullstack',
-    logo: '💻',
-    posted: '3 days ago',
-    link: 'https://careers.wipro.com',
-  },
-  {
-    id: 4,
-    company: 'Capgemini',
-    role: 'QA Engineer',
-    location: 'Chennai',
-    experience: '0-1 year',
-    salary: '2-4 LPA',
-    type: 'Full Time',
-    tags: ['Selenium', 'Manual Testing', 'JIRA'],
-    category: 'qa',
-    logo: '🔍',
-    posted: '1 day ago',
-    link: 'https://www.capgemini.com/careers',
-  },
-  {
-    id: 5,
-    company: 'Accenture',
-    role: 'Backend Developer',
-    location: 'Mumbai',
-    experience: '0-2 years',
-    salary: '4-5 LPA',
-    type: 'Full Time',
-    tags: ['Node.js', 'Python', 'REST API'],
-    category: 'backend',
-    logo: '⚡',
-    posted: '4 days ago',
-    link: 'https://www.accenture.com/careers',
-  },
-  {
-    id: 6,
-    company: 'HCL Technologies',
-    role: '.NET Developer',
-    location: 'Noida',
-    experience: '0-1 year',
-    salary: '3-4 LPA',
-    type: 'Full Time',
-    tags: ['ASP.NET', 'MVC', 'SQL Server'],
-    category: 'dotnet',
-    logo: '🏗️',
-    posted: '2 days ago',
-    link: 'https://www.hcltech.com/careers',
-  },
-  {
-    id: 7,
-    company: 'Cognizant',
-    role: 'Data Analyst',
-    location: 'Bangalore',
-    experience: '0-2 years',
-    salary: '3-5 LPA',
-    type: 'Full Time',
-    tags: ['Python', 'SQL', 'Power BI'],
-    category: 'dataanalyst',
-    logo: '📊',
-    posted: '1 day ago',
-    link: 'https://careers.cognizant.com',
-  },
-  {
-    id: 8,
-    company: 'Tech Mahindra',
-    role: 'Android Developer',
-    location: 'Pune',
-    experience: '0-1 year',
-    salary: '3-4 LPA',
-    type: 'Full Time',
-    tags: ['Kotlin', 'Android', 'Firebase'],
-    category: 'android',
-    logo: '📱',
-    posted: '5 days ago',
-    link: 'https://careers.techmahindra.com',
-  },
-  {
-    id: 9,
-    company: 'Mphasis',
-    role: 'DevOps Engineer',
-    location: 'Bangalore',
-    experience: '0-2 years',
-    salary: '4-6 LPA',
-    type: 'Full Time',
-    tags: ['Docker', 'AWS', 'CI/CD'],
-    category: 'devops',
-    logo: '☁️',
-    posted: '3 days ago',
-    link: 'https://www.mphasis.com/careers',
-  },
-  {
-    id: 10,
-    company: 'Persistent Systems',
-    role: 'Full Stack Developer',
-    location: 'Remote',
-    experience: '0-1 year',
-    salary: '4-5 LPA',
-    type: 'Remote',
-    tags: ['React', 'Node.js', 'MongoDB'],
-    category: 'fullstack',
-    logo: '🚀',
-    posted: '1 day ago',
-    link: 'https://www.persistent.com/careers',
-  },
-]
+
 
 const filters = [
   { label: 'All Jobs', value: 'all' },
@@ -158,6 +18,50 @@ const filters = [
 function JobsSection() {
   const [activeFilter, setActiveFilter] = useState('all')
   const [savedJobs, setSavedJobs] = useState([])
+  const [allJobs, setAllJobs] = useState([])
+  const [loadingJobs, setLoadingJobs] = useState(true)
+
+  useEffect(() => {
+    async function loadJobs() {
+      const { data, error } = await supabase
+        .from('jobs')
+        .select('*')
+        .eq('is_active', true)
+        .order('posted_date', { ascending: false })
+
+      if (error) {
+        console.error('loadJobs error:', error)
+      } else {
+        // Map database columns to the shape the UI expects
+        setAllJobs((data || []).map(job => ({
+          id: job.id,
+          company: job.company,
+          role: job.role,
+          location: job.location || 'India',
+          experience: job.experience || 'Freshers',
+          salary: job.salary || 'Not disclosed',
+          type: job.job_type || 'Full Time',
+          tags: job.tags || [],
+          category: job.category || 'other',
+          logo: job.logo || '🏢',
+          posted: formatPostedDate(job.posted_date),
+          link: job.link,
+        })))
+      }
+      setLoadingJobs(false)
+    }
+    loadJobs()
+  }, [])
+
+  function formatPostedDate(dateStr) {
+    if (!dateStr) return 'Recently'
+    const posted = new Date(dateStr)
+    const now = new Date()
+    const days = Math.floor((now - posted) / (1000 * 60 * 60 * 24))
+    if (days === 0) return 'Today'
+    if (days === 1) return '1 day ago'
+    return `${days} days ago`
+  }
 
   const filteredJobs = activeFilter === 'all'
     ? allJobs
@@ -250,13 +154,19 @@ function JobsSection() {
       </div>
 
       {/* Job Count */}
+      {loadingJobs && (
+        <p style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '20px', textAlign: 'center' }}>
+          Loading jobs...
+        </p>
+      )}
+
       <p style={{
         color: 'var(--text-secondary)',
         fontSize: '14px',
         marginBottom: '20px',
         fontWeight: '500',
       }}>
-        Showing {filteredJobs.length} jobs
+        Showing {filteredJobs.length} job{filteredJobs.length !== 1 ? 's' : ''}
         {activeFilter !== 'all' && ` for ${filters.find(f => f.value === activeFilter)?.label}`}
       </p>
 

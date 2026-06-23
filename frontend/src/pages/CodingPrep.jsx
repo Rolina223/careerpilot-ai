@@ -31,20 +31,16 @@ const questionBank = [
 
 const codingProblems = [
   {
-    id: 1,
-    title: 'Reverse a String',
-    difficulty: 'Easy',
+    id: 1, title: 'Reverse a String', difficulty: 'Easy',
     companies: ['TCS', 'Infosys', 'Wipro', 'Generic'],
     description: 'Write a function that reverses a string without using built-in reverse() method.',
     example: { input: '"hello"', output: '"olleh"' },
-    csharp: `string ReverseString(string s) {\n    char[] arr = s.ToCharArray();\n    int left = 0, right = arr.Length - 1;\n    while (left < right) {\n        char temp = arr[left];\n        arr[left] = arr[right];\n        arr[right] = temp;\n        left++;\n        right--;\n    }\n    return new string(arr);\n}`,
-    javascript: `function reverseString(s) {\n  let arr = s.split('');\n  let left = 0, right = arr.length - 1;\n  while (left < right) {\n    [arr[left], arr[right]] = [arr[right], arr[left]];\n    left++;\n    right--;\n  }\n  return arr.join('');\n}`,
+    csharp: `string ReverseString(string s) {\n    char[] arr = s.ToCharArray();\n    int left = 0, right = arr.Length - 1;\n    while (left < right) {\n        char temp = arr[left];\n        arr[left] = arr[right];\n        arr[right] = temp;\n        left++; right--;\n    }\n    return new string(arr);\n}`,
+    javascript: `function reverseString(s) {\n  let arr = s.split('');\n  let left = 0, right = arr.length - 1;\n  while (left < right) {\n    [arr[left], arr[right]] = [arr[right], arr[left]];\n    left++; right--;\n  }\n  return arr.join('');\n}`,
     explanation: 'Use two pointers — one at start, one at end. Swap characters and move pointers toward center until they meet.',
   },
   {
-    id: 2,
-    title: 'Find Duplicate in Array',
-    difficulty: 'Easy',
+    id: 2, title: 'Find Duplicate in Array', difficulty: 'Easy',
     companies: ['TCS', 'Cognizant', 'Generic'],
     description: 'Given an array of integers, find if any element appears more than once.',
     example: { input: '[1, 2, 3, 4, 2]', output: 'true (2 is duplicate)' },
@@ -53,9 +49,7 @@ const codingProblems = [
     explanation: 'Use a HashSet/Set to track seen elements. If an element is already in the set, it is a duplicate. This is O(n) time.',
   },
   {
-    id: 3,
-    title: 'FizzBuzz',
-    difficulty: 'Easy',
+    id: 3, title: 'FizzBuzz', difficulty: 'Easy',
     companies: ['Infosys', 'Wipro', 'Accenture', 'Generic'],
     description: 'Print numbers 1 to n. If divisible by 3 print "Fizz", by 5 print "Buzz", by both print "FizzBuzz".',
     example: { input: 'n = 15', output: '1,2,Fizz,4,Buzz,Fizz,7,8,Fizz,Buzz,11,Fizz,13,14,FizzBuzz' },
@@ -64,31 +58,25 @@ const codingProblems = [
     explanation: 'Check divisibility by 15 first (covers both 3 and 5), then 3, then 5, else print the number itself.',
   },
   {
-    id: 4,
-    title: 'Check Palindrome',
-    difficulty: 'Easy',
+    id: 4, title: 'Check Palindrome', difficulty: 'Easy',
     companies: ['TCS', 'Accenture', 'Generic'],
     description: 'Check if a given string is a palindrome (reads same forwards and backwards).',
     example: { input: '"madam"', output: 'true' },
-    csharp: `bool IsPalindrome(string s) {\n    int left = 0, right = s.Length - 1;\n    while (left < right) {\n        if (s[left] != s[right]) return false;\n        left++;\n        right--;\n    }\n    return true;\n}`,
-    javascript: `function isPalindrome(s) {\n  let left = 0, right = s.length - 1;\n  while (left < right) {\n    if (s[left] !== s[right]) return false;\n    left++;\n    right--;\n  }\n  return true;\n}`,
+    csharp: `bool IsPalindrome(string s) {\n    int left = 0, right = s.Length - 1;\n    while (left < right) {\n        if (s[left] != s[right]) return false;\n        left++; right--;\n    }\n    return true;\n}`,
+    javascript: `function isPalindrome(s) {\n  let left = 0, right = s.length - 1;\n  while (left < right) {\n    if (s[left] !== s[right]) return false;\n    left++; right--;\n  }\n  return true;\n}`,
     explanation: 'Use two pointers from both ends moving inward. If any pair of characters do not match, it is not a palindrome.',
   },
   {
-    id: 5,
-    title: 'Find Maximum Subarray Sum',
-    difficulty: 'Medium',
+    id: 5, title: 'Find Maximum Subarray Sum', difficulty: 'Medium',
     companies: ['Cognizant', 'Wipro', 'Generic'],
-    description: 'Find the contiguous subarray with the largest sum (Kadane\'s Algorithm).',
+    description: "Find the contiguous subarray with the largest sum (Kadane's Algorithm).",
     example: { input: '[-2,1,-3,4,-1,2,1,-5,4]', output: '6 (subarray [4,-1,2,1])' },
     csharp: `int MaxSubArray(int[] nums) {\n    int maxSum = nums[0], currentSum = nums[0];\n    for (int i = 1; i < nums.Length; i++) {\n        currentSum = Math.Max(nums[i], currentSum + nums[i]);\n        maxSum = Math.Max(maxSum, currentSum);\n    }\n    return maxSum;\n}`,
     javascript: `function maxSubArray(nums) {\n  let maxSum = nums[0], currentSum = nums[0];\n  for (let i = 1; i < nums.length; i++) {\n    currentSum = Math.max(nums[i], currentSum + nums[i]);\n    maxSum = Math.max(maxSum, currentSum);\n  }\n  return maxSum;\n}`,
-    explanation: 'Kadane\'s Algorithm: track running sum, reset to current element if sum becomes negative, keep track of max seen so far.',
+    explanation: "Kadane's Algorithm: track running sum, reset to current element if sum becomes negative, keep track of max seen so far.",
   },
   {
-    id: 6,
-    title: 'Count Vowels in a String',
-    difficulty: 'Easy',
+    id: 6, title: 'Count Vowels in a String', difficulty: 'Easy',
     companies: ['TCS', 'Infosys', 'Generic'],
     description: 'Count the number of vowels (a,e,i,o,u) in a given string.',
     example: { input: '"hello world"', output: '3' },
@@ -115,8 +103,30 @@ const categoryInfo = {
 
 const difficultyColor = { Easy: '#34d399', Medium: '#f59e0b', Hard: '#fb7185' }
 
+const difficultyLevels = [
+  { value: 'all', label: 'All Levels', desc: null },
+  { value: 'beginner', label: '🟢 Beginner', desc: 'Freshers / 0-1 yr' },
+  { value: 'intermediate', label: '🟡 Intermediate', desc: '1-3 yrs' },
+  { value: 'advanced', label: '🔴 Advanced', desc: '3+ yrs' },
+]
+
+const questionDifficultyMap = {
+  1: 'beginner', 2: 'beginner', 3: 'beginner', 4: 'beginner', 5: 'beginner', 6: 'beginner',
+  7: 'intermediate', 8: 'intermediate',
+  9: 'beginner', 10: 'beginner', 11: 'beginner', 12: 'beginner', 13: 'beginner',
+  14: 'intermediate', 15: 'intermediate', 16: 'intermediate',
+  17: 'beginner', 18: 'beginner', 19: 'beginner', 20: 'beginner', 21: 'beginner',
+  22: 'intermediate', 23: 'intermediate', 24: 'intermediate',
+}
+
+const problemDifficultyMap = {
+  Easy: 'beginner',
+  Medium: 'intermediate',
+  Hard: 'advanced',
+}
+
 function CodingPrep() {
-  const [mainTab, setMainTab] = useState('mcq') // mcq | problems
+  const [mainTab, setMainTab] = useState('mcq')
   const [screen, setScreen] = useState('setup')
   const [selectedCompany, setSelectedCompany] = useState(null)
   const [questions, setQuestions] = useState([])
@@ -124,15 +134,14 @@ function CodingPrep() {
   const [selectedOption, setSelectedOption] = useState(null)
   const [showAnswer, setShowAnswer] = useState(false)
   const [results, setResults] = useState([])
+  const [selectedDifficulty, setSelectedDifficulty] = useState('all')
 
-  // Coding Problems state
-  // Coding Problems state
   const [problemCompany, setProblemCompany] = useState('Generic')
+  const [problemDifficulty, setProblemDifficulty] = useState('all')
   const [expandedProblem, setExpandedProblem] = useState(null)
   const [showSolution, setShowSolution] = useState({})
   const [activeLang, setActiveLang] = useState({})
 
-  // Database-backed sets
   const [dbMcqSets, setDbMcqSets] = useState([])
   const [dbProblemSets, setDbProblemSets] = useState([])
   const [dbProblems, setDbProblems] = useState([])
@@ -146,20 +155,22 @@ function CodingPrep() {
         fetchQuestionSets('coding_mcq'),
         fetchQuestionSets('coding_problem'),
       ])
-      if (mcqRes.error || problemRes.error) {
-        setSetsError('Could not load extra question sets.')
-      }
-      setDbMcqSets(mcqRes.data);
-      setDbProblemSets(problemRes.data);
-
-      // Auto-load all problem sets' actual problems (since they're shown as a flat list, not a quiz)
-      const allProblems = [];
+      if (mcqRes.error || problemRes.error) setSetsError('Could not load extra question sets.')
+      setDbMcqSets(mcqRes.data)
+      setDbProblemSets(problemRes.data)
+      const allProblems = []
       for (const set of problemRes.data) {
-        const { data } = await fetchQuestionsForSet(set.id);
-        allProblems.push(...data.map(p => ({ ...p, companies: ['Generic'], _fromDb: true })));
+        const { data } = await fetchQuestionsForSet(set.id)
+        allProblems.push(...data.map(p => ({
+          ...p,
+          companies: ['Generic'],
+          difficulty: p.difficulty || 'Easy',
+          _fromDb: true,
+          _setDifficulty: set.difficulty || 'beginner',
+        })))
       }
-      setDbProblems(allProblems);
-      setLoadingSets(false);
+      setDbProblems(allProblems)
+      setLoadingSets(false)
     }
     loadSets()
   }, [])
@@ -168,78 +179,82 @@ function CodingPrep() {
     setLoadingSetId(set.id)
     const { data, error } = await fetchQuestionsForSet(set.id)
     setLoadingSetId(null)
-    if (error || data.length === 0) {
-      setSetsError('Could not load this question set. Please try another.')
-      return
-    }
+    if (error || data.length === 0) { setSetsError('Could not load this question set.'); return }
     const shuffled = [...data].sort(() => Math.random() - 0.5)
     setSelectedCompany({ name: set.title, color: '#38bdf8', icon: '💻' })
     setQuestions(shuffled)
-    setCurrentIndex(0)
-    setResults([])
-    setSelectedOption(null)
-    setShowAnswer(false)
+    setCurrentIndex(0); setResults([]); setSelectedOption(null); setShowAnswer(false)
     setScreen('test')
   }
 
   const getCompanyQuestionCount = (companyName) => {
-    return questionBank.filter(q => q.companies.includes(companyName)).length
+    return questionBank
+      .filter(q => q.companies.includes(companyName))
+      .filter(q => selectedDifficulty === 'all' || questionDifficultyMap[q.id] === selectedDifficulty)
+      .length
   }
 
   const getCompanyProblemCount = (companyName) => {
-    return codingProblems.filter(p => p.companies.includes(companyName)).length
+    return codingProblems
+      .filter(p => p.companies.includes(companyName))
+      .filter(p => problemDifficulty === 'all' || problemDifficultyMap[p.difficulty] === problemDifficulty)
+      .length
   }
 
   const startTest = (company) => {
-    let qs = questionBank.filter(q => q.companies.includes(company.name))
-    qs = qs.sort(() => Math.random() - 0.5)
+    const qs = questionBank
+      .filter(q => q.companies.includes(company.name))
+      .filter(q => selectedDifficulty === 'all' || questionDifficultyMap[q.id] === selectedDifficulty)
+      .sort(() => Math.random() - 0.5)
     setSelectedCompany(company)
     setQuestions(qs)
-    setCurrentIndex(0)
-    setResults([])
-    setSelectedOption(null)
-    setShowAnswer(false)
+    setCurrentIndex(0); setResults([]); setSelectedOption(null); setShowAnswer(false)
     setScreen('test')
   }
 
-  const handleSubmitAnswer = () => {
-    if (selectedOption === null) return
-    setShowAnswer(true)
-  }
+  const handleSubmitAnswer = () => { if (selectedOption === null) return; setShowAnswer(true) }
 
   const handleNext = () => {
     const isCorrect = selectedOption === questions[currentIndex].answer
-    setResults(prev => [...prev, {
-      question: questions[currentIndex], selected: selectedOption,
-      correct: isCorrect, skipped: selectedOption === null,
-    }])
-    setSelectedOption(null)
-    setShowAnswer(false)
+    setResults(prev => [...prev, { question: questions[currentIndex], selected: selectedOption, correct: isCorrect, skipped: selectedOption === null }])
+    setSelectedOption(null); setShowAnswer(false)
     if (currentIndex + 1 >= questions.length) setScreen('result')
     else setCurrentIndex(prev => prev + 1)
   }
 
   const handleSkip = () => {
-    setResults(prev => [...prev, {
-      question: questions[currentIndex], selected: null, correct: false, skipped: true,
-    }])
-    setSelectedOption(null)
-    setShowAnswer(false)
+    setResults(prev => [...prev, { question: questions[currentIndex], selected: null, correct: false, skipped: true }])
+    setSelectedOption(null); setShowAnswer(false)
     if (currentIndex + 1 >= questions.length) setScreen('result')
     else setCurrentIndex(prev => prev + 1)
   }
 
   const filteredProblems = problemCompany === 'More Sets'
-    ? dbProblems
-    : codingProblems.filter(p => p.companies.includes(problemCompany))
+    ? dbProblems.filter(p => problemDifficulty === 'all' || p._setDifficulty === problemDifficulty)
+    : codingProblems
+        .filter(p => p.companies.includes(problemCompany))
+        .filter(p => problemDifficulty === 'all' || problemDifficultyMap[p.difficulty] === problemDifficulty)
 
-  // ====== TOP TAB SWITCHER ======
+  const DifficultyPills = ({ value, onChange, style = {} }) => (
+    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', ...style }}>
+      {difficultyLevels.map(d => (
+        <button key={d.value} onClick={() => onChange(d.value)} style={{
+          padding: '8px 16px', borderRadius: '100px', border: 'none', cursor: 'pointer',
+          fontSize: '12px', fontWeight: '700',
+          background: value === d.value ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'rgba(255,255,255,0.05)',
+          color: value === d.value ? '#fff' : 'var(--text-secondary)',
+          border: value === d.value ? 'none' : '1px solid rgba(255,255,255,0.1)',
+          transition: 'all 0.2s ease',
+        }}>
+          {d.label}{d.desc ? <span style={{ fontSize: '10px', opacity: 0.8, marginLeft: '4px' }}>· {d.desc}</span> : null}
+        </button>
+      ))}
+    </div>
+  )
+
   const TabSwitcher = () => (
     <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginBottom: '40px' }}>
-      {[
-        { id: 'mcq', label: '📝 MCQ Practice' },
-        { id: 'problems', label: '💻 Coding Problems' },
-      ].map(tab => (
+      {[{ id: 'mcq', label: '📝 MCQ Practice' }, { id: 'problems', label: '💻 Coding Problems' }].map(tab => (
         <button key={tab.id} onClick={() => { setMainTab(tab.id); setScreen('setup') }} style={{
           padding: '12px 28px',
           backgroundColor: mainTab === tab.id ? 'rgba(56,189,248,0.12)' : 'rgba(255,255,255,0.03)',
@@ -248,9 +263,7 @@ function CodingPrep() {
           color: mainTab === tab.id ? '#38bdf8' : 'var(--text-secondary)',
           boxShadow: mainTab === tab.id ? '0 0 20px rgba(56,189,248,0.15)' : 'none',
           transition: 'all 0.2s ease',
-        }}>
-          {tab.label}
-        </button>
+        }}>{tab.label}</button>
       ))}
     </div>
   )
@@ -260,27 +273,22 @@ function CodingPrep() {
     return (
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '60px 32px' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: '8px',
-            padding: '6px 16px', backgroundColor: 'rgba(56,189,248,0.1)',
-            border: '1px solid rgba(56,189,248,0.3)', borderRadius: '100px',
-            fontSize: '13px', color: '#38bdf8', fontWeight: '500', marginBottom: '16px',
-          }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', backgroundColor: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '100px', fontSize: '13px', color: '#38bdf8', fontWeight: '500', marginBottom: '16px' }}>
             ✦ Practice Coding Problems
           </div>
-          <h2 style={{
-            fontSize: '40px', fontWeight: '800', background: 'var(--gradient)',
-            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-            marginBottom: '12px', letterSpacing: '-1px',
-          }}>
+          <h2 style={{ fontSize: '40px', fontWeight: '800', background: 'var(--gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '12px', letterSpacing: '-1px' }}>
             Coding Prep
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '16px' }}>
-            Try solving, then reveal the solution with explanation
-          </p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '16px' }}>Try solving, then reveal the solution with explanation</p>
         </div>
 
         <TabSwitcher />
+
+        {/* Difficulty Filter */}
+        <div style={{ marginBottom: '24px' }}>
+          <p style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-secondary)', marginBottom: '12px' }}>FILTER BY DIFFICULTY</p>
+          <DifficultyPills value={problemDifficulty} onChange={setProblemDifficulty} />
+        </div>
 
         {/* Company Filter Pills */}
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '32px' }}>
@@ -290,8 +298,7 @@ function CodingPrep() {
               backgroundColor: problemCompany === c.name ? `${c.color}15` : 'rgba(255,255,255,0.03)',
               border: problemCompany === c.name ? `1px solid ${c.color}50` : '1px solid rgba(255,255,255,0.08)',
               borderRadius: '100px', fontSize: '13px', fontWeight: '600', cursor: 'pointer',
-              color: problemCompany === c.name ? c.color : 'var(--text-secondary)',
-              transition: 'all 0.2s ease',
+              color: problemCompany === c.name ? c.color : 'var(--text-secondary)', transition: 'all 0.2s ease',
             }}>
               {c.icon} {c.name} ({getCompanyProblemCount(c.name)})
             </button>
@@ -301,14 +308,16 @@ function CodingPrep() {
             backgroundColor: problemCompany === 'More Sets' ? 'rgba(129,140,248,0.15)' : 'rgba(255,255,255,0.03)',
             border: problemCompany === 'More Sets' ? '1px solid rgba(129,140,248,0.5)' : '1px solid rgba(255,255,255,0.08)',
             borderRadius: '100px', fontSize: '13px', fontWeight: '600', cursor: 'pointer',
-            color: problemCompany === 'More Sets' ? '#818cf8' : 'var(--text-secondary)',
-            transition: 'all 0.2s ease',
+            color: problemCompany === 'More Sets' ? '#818cf8' : 'var(--text-secondary)', transition: 'all 0.2s ease',
           }}>
-            🧠 More Sets ({dbProblems.length})
+            🧠 More Sets ({dbProblems.filter(p => problemDifficulty === 'all' || p._setDifficulty === problemDifficulty).length})
           </button>
         </div>
-        {loadingSets && problemCompany === 'More Sets' && (
-          <p style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '16px' }}>Loading...</p>
+
+        {filteredProblems.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '48px', color: 'var(--text-secondary)', fontSize: '15px' }}>
+            No problems found for this difficulty level yet. Try "All Levels" or generate more sets.
+          </div>
         )}
 
         {/* Problems List */}
@@ -317,110 +326,43 @@ function CodingPrep() {
             const isExpanded = expandedProblem === problem.id
             const isSolutionShown = showSolution[problem.id]
             const lang = activeLang[problem.id] || 'csharp'
-
             return (
-              <div key={problem.id} style={{
-                backgroundColor: 'rgba(255,255,255,0.02)',
-                border: '1px solid rgba(56,189,248,0.15)',
-                borderRadius: '16px',
-                overflow: 'hidden',
-              }}>
-                {/* Header */}
-                <div
-                  onClick={() => setExpandedProblem(isExpanded ? null : problem.id)}
-                  style={{
-                    padding: '20px 24px', cursor: 'pointer',
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  }}
-                >
+              <div key={problem.id} style={{ backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(56,189,248,0.15)', borderRadius: '16px', overflow: 'hidden' }}>
+                <div onClick={() => setExpandedProblem(isExpanded ? null : problem.id)} style={{ padding: '20px 24px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                    <span style={{
-                      padding: '4px 10px', borderRadius: '100px', fontSize: '11px', fontWeight: '700',
-                      backgroundColor: `${difficultyColor[problem.difficulty]}15`,
-                      color: difficultyColor[problem.difficulty],
-                      border: `1px solid ${difficultyColor[problem.difficulty]}40`,
-                    }}>
+                    <span style={{ padding: '4px 10px', borderRadius: '100px', fontSize: '11px', fontWeight: '700', backgroundColor: `${difficultyColor[problem.difficulty]}15`, color: difficultyColor[problem.difficulty], border: `1px solid ${difficultyColor[problem.difficulty]}40` }}>
                       {problem.difficulty}
                     </span>
-                    <p style={{ fontSize: '16px', fontWeight: '700', color: 'var(--text-primary)' }}>
-                      {problem.title}
-                    </p>
+                    <p style={{ fontSize: '16px', fontWeight: '700', color: 'var(--text-primary)' }}>{problem.title}</p>
                   </div>
-                  <span style={{
-                    fontSize: '14px', color: '#38bdf8',
-                    transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
-                    transition: 'transform 0.2s ease',
-                  }}>▾</span>
+                  <span style={{ fontSize: '14px', color: '#38bdf8', transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }}>▾</span>
                 </div>
-
-                {/* Expanded Content */}
                 {isExpanded && (
-                  <div className="fade-in" style={{ padding: '0 24px 24px' }}>
-                    <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: '1.7', marginBottom: '16px' }}>
-                      {problem.description}
-                    </p>
-
-                    {/* Example */}
-                    <div style={{
-                      padding: '14px 18px', backgroundColor: 'rgba(255,255,255,0.03)',
-                      border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', marginBottom: '16px',
-                    }}>
+                  <div style={{ padding: '0 24px 24px' }}>
+                    <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: '1.7', marginBottom: '16px' }}>{problem.description}</p>
+                    <div style={{ padding: '14px 18px', backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', marginBottom: '16px' }}>
                       <p style={{ fontSize: '12px', color: '#818cf8', fontWeight: '700', marginBottom: '6px' }}>EXAMPLE</p>
-                      <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontFamily: 'monospace' }}>
-                        Input: {problem.example.input}<br />
-                        Output: {problem.example.output}
-                      </p>
+                      <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontFamily: 'monospace' }}>Input: {problem.example.input}<br />Output: {problem.example.output}</p>
                     </div>
-
                     {!isSolutionShown ? (
-                      <button
-                        onClick={() => setShowSolution(prev => ({ ...prev, [problem.id]: true }))}
-                        style={{
-                          padding: '10px 24px', background: 'var(--gradient)', border: 'none',
-                          borderRadius: '10px', color: 'white', fontSize: '14px', fontWeight: '700',
-                          cursor: 'pointer', boxShadow: '0 0 15px rgba(56,189,248,0.2)',
-                        }}
-                      >
+                      <button onClick={() => setShowSolution(prev => ({ ...prev, [problem.id]: true }))} style={{ padding: '10px 24px', background: 'var(--gradient)', border: 'none', borderRadius: '10px', color: 'white', fontSize: '14px', fontWeight: '700', cursor: 'pointer' }}>
                         💡 Show Solution
                       </button>
                     ) : (
-                      <div className="fade-in">
-                        {/* Language Tabs */}
+                      <div>
                         <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
                           {['csharp', 'javascript'].map(l => (
-                            <button key={l} onClick={() => setActiveLang(prev => ({ ...prev, [problem.id]: l }))} style={{
-                              padding: '6px 16px',
-                              backgroundColor: lang === l ? 'rgba(56,189,248,0.15)' : 'rgba(255,255,255,0.04)',
-                              border: lang === l ? '1px solid rgba(56,189,248,0.4)' : '1px solid rgba(255,255,255,0.08)',
-                              borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer',
-                              color: lang === l ? '#38bdf8' : 'var(--text-secondary)',
-                            }}>
+                            <button key={l} onClick={() => setActiveLang(prev => ({ ...prev, [problem.id]: l }))} style={{ padding: '6px 16px', backgroundColor: lang === l ? 'rgba(56,189,248,0.15)' : 'rgba(255,255,255,0.04)', border: lang === l ? '1px solid rgba(56,189,248,0.4)' : '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', color: lang === l ? '#38bdf8' : 'var(--text-secondary)' }}>
                               {l === 'csharp' ? 'C#' : 'JavaScript'}
                             </button>
                           ))}
                         </div>
-
-                        {/* Code Block */}
-                        <pre style={{
-                          fontSize: '13px', color: '#e2e8f0', backgroundColor: 'rgba(0,0,0,0.3)',
-                          padding: '18px 20px', borderRadius: '12px', marginBottom: '14px',
-                          fontFamily: 'Consolas, Monaco, monospace', lineHeight: '1.7',
-                          overflowX: 'auto', whiteSpace: 'pre', border: '1px solid rgba(255,255,255,0.06)',
-                        }}>
+                        <pre style={{ fontSize: '13px', color: '#e2e8f0', backgroundColor: 'rgba(0,0,0,0.3)', padding: '18px 20px', borderRadius: '12px', marginBottom: '14px', fontFamily: 'Consolas, Monaco, monospace', lineHeight: '1.7', overflowX: 'auto', whiteSpace: 'pre', border: '1px solid rgba(255,255,255,0.06)' }}>
                           {lang === 'csharp' ? problem.csharp : problem.javascript}
                         </pre>
-
-                        {/* Explanation */}
-                        <div style={{
-                          padding: '14px 18px', backgroundColor: 'rgba(129,140,248,0.05)',
-                          border: '1px solid rgba(129,140,248,0.2)', borderRadius: '10px',
-                        }}>
-                          <p style={{ fontSize: '12px', color: '#818cf8', fontWeight: '700', marginBottom: '6px' }}>
-                            💡 EXPLANATION
-                          </p>
-                          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
-                            {problem.explanation}
-                          </p>
+                        <div style={{ padding: '14px 18px', backgroundColor: 'rgba(129,140,248,0.05)', border: '1px solid rgba(129,140,248,0.2)', borderRadius: '10px' }}>
+                          <p style={{ fontSize: '12px', color: '#818cf8', fontWeight: '700', marginBottom: '6px' }}>💡 EXPLANATION</p>
+                          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>{problem.explanation}</p>
                         </div>
                       </div>
                     )}
@@ -439,19 +381,10 @@ function CodingPrep() {
     return (
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '60px 32px' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: '8px',
-            padding: '6px 16px', backgroundColor: 'rgba(56,189,248,0.1)',
-            border: '1px solid rgba(56,189,248,0.3)', borderRadius: '100px',
-            fontSize: '13px', color: '#38bdf8', fontWeight: '500', marginBottom: '16px',
-          }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', backgroundColor: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '100px', fontSize: '13px', color: '#38bdf8', fontWeight: '500', marginBottom: '16px' }}>
             ✦ Company-wise Coding Prep
           </div>
-          <h2 style={{
-            fontSize: '40px', fontWeight: '800', background: 'var(--gradient)',
-            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-            marginBottom: '12px', letterSpacing: '-1px',
-          }}>
+          <h2 style={{ fontSize: '40px', fontWeight: '800', background: 'var(--gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '12px', letterSpacing: '-1px' }}>
             Coding Prep
           </h2>
           <p style={{ color: 'var(--text-secondary)', fontSize: '16px', maxWidth: '550px', margin: '0 auto', lineHeight: '1.7' }}>
@@ -461,56 +394,42 @@ function CodingPrep() {
 
         <TabSwitcher />
 
-        <div style={{
-          padding: '14px 20px', backgroundColor: 'rgba(245,158,11,0.06)',
-          border: '1px solid rgba(245,158,11,0.2)', borderRadius: '12px',
-          marginBottom: '32px', textAlign: 'center',
-        }}>
-          <p style={{ fontSize: '12px', color: '#f59e0b' }}>
-            ⚠️ Practice in company exam style — MCQ format, no code execution needed
-          </p>
+        <div style={{ padding: '14px 20px', backgroundColor: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: '12px', marginBottom: '32px', textAlign: 'center' }}>
+          <p style={{ fontSize: '12px', color: '#f59e0b' }}>⚠️ Practice in company exam style — MCQ format, no code execution needed</p>
         </div>
 
+        {/* Difficulty Filter */}
+        <div style={{ marginBottom: '32px' }}>
+          <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '16px', color: 'var(--text-primary)' }}>
+            Select Difficulty Level
+          </h3>
+          <DifficultyPills value={selectedDifficulty} onChange={(v) => { setSelectedDifficulty(v) }} />
+          {selectedDifficulty !== 'all' && (
+            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '10px' }}>
+              {selectedDifficulty === 'beginner' && '✅ Great for freshers and campus placements — core concepts only'}
+              {selectedDifficulty === 'intermediate' && '✅ For 1-3 year experience — slightly trickier logic and patterns'}
+              {selectedDifficulty === 'advanced' && '⚠️ Advanced questions — generate more sets to fill this level'}
+            </p>
+          )}
+        </div>
+
+        {/* Company Cards */}
+        <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '24px', color: 'var(--text-primary)' }}>Choose Company Style</h3>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
           {companies.map((company) => {
             const count = getCompanyQuestionCount(company.name)
             return (
-              <div key={company.name} onClick={() => startTest(company)} style={{
-                padding: '24px', backgroundColor: 'rgba(255,255,255,0.02)',
-                border: `1px solid ${company.color}25`, borderRadius: '18px',
-                cursor: 'pointer', transition: 'all 0.3s ease',
-              }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.transform = 'translateY(-4px)'
-                  e.currentTarget.style.borderColor = `${company.color}60`
-                  e.currentTarget.style.boxShadow = `0 15px 40px ${company.color}20`
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.transform = 'translateY(0)'
-                  e.currentTarget.style.borderColor = `${company.color}25`
-                  e.currentTarget.style.boxShadow = 'none'
-                }}
+              <div key={company.name} onClick={() => count > 0 && startTest(company)} style={{ padding: '24px', backgroundColor: 'rgba(255,255,255,0.02)', border: `1px solid ${company.color}25`, borderRadius: '18px', cursor: count > 0 ? 'pointer' : 'not-allowed', transition: 'all 0.3s ease', opacity: count === 0 ? 0.5 : 1 }}
+                onMouseEnter={e => { if (count > 0) { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.borderColor = `${company.color}60`; e.currentTarget.style.boxShadow = `0 15px 40px ${company.color}20` } }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = `${company.color}25`; e.currentTarget.style.boxShadow = 'none' }}
               >
-                <div style={{
-                  width: '52px', height: '52px', borderRadius: '14px',
-                  background: `linear-gradient(135deg, ${company.color}25, ${company.color}08)`,
-                  border: `1px solid ${company.color}33`, display: 'flex',
-                  alignItems: 'center', justifyContent: 'center', fontSize: '24px', marginBottom: '16px',
-                }}>
+                <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: `linear-gradient(135deg, ${company.color}25, ${company.color}08)`, border: `1px solid ${company.color}33`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', marginBottom: '16px' }}>
                   {company.icon}
                 </div>
-                <p style={{ fontSize: '17px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '8px' }}>
-                  {company.name}
-                </p>
-                <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.5' }}>
-                  💻 {company.pattern}
-                </p>
-                <div style={{
-                  display: 'inline-block', padding: '6px 14px',
-                  backgroundColor: `${company.color}12`, border: `1px solid ${company.color}30`,
-                  borderRadius: '100px', fontSize: '12px', color: company.color, fontWeight: '700',
-                }}>
-                  {count} Questions →
+                <p style={{ fontSize: '17px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '8px' }}>{company.name}</p>
+                <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: '1.5' }}>💻 {company.pattern}</p>
+                <div style={{ display: 'inline-block', padding: '6px 14px', backgroundColor: `${company.color}12`, border: `1px solid ${company.color}30`, borderRadius: '100px', fontSize: '12px', color: company.color, fontWeight: '700' }}>
+                  {count > 0 ? `${count} Questions →` : 'No questions at this level'}
                 </div>
               </div>
             )
@@ -519,65 +438,35 @@ function CodingPrep() {
 
         {/* Database-backed MCQ Sets */}
         <div style={{ marginTop: '48px' }}>
-          <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '8px', color: 'var(--text-primary)' }}>
-            More Practice Sets
-          </h3>
-          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '20px' }}>
-            Freshly curated MCQ sets — arrays, strings & pseudocode
-          </p>
-
-          {setsError && (
-            <p style={{ color: '#fb7185', fontSize: '14px', marginBottom: '16px' }}>⚠️ {setsError}</p>
-          )}
-
+          <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '8px', color: 'var(--text-primary)' }}>More Practice Sets</h3>
+          <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '20px' }}>Freshly curated MCQ sets — arrays, strings & pseudocode</p>
+          {setsError && <p style={{ color: '#fb7185', fontSize: '14px', marginBottom: '16px' }}>⚠️ {setsError}</p>}
           {loadingSets ? (
             <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>Loading sets...</p>
-          ) : dbMcqSets.length === 0 ? (
-            <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>No extra sets available yet.</p>
           ) : (
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
-              {dbMcqSets.map((set) => (
-                <div
-                  key={set.id}
-                  onClick={() => loadingSetId ? null : startDbMcqSet(set)}
-                  style={{
-                    padding: '24px', backgroundColor: 'rgba(255,255,255,0.02)',
-                    border: '1px solid rgba(56,189,248,0.25)', borderRadius: '18px',
-                    cursor: loadingSetId ? 'wait' : 'pointer', transition: 'all 0.3s ease',
-                    opacity: loadingSetId && loadingSetId !== set.id ? 0.5 : 1,
-                  }}
-                  onMouseEnter={e => {
-                    e.currentTarget.style.transform = 'translateY(-4px)'
-                    e.currentTarget.style.borderColor = 'rgba(56,189,248,0.6)'
-                  }}
-                  onMouseLeave={e => {
-                    e.currentTarget.style.transform = 'translateY(0)'
-                    e.currentTarget.style.borderColor = 'rgba(56,189,248,0.25)'
-                  }}
-                >
-                  <div style={{
-                    width: '52px', height: '52px', borderRadius: '14px',
-                    background: 'linear-gradient(135deg, rgba(56,189,248,0.25), rgba(56,189,248,0.08))',
-                    border: '1px solid rgba(56,189,248,0.33)', display: 'flex',
-                    alignItems: 'center', justifyContent: 'center', fontSize: '24px', marginBottom: '16px',
-                  }}>
-                    💻
+              {dbMcqSets
+                .filter(set => selectedDifficulty === 'all' || set.difficulty === selectedDifficulty)
+                .map((set) => (
+                  <div key={set.id} onClick={() => loadingSetId ? null : startDbMcqSet(set)} style={{ padding: '24px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(56,189,248,0.25)', borderRadius: '18px', cursor: loadingSetId ? 'wait' : 'pointer', transition: 'all 0.3s ease', opacity: loadingSetId && loadingSetId !== set.id ? 0.5 : 1 }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.borderColor = 'rgba(56,189,248,0.6)' }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(56,189,248,0.25)' }}
+                  >
+                    <div style={{ width: '52px', height: '52px', borderRadius: '14px', background: 'linear-gradient(135deg, rgba(56,189,248,0.25), rgba(56,189,248,0.08))', border: '1px solid rgba(56,189,248,0.33)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', marginBottom: '16px' }}>💻</div>
+                    <p style={{ fontSize: '17px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '8px' }}>{set.title}</p>
+                    <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+                      {set.difficulty === 'beginner' ? '🟢 Beginner' : set.difficulty === 'intermediate' ? '🟡 Intermediate' : set.difficulty === 'advanced' ? '🔴 Advanced' : 'Mixed difficulty'}
+                    </p>
+                    <div style={{ display: 'inline-block', padding: '6px 14px', backgroundColor: 'rgba(56,189,248,0.12)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '100px', fontSize: '12px', color: '#38bdf8', fontWeight: '700' }}>
+                      {loadingSetId === set.id ? 'Loading...' : 'Start →'}
+                    </div>
                   </div>
-                  <p style={{ fontSize: '17px', fontWeight: '700', color: 'var(--text-primary)', marginBottom: '8px' }}>
-                    {set.title}
-                  </p>
-                  <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
-                    {set.difficulty ? `Difficulty: ${set.difficulty}` : 'Mixed difficulty'}
-                  </p>
-                  <div style={{
-                    display: 'inline-block', padding: '6px 14px',
-                    backgroundColor: 'rgba(56,189,248,0.12)', border: '1px solid rgba(56,189,248,0.3)',
-                    borderRadius: '100px', fontSize: '12px', color: '#38bdf8', fontWeight: '700',
-                  }}>
-                    {loadingSetId === set.id ? 'Loading...' : 'Start →'}
-                  </div>
-                </div>
-              ))}
+                ))}
+              {dbMcqSets.filter(set => selectedDifficulty === 'all' || set.difficulty === selectedDifficulty).length === 0 && !loadingSets && (
+                <p style={{ color: 'var(--text-secondary)', fontSize: '14px', gridColumn: '1/-1' }}>
+                  No sets at this difficulty yet — generate more using the prompts provided.
+                </p>
+              )}
             </div>
           )}
         </div>
@@ -590,114 +479,58 @@ function CodingPrep() {
     const q = questions[currentIndex]
     const progress = (currentIndex / questions.length) * 100
     const catInfo = categoryInfo[q.category]
-
     return (
       <div style={{ maxWidth: '700px', margin: '0 auto', padding: '60px 32px' }}>
         <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-          <span style={{
-            padding: '6px 16px', backgroundColor: `${selectedCompany.color}12`,
-            border: `1px solid ${selectedCompany.color}40`, borderRadius: '100px',
-            fontSize: '13px', color: selectedCompany.color, fontWeight: '700',
-          }}>
+          <span style={{ padding: '6px 16px', backgroundColor: `${selectedCompany.color}12`, border: `1px solid ${selectedCompany.color}40`, borderRadius: '100px', fontSize: '13px', color: selectedCompany.color, fontWeight: '700' }}>
             {selectedCompany.icon} {selectedCompany.name} Coding Practice
           </span>
         </div>
-
         <div style={{ marginBottom: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-            <span style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: '600' }}>
-              Question {currentIndex + 1} of {questions.length}
-            </span>
-            <span style={{ color: catInfo?.color, fontSize: '13px', fontWeight: '600' }}>
-              {catInfo?.label}
-            </span>
+            <span style={{ color: 'var(--text-secondary)', fontSize: '13px', fontWeight: '600' }}>Question {currentIndex + 1} of {questions.length}</span>
+            <span style={{ color: catInfo?.color, fontSize: '13px', fontWeight: '600' }}>{catInfo?.label}</span>
           </div>
           <div style={{ height: '6px', backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: '100px', overflow: 'hidden' }}>
             <div style={{ height: '100%', width: `${progress}%`, background: 'var(--gradient)', borderRadius: '100px', transition: 'width 0.5s ease' }} />
           </div>
         </div>
-
-        <div key={currentIndex} className="fade-in" style={{
-          padding: '32px', backgroundColor: 'rgba(255,255,255,0.02)',
-          border: `1px solid ${catInfo?.color}30`, borderRadius: '20px',
-          marginBottom: '20px', backdropFilter: 'blur(20px)',
-        }}>
-          <pre style={{
-            fontSize: '14px', color: '#e2e8f0', backgroundColor: 'rgba(0,0,0,0.3)',
-            padding: '18px 20px', borderRadius: '12px', marginBottom: '20px',
-            fontFamily: 'Consolas, Monaco, monospace', lineHeight: '1.7',
-            overflowX: 'auto', whiteSpace: 'pre-wrap', border: '1px solid rgba(255,255,255,0.06)',
-          }}>
+        <div style={{ padding: '32px', backgroundColor: 'rgba(255,255,255,0.02)', border: `1px solid ${catInfo?.color}30`, borderRadius: '20px', marginBottom: '20px', backdropFilter: 'blur(20px)' }}>
+          <pre style={{ fontSize: '14px', color: '#e2e8f0', backgroundColor: 'rgba(0,0,0,0.3)', padding: '18px 20px', borderRadius: '12px', marginBottom: '20px', fontFamily: 'Consolas, Monaco, monospace', lineHeight: '1.7', overflowX: 'auto', whiteSpace: 'pre-wrap', border: '1px solid rgba(255,255,255,0.06)' }}>
             {q.q}
           </pre>
-
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {q.options.map((opt, i) => {
-              let bgColor = 'rgba(255,255,255,0.03)'
-              let borderColor = 'rgba(255,255,255,0.08)'
-              let textColor = 'var(--text-primary)'
-
+              let bgColor = 'rgba(255,255,255,0.03)', borderColor = 'rgba(255,255,255,0.08)', textColor = 'var(--text-primary)'
               if (showAnswer) {
-                if (i === q.answer) {
-                  bgColor = 'rgba(52,211,153,0.12)'; borderColor = 'rgba(52,211,153,0.5)'; textColor = '#34d399'
-                } else if (i === selectedOption) {
-                  bgColor = 'rgba(251,113,133,0.12)'; borderColor = 'rgba(251,113,133,0.5)'; textColor = '#fb7185'
-                }
-              } else if (i === selectedOption) {
-                bgColor = `${catInfo?.color}12`; borderColor = `${catInfo?.color}50`; textColor = catInfo?.color
-              }
-
+                if (i === q.answer) { bgColor = 'rgba(52,211,153,0.12)'; borderColor = 'rgba(52,211,153,0.5)'; textColor = '#34d399' }
+                else if (i === selectedOption) { bgColor = 'rgba(251,113,133,0.12)'; borderColor = 'rgba(251,113,133,0.5)'; textColor = '#fb7185' }
+              } else if (i === selectedOption) { bgColor = `${catInfo?.color}12`; borderColor = `${catInfo?.color}50`; textColor = catInfo?.color }
               return (
-                <div key={i} onClick={() => !showAnswer && setSelectedOption(i)} style={{
-                  padding: '14px 18px', backgroundColor: bgColor, border: `1px solid ${borderColor}`,
-                  borderRadius: '12px', cursor: showAnswer ? 'default' : 'pointer', display: 'flex',
-                  alignItems: 'center', gap: '12px', transition: 'all 0.2s ease', fontFamily: 'monospace',
-                }}>
-                  <div style={{
-                    width: '24px', height: '24px', borderRadius: '50%', border: `2px solid ${textColor}`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: '12px', fontWeight: '700', color: textColor,
-                  }}>
-                    {String.fromCharCode(65 + i)}
-                  </div>
-                  <span style={{ fontSize: '14px', color: textColor, fontWeight: showAnswer && (i === q.answer || i === selectedOption) ? '600' : '400' }}>
-                    {opt}
-                  </span>
+                <div key={i} onClick={() => !showAnswer && setSelectedOption(i)} style={{ padding: '14px 18px', backgroundColor: bgColor, border: `1px solid ${borderColor}`, borderRadius: '12px', cursor: showAnswer ? 'default' : 'pointer', display: 'flex', alignItems: 'center', gap: '12px', transition: 'all 0.2s ease', fontFamily: 'monospace' }}>
+                  <div style={{ width: '24px', height: '24px', borderRadius: '50%', border: `2px solid ${textColor}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '700', color: textColor }}>{String.fromCharCode(65 + i)}</div>
+                  <span style={{ fontSize: '14px', color: textColor, fontWeight: showAnswer && (i === q.answer || i === selectedOption) ? '600' : '400' }}>{opt}</span>
                   {showAnswer && i === q.answer && <span style={{ marginLeft: 'auto', color: '#34d399' }}>✓</span>}
                   {showAnswer && i === selectedOption && i !== q.answer && <span style={{ marginLeft: 'auto', color: '#fb7185' }}>✗</span>}
                 </div>
               )
             })}
           </div>
-
           {showAnswer && (
-            <div className="fade-in" style={{
-              marginTop: '20px', padding: '16px 20px', backgroundColor: 'rgba(129,140,248,0.05)',
-              border: '1px solid rgba(129,140,248,0.2)', borderRadius: '12px',
-            }}>
+            <div style={{ marginTop: '20px', padding: '16px 20px', backgroundColor: 'rgba(129,140,248,0.05)', border: '1px solid rgba(129,140,248,0.2)', borderRadius: '12px' }}>
               <p style={{ fontSize: '12px', color: '#818cf8', fontWeight: '700', marginBottom: '6px' }}>💡 EXPLANATION:</p>
               <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>{q.explanation}</p>
             </div>
           )}
         </div>
-
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
           {!showAnswer ? (
             <>
-              <button onClick={handleSkip} style={{
-                padding: '12px 24px', backgroundColor: 'transparent', color: '#94a3b8',
-                border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px',
-                fontSize: '14px', fontWeight: '600', cursor: 'pointer',
-              }}>⏭ Skip</button>
-              <button onClick={handleSubmitAnswer} disabled={selectedOption === null} className="btn-primary" style={{
-                padding: '12px 40px', fontSize: '15px', fontWeight: '700', borderRadius: '12px',
-                opacity: selectedOption === null ? 0.5 : 1, cursor: selectedOption === null ? 'not-allowed' : 'pointer',
-              }}>Submit Answer</button>
+              <button onClick={handleSkip} style={{ padding: '12px 24px', backgroundColor: 'transparent', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '14px', fontWeight: '600', cursor: 'pointer' }}>⏭ Skip</button>
+              <button onClick={handleSubmitAnswer} disabled={selectedOption === null} className="btn-primary" style={{ padding: '12px 40px', fontSize: '15px', fontWeight: '700', borderRadius: '12px', opacity: selectedOption === null ? 0.5 : 1, cursor: selectedOption === null ? 'not-allowed' : 'pointer' }}>Submit Answer</button>
             </>
           ) : (
-            <button onClick={handleNext} className="btn-primary" style={{
-              padding: '12px 40px', fontSize: '15px', fontWeight: '700', borderRadius: '12px',
-            }}>
+            <button onClick={handleNext} className="btn-primary" style={{ padding: '12px 40px', fontSize: '15px', fontWeight: '700', borderRadius: '12px' }}>
               {currentIndex + 1 >= questions.length ? '🏁 Finish' : 'Next Question →'}
             </button>
           )}
@@ -712,44 +545,23 @@ function CodingPrep() {
     const wrong = results.filter(r => !r.correct && !r.skipped).length
     const skipped = results.filter(r => r.skipped).length
     const percentage = Math.round((correct / questions.length) * 100)
-
-    const pieData = [
-      { name: 'Correct', value: correct, color: '#34d399' },
-      { name: 'Wrong', value: wrong, color: '#fb7185' },
-      { name: 'Skipped', value: skipped, color: '#94a3b8' },
-    ].filter(d => d.value > 0)
-
+    const pieData = [{ name: 'Correct', value: correct, color: '#34d399' }, { name: 'Wrong', value: wrong, color: '#fb7185' }, { name: 'Skipped', value: skipped, color: '#94a3b8' }].filter(d => d.value > 0)
     const categoryStats = Object.keys(categoryInfo).map(catKey => {
       const catResults = results.filter(r => r.question.category === catKey)
-      const catCorrect = catResults.filter(r => r.correct).length
-      return { name: categoryInfo[catKey].label, correct: catCorrect, total: catResults.length, color: categoryInfo[catKey].color }
+      return { name: categoryInfo[catKey].label, correct: catResults.filter(r => r.correct).length, total: catResults.length, color: categoryInfo[catKey].color }
     }).filter(c => c.total > 0)
-
     return (
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '60px 32px' }}>
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <div style={{ fontSize: '56px', marginBottom: '16px' }}>
-            {percentage >= 70 ? '🏆' : percentage >= 50 ? '👍' : '💪'}
-          </div>
-          <h2 style={{
-            fontSize: '36px', fontWeight: '800', background: 'var(--gradient)',
-            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '8px',
-          }}>
+          <div style={{ fontSize: '56px', marginBottom: '16px' }}>{percentage >= 70 ? '🏆' : percentage >= 50 ? '👍' : '💪'}</div>
+          <h2 style={{ fontSize: '36px', fontWeight: '800', background: 'var(--gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '8px' }}>
             {selectedCompany.icon} {selectedCompany.name} Practice Complete!
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '16px' }}>
-            You scored {correct} out of {questions.length} ({percentage}%)
-          </p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '16px' }}>You scored {correct} out of {questions.length} ({percentage}%)</p>
         </div>
-
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '32px' }}>
-          <div style={{
-            padding: '28px', backgroundColor: 'rgba(255,255,255,0.02)',
-            border: '1px solid rgba(56,189,248,0.2)', borderRadius: '20px', backdropFilter: 'blur(20px)',
-          }}>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '700', letterSpacing: '1px', marginBottom: '16px', textAlign: 'center' }}>
-              OVERALL BREAKDOWN
-            </p>
+          <div style={{ padding: '28px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(56,189,248,0.2)', borderRadius: '20px' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '700', letterSpacing: '1px', marginBottom: '16px', textAlign: 'center' }}>OVERALL BREAKDOWN</p>
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
                 <Pie data={pieData} cx="50%" cy="50%" innerRadius={55} outerRadius={80} paddingAngle={3} dataKey="value">
@@ -759,73 +571,37 @@ function CodingPrep() {
               </PieChart>
             </ResponsiveContainer>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '12px' }}>
-              {pieData.map((d, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: d.color }} />
-                  <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{d.name} ({d.value})</span>
-                </div>
-              ))}
+              {pieData.map((d, i) => (<div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><div style={{ width: '10px', height: '10px', borderRadius: '50%', backgroundColor: d.color }} /><span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{d.name} ({d.value})</span></div>))}
             </div>
           </div>
-
-          <div style={{
-            padding: '28px', backgroundColor: 'rgba(255,255,255,0.02)',
-            border: '1px solid rgba(56,189,248,0.2)', borderRadius: '20px', backdropFilter: 'blur(20px)',
-          }}>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '700', letterSpacing: '1px', marginBottom: '16px', textAlign: 'center' }}>
-              CATEGORY-WISE SCORE
-            </p>
+          <div style={{ padding: '28px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(56,189,248,0.2)', borderRadius: '20px' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '700', letterSpacing: '1px', marginBottom: '16px', textAlign: 'center' }}>CATEGORY-WISE SCORE</p>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={categoryStats} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} />
                 <YAxis stroke="#94a3b8" fontSize={11} />
                 <Tooltip contentStyle={{ backgroundColor: '#0f1f35', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '8px', color: '#fff' }} />
-                <Bar dataKey="correct" radius={[6, 6, 0, 0]}>
-                  {categoryStats.map((entry, index) => (<Cell key={index} fill={entry.color} />))}
-                </Bar>
+                <Bar dataKey="correct" radius={[6, 6, 0, 0]}>{categoryStats.map((entry, index) => (<Cell key={index} fill={entry.color} />))}</Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
-
-        <div style={{
-          padding: '32px', backgroundColor: 'rgba(255,255,255,0.02)',
-          border: '1px solid rgba(56,189,248,0.15)', borderRadius: '20px', marginBottom: '32px',
-        }}>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '700', letterSpacing: '1px', marginBottom: '20px' }}>
-            📋 QUESTION REVIEW
-          </p>
+        <div style={{ padding: '32px', backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(56,189,248,0.15)', borderRadius: '20px', marginBottom: '32px' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '700', letterSpacing: '1px', marginBottom: '20px' }}>📋 QUESTION REVIEW</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {results.map((r, i) => (
-              <div key={i} style={{
-                padding: '14px 18px',
-                backgroundColor: r.correct ? 'rgba(52,211,153,0.05)' : r.skipped ? 'rgba(148,163,184,0.05)' : 'rgba(251,113,133,0.05)',
-                border: `1px solid ${r.correct ? 'rgba(52,211,153,0.2)' : r.skipped ? 'rgba(148,163,184,0.2)' : 'rgba(251,113,133,0.2)'}`,
-                borderRadius: '10px', display: 'flex', justifyContent: 'space-between', gap: '12px',
-              }}>
-                <p style={{ fontSize: '13px', color: 'var(--text-primary)', flex: 1, fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>
-                  Q{i + 1}: {r.question.q.split('\n')[0]}
-                </p>
-                <span style={{
-                  fontSize: '12px', fontWeight: '700',
-                  color: r.correct ? '#34d399' : r.skipped ? '#94a3b8' : '#fb7185', minWidth: 'fit-content',
-                }}>
+              <div key={i} style={{ padding: '14px 18px', backgroundColor: r.correct ? 'rgba(52,211,153,0.05)' : r.skipped ? 'rgba(148,163,184,0.05)' : 'rgba(251,113,133,0.05)', border: `1px solid ${r.correct ? 'rgba(52,211,153,0.2)' : r.skipped ? 'rgba(148,163,184,0.2)' : 'rgba(251,113,133,0.2)'}`, borderRadius: '10px', display: 'flex', justifyContent: 'space-between', gap: '12px' }}>
+                <p style={{ fontSize: '13px', color: 'var(--text-primary)', flex: 1, fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>Q{i + 1}: {r.question.q.split('\n')[0]}</p>
+                <span style={{ fontSize: '12px', fontWeight: '700', color: r.correct ? '#34d399' : r.skipped ? '#94a3b8' : '#fb7185', minWidth: 'fit-content' }}>
                   {r.correct ? '✓ Correct' : r.skipped ? '⏭ Skipped' : '✗ Wrong'}
                 </span>
               </div>
             ))}
           </div>
         </div>
-
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
-          <button onClick={() => setScreen('setup')} style={{
-            padding: '14px 32px', backgroundColor: 'transparent', color: '#38bdf8',
-            border: '1px solid rgba(56,189,248,0.4)', borderRadius: '12px',
-            fontSize: '15px', fontWeight: '600', cursor: 'pointer',
-          }}>← Choose Another Company</button>
-          <button onClick={() => startTest(selectedCompany)} className="btn-primary" style={{
-            padding: '14px 32px', fontSize: '15px', fontWeight: '700', borderRadius: '12px',
-          }}>🔄 Try Again</button>
+          <button onClick={() => setScreen('setup')} style={{ padding: '14px 32px', backgroundColor: 'transparent', color: '#38bdf8', border: '1px solid rgba(56,189,248,0.4)', borderRadius: '12px', fontSize: '15px', fontWeight: '600', cursor: 'pointer' }}>← Choose Another Company</button>
+          <button onClick={() => startTest(selectedCompany)} className="btn-primary" style={{ padding: '14px 32px', fontSize: '15px', fontWeight: '700', borderRadius: '12px' }}>🔄 Try Again</button>
         </div>
       </div>
     )

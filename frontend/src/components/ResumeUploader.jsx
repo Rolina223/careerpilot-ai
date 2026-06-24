@@ -3,19 +3,40 @@ import * as mammoth from 'mammoth'
 
 async function extractTextFromPDF(file) {
   const pdfjsLib = await import('pdfjs-dist')
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`
-  
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`
+
   const arrayBuffer = await file.arrayBuffer()
   const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
-  let text = ''
-  
+  let fullText = ''
+
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i)
     const content = await page.getTextContent()
-    text += content.items.map(item => item.str).join(' ') + '\n'
+    const viewport = page.getViewport({ scale: 1 })
+
+    // Sort items by vertical position (top to bottom), then horizontal (left to right)
+    const sorted = [...content.items].sort((a, b) => {
+      const yDiff = Math.round(viewport.height - b.transform[5]) - Math.round(viewport.height - a.transform[5])
+      if (Math.abs(yDiff) > 5) return yDiff
+      return a.transform[4] - b.transform[4]
+    })
+
+    let pageText = ''
+    let lastY = null
+
+    for (const item of sorted) {
+      const y = Math.round(viewport.height - item.transform[5])
+      if (lastY !== null && Math.abs(y - lastY) > 5) {
+        pageText += '\n'
+      }
+      pageText += item.str + ' '
+      lastY = y
+    }
+
+    fullText += pageText.trim() + '\n\n'
   }
-  
-  return text
+
+  return fullText.trim()
 }
 
 async function extractTextFromDOC(file) {
@@ -52,7 +73,13 @@ function ResumeUploader({ onTextExtracted }) {
       } else {
         text = await extractTextFromDOC(file)
       }
-      onTextExtracted(text)
+      if (!text || text.trim().length < 50) {
+        setFileName('')
+        setError('This PDF appears to be image-based or scanned — text could not be extracted. Try converting it to DOCX, or paste your resume text manually in the box below.')
+        onTextExtracted('')
+      } else {
+        onTextExtracted(text)
+      }
     } catch (err) {
       setError('Could not read file. Please paste text manually.')
     } finally {

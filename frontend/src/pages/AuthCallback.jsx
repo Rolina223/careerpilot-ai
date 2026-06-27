@@ -8,13 +8,13 @@ function AuthCallback() {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // PKCE flow: exchange the code in the URL for a real session
-        const { data, error } = await supabase.auth.exchangeCodeForSession(
-          window.location.href
-        )
+        // Give Supabase a moment to process the URL and restore session
+        await new Promise(resolve => setTimeout(resolve, 500))
+
+        const { data, error } = await supabase.auth.getSession()
 
         if (error) {
-          console.error('Auth callback error:', error)
+          console.error('Session error:', error)
           navigate('/login', { replace: true })
           return
         }
@@ -24,13 +24,22 @@ function AuthCallback() {
           return
         }
 
-        // Fallback: check if session already exists
-        const { data: sessionData } = await supabase.auth.getSession()
-        if (sessionData?.session) {
-          navigate('/dashboard', { replace: true })
-        } else {
-          navigate('/login', { replace: true })
+        // Try exchanging the code if session not yet available
+        const params = new URLSearchParams(window.location.search)
+        const code = params.get('code')
+
+        if (code) {
+          const { data: exchangeData, error: exchangeError } = 
+            await supabase.auth.exchangeCodeForSession(window.location.href)
+          
+          if (exchangeData?.session) {
+            navigate('/dashboard', { replace: true })
+            return
+          }
+          console.error('Exchange error:', exchangeError)
         }
+
+        navigate('/login', { replace: true })
       } catch (err) {
         console.error('Unexpected auth error:', err)
         navigate('/login', { replace: true })

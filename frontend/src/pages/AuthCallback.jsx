@@ -6,47 +6,33 @@ function AuthCallback() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const handleCallback = async () => {
-      try {
-        // Give Supabase a moment to process the URL and restore session
-        await new Promise(resolve => setTimeout(resolve, 500))
-
-        const { data, error } = await supabase.auth.getSession()
-
-        if (error) {
-          console.error('Session error:', error)
-          navigate('/login', { replace: true })
-          return
-        }
-
-        if (data?.session) {
-          navigate('/dashboard', { replace: true })
-          return
-        }
-
-        // Try exchanging the code if session not yet available
-        const params = new URLSearchParams(window.location.search)
-        const code = params.get('code')
-
-        if (code) {
-          const { data: exchangeData, error: exchangeError } = 
-            await supabase.auth.exchangeCodeForSession(window.location.href)
-          
-          if (exchangeData?.session) {
-            navigate('/dashboard', { replace: true })
-            return
-          }
-          console.error('Exchange error:', exchangeError)
-        }
-
-        navigate('/login', { replace: true })
-      } catch (err) {
-        console.error('Unexpected auth error:', err)
-        navigate('/login', { replace: true })
+    // Listen for auth state change — fires when Supabase processes the OAuth callback
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth event:', event, session)
+      if (event === 'SIGNED_IN' && session) {
+        navigate('/dashboard', { replace: true })
+      } else if (event === 'SIGNED_OUT' || !session) {
+        // Give it 3 seconds before giving up
+        setTimeout(() => {
+          supabase.auth.getSession().then(({ data }) => {
+            if (data?.session) {
+              navigate('/dashboard', { replace: true })
+            } else {
+              navigate('/login', { replace: true })
+            }
+          })
+        }, 3000)
       }
-    }
+    })
 
-    handleCallback()
+    // Also check immediately in case session already exists
+    supabase.auth.getSession().then(({ data }) => {
+      if (data?.session) {
+        navigate('/dashboard', { replace: true })
+      }
+    })
+
+    return () => subscription.unsubscribe()
   }, [navigate])
 
   return (
@@ -67,14 +53,8 @@ function AuthCallback() {
         borderRadius: '50%',
         animation: 'spin 0.8s linear infinite',
       }} />
-      <style>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
-      <p style={{ color: '#64748b', fontSize: '14px' }}>
-        Logging you in...
-      </p>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <p style={{ color: '#64748b', fontSize: '14px' }}>Logging you in...</p>
     </div>
   )
 }

@@ -228,7 +228,7 @@ function AnalyzeSection() {
       </div>
 
       {/* Two Textareas */}
-      <div style={{
+      <div className="analyze-grid" style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
         gap: '24px',

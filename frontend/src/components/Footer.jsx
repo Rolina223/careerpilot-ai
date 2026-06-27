@@ -67,7 +67,7 @@ function Footer() {
       }}>
 
         {/* Top Row */}
-        <div style={{
+        <div className="footer-grid" style={{
           display: 'grid',
           gridTemplateColumns: '2fr 1fr 1fr 1fr',
           gap: '40px',

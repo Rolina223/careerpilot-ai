@@ -76,7 +76,7 @@ function HowItWorks() {
       </div>
 
       {/* Steps Grid */}
-      <div style={{
+      <div className="how-it-works-grid" style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr 1fr 1fr',
         gap: '20px',

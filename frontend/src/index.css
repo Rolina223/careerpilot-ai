@@ -612,3 +612,91 @@ select:focus {
     flex-direction: column;
   }
 }
+
+/* ============================================
+   MOBILE RESPONSIVE FIXES
+   ============================================ */
+
+@media (max-width: 768px) {
+
+  /* How It Works - 4 columns → 1 column */
+  .how-it-works-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  /* Features Section - 3 columns → 1 column */
+  .features-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  /* Footer - 4 columns → 2 columns */
+  .footer-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 24px !important;
+  }
+
+  /* Analyze Section - 2 columns → 1 column */
+  .analyze-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Tracker stats - 5 columns → 2 columns */
+  .tracker-stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* Tracker table - 3 columns → 1 column */
+  .tracker-table-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Jobs grid - 2 columns → 1 column */
+  .jobs-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Result section grids */
+  .result-main-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .result-split-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* General page padding */
+  .page-container {
+    padding: 32px 16px !important;
+  }
+
+  /* Coding/Aptitude prep - 3 column cards → 1 column */
+  .prep-cards-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* Resume Builder layout */
+  .resume-builder-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Hide preview on mobile for Resume Builder */
+  .resume-preview-mobile-hide {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Footer - 2 columns → 1 column on very small screens */
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Tracker stats - 2 columns → 1 column */
+  .tracker-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

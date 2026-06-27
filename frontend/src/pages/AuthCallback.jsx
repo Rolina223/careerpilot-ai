@@ -6,43 +6,38 @@ function AuthCallback() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const checkSession = async () => {
-      // Hash se token lo
-      const hash = window.location.hash
-      console.log('Hash:', hash)
+    const handleCallback = async () => {
+      try {
+        // PKCE flow: exchange the code in the URL for a real session
+        const { data, error } = await supabase.auth.exchangeCodeForSession(
+          window.location.href
+        )
 
-      if (hash && hash.includes('access_token')) {
-        const params = new URLSearchParams(hash.substring(1))
-        const accessToken = params.get('access_token')
-        const refreshToken = params.get('refresh_token')
-
-        console.log('Access token found:', accessToken)
-
-        const { data, error } = await supabase.auth.setSession({
-          access_token: accessToken,
-          refresh_token: refreshToken,
-        })
-
-        console.log('Set session result:', data, error)
+        if (error) {
+          console.error('Auth callback error:', error)
+          navigate('/login', { replace: true })
+          return
+        }
 
         if (data?.session) {
           navigate('/dashboard', { replace: true })
           return
         }
-      }
 
-      // Direct session check
-      const { data } = await supabase.auth.getSession()
-      console.log('Direct session:', data)
-
-      if (data?.session) {
-        navigate('/dashboard', { replace: true })
-      } else {
+        // Fallback: check if session already exists
+        const { data: sessionData } = await supabase.auth.getSession()
+        if (sessionData?.session) {
+          navigate('/dashboard', { replace: true })
+        } else {
+          navigate('/login', { replace: true })
+        }
+      } catch (err) {
+        console.error('Unexpected auth error:', err)
         navigate('/login', { replace: true })
       }
     }
 
-    checkSession()
+    handleCallback()
   }, [navigate])
 
   return (
@@ -69,7 +64,7 @@ function AuthCallback() {
         }
       `}</style>
       <p style={{ color: '#64748b', fontSize: '14px' }}>
-        Login ho raha hai...
+        Logging you in...
       </p>
     </div>
   )

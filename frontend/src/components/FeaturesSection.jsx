@@ -44,7 +44,7 @@ function FeaturesSection() {
     <div style={{
       maxWidth: '1100px',
       margin: '0 auto',
-      padding: '60px 32px',
+      padding: 'clamp(32px, 5vw, 60px) clamp(16px, 4vw, 32px)'
     }}>
 
       {/* Heading */}
@@ -85,13 +85,22 @@ function FeaturesSection() {
         </p>
       </div>
 
-      {/* Feature Cards */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-        gap: '24px',
-        marginBottom: '60px',
-      }}>
+     {/* Feature Cards */}
+      <style>{`
+        .features-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          gap: 24px;
+          margin-bottom: 60px;
+        }
+        @media (max-width: 768px) {
+          .features-grid {
+            grid-template-columns: 1fr;
+            gap: 16px;
+          }
+        }
+      `}</style>
+      <div className="features-grid">
         {features.map((feature, index) => (
           <div
             key={index}

@@ -101,21 +101,35 @@ function Login() {
     setMessage('Login successful! Redirecting...')
   }
 
-const handleGoogleLogin = async () => {
+  const handleGoogleLogin = async () => {
     setLoading(true)
     setError('')
     setMessage('')
 
-    const { error: googleError } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    })
+    const redirectTo = `${window.location.origin}/auth/callback`
 
-    if (googleError) {
+    try {
+      const { error: googleError } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
+      })
+
+      if (googleError) {
+        setLoading(false)
+        setError(googleError.message || 'Google login failed. Please try again.')
+        return
+      }
+
+      setMessage('Redirecting to Google…')
+    } catch (err) {
       setLoading(false)
-      setError(googleError.message)
+      setError('Unable to start Google login right now. Please try again.')
     }
   }
 

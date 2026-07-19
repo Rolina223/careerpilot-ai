@@ -1,4 +1,8 @@
 function Hero() {
+  const scrollToHowItWorks = () => {
+    document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   return (
     <div className="fade-in" style={{
       display: 'flex',
@@ -9,8 +13,6 @@ function Hero() {
       padding: '60px 32px 60px',
       position: 'relative',
     }}>
-
-      {/* Badge */}
       <div style={{
         display: 'inline-flex',
         alignItems: 'center',
@@ -28,11 +30,10 @@ function Hero() {
         ✦ AI Powered Job Assistant
       </div>
 
-      {/* Main Heading */}
       <h1 style={{
         fontSize: '56px',
         fontWeight: '800',
-        color: '#f1f5f9',
+        color: 'var(--text-primary)',
         marginBottom: '16px',
         lineHeight: '1.15',
         letterSpacing: '-1px'
@@ -47,21 +48,19 @@ function Hero() {
         </span>
       </h1>
 
-      {/* Subheading */}
       <p style={{
         fontSize: '18px',
-        color: '#94a3b8',
+        color: 'var(--text-secondary)',
         marginBottom: '48px',
         maxWidth: '520px',
         lineHeight: '1.7',
         fontWeight: '400'
       }}>
-        Match resume with JD, get AI suggestions, 
-        generate cover letters, and track applications — 
+        Match resume with JD, get AI suggestions,
+        generate cover letters, and track applications —
         all in one place.
       </p>
 
-      {/* Buttons */}
       <div style={{ display: 'flex', gap: '16px', marginBottom: '60px' }}>
         <button className="btn-primary" style={{
           padding: '14px 32px',
@@ -84,6 +83,7 @@ function Hero() {
           transition: 'all 0.3s ease',
           letterSpacing: '0.3px'
         }}
+          onClick={scrollToHowItWorks}
           onMouseEnter={e => {
             e.target.style.backgroundColor = 'rgba(56, 189, 248, 0.1)'
             e.target.style.borderColor = '#38bdf8'
@@ -97,13 +97,12 @@ function Hero() {
         </button>
       </div>
 
-      {/* Stats Row */}
       <div style={{
         display: 'flex',
         gap: '48px',
         padding: '24px 48px',
-        backgroundColor: 'rgba(255, 255, 255, 0.03)',
-        border: '1px solid rgba(56, 189, 248, 0.1)',
+        backgroundColor: 'var(--hero-surface)',
+        border: '1px solid var(--hero-border)',
         borderRadius: '16px',
         backdropFilter: 'blur(20px)',
       }}>
@@ -124,7 +123,7 @@ function Hero() {
             </div>
             <div style={{
               fontSize: '13px',
-              color: '#94a3b8',
+              color: 'var(--text-secondary)',
               fontWeight: '500',
               marginTop: '4px'
             }}>
@@ -133,7 +132,6 @@ function Hero() {
           </div>
         ))}
       </div>
-
     </div>
   )
 }

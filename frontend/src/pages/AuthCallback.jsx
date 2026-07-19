@@ -6,33 +6,51 @@ function AuthCallback() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    // Listen for auth state change — fires when Supabase processes the OAuth callback
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log('Auth event:', event, session)
-      if (event === 'SIGNED_IN' && session) {
-        navigate('/dashboard', { replace: true })
-      } else if (event === 'SIGNED_OUT' || !session) {
-        // Give it 3 seconds before giving up
-        setTimeout(() => {
-          supabase.auth.getSession().then(({ data }) => {
-            if (data?.session) {
-              navigate('/dashboard', { replace: true })
-            } else {
-              navigate('/login', { replace: true })
-            }
-          })
-        }, 3000)
-      }
-    })
+    let isMounted = true
 
-    // Also check immediately in case session already exists
-    supabase.auth.getSession().then(({ data }) => {
+    const finishLogin = async () => {
+      const { data, error } = await supabase.auth.getSession()
+      if (!isMounted) return
+
+      if (error) {
+        navigate('/login', { replace: true })
+        return
+      }
+
       if (data?.session) {
         navigate('/dashboard', { replace: true })
+        return
       }
-    })
 
-    return () => subscription.unsubscribe()
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        if (!isMounted) return
+        if (event === 'SIGNED_IN' && session) {
+          navigate('/dashboard', { replace: true })
+        } else if ((event === 'SIGNED_OUT' || !session) && !data?.session) {
+          navigate('/login', { replace: true })
+        }
+      })
+
+      setTimeout(() => {
+        if (!isMounted) return
+        supabase.auth.getSession().then(({ data: latestData }) => {
+          if (latestData?.session) {
+            navigate('/dashboard', { replace: true })
+          } else {
+            navigate('/login', { replace: true })
+          }
+        })
+      }, 3000)
+
+      return subscription
+    }
+
+    const cleanup = finishLogin()
+
+    return () => {
+      isMounted = false
+      cleanup?.then((subscription) => subscription?.unsubscribe?.())
+    }
   }, [navigate])
 
   return (
@@ -41,7 +59,7 @@ function AuthCallback() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: '#0f172a',
+      backgroundColor: 'var(--bg-body)',
       flexDirection: 'column',
       gap: '16px',
     }}>
@@ -54,7 +72,7 @@ function AuthCallback() {
         animation: 'spin 0.8s linear infinite',
       }} />
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-      <p style={{ color: '#64748b', fontSize: '14px' }}>Logging you in...</p>
+      <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>Logging you in...</p>
     </div>
   )
 }

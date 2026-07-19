@@ -31,13 +31,12 @@ function HowItWorks() {
   ]
 
   return (
-    <div style={{
+    <div id="how-it-works" style={{
       maxWidth: '1100px',
       margin: '0 auto',
       padding: '60px 32px',
+      scrollMarginTop: '100px',
     }}>
-
-      {/* Heading */}
       <div style={{ textAlign: 'center', marginBottom: '56px' }}>
         <div style={{
           display: 'inline-flex',
@@ -75,7 +74,6 @@ function HowItWorks() {
         </p>
       </div>
 
-      {/* Steps Grid */}
       <div className="how-it-works-grid" style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr 1fr 1fr',
@@ -86,7 +84,7 @@ function HowItWorks() {
             key={index}
             style={{
               padding: '32px 24px',
-              backgroundColor: 'rgba(255,255,255,0.03)',
+              backgroundColor: 'var(--bg-card)',
               border: `1px solid ${step.color}33`,
               borderRadius: '20px',
               backdropFilter: 'blur(20px)',
@@ -105,7 +103,6 @@ function HowItWorks() {
               e.currentTarget.style.borderColor = `${step.color}33`
             }}
           >
-            {/* Step Number Background */}
             <div style={{
               position: 'absolute',
               top: '-10px',
@@ -120,7 +117,6 @@ function HowItWorks() {
               {step.number}
             </div>
 
-            {/* Icon */}
             <div style={{
               width: '56px',
               height: '56px',
@@ -137,7 +133,6 @@ function HowItWorks() {
               {step.icon}
             </div>
 
-            {/* Step Number Badge */}
             <div style={{
               fontSize: '11px',
               fontWeight: '700',
@@ -148,7 +143,6 @@ function HowItWorks() {
               STEP {step.number}
             </div>
 
-            {/* Title */}
             <h3 style={{
               fontSize: '17px',
               fontWeight: '700',
@@ -159,7 +153,6 @@ function HowItWorks() {
               {step.title}
             </h3>
 
-            {/* Description */}
             <p style={{
               fontSize: '13px',
               color: 'var(--text-secondary)',
@@ -167,11 +160,9 @@ function HowItWorks() {
             }}>
               {step.description}
             </p>
-
           </div>
         ))}
       </div>
-
     </div>
   )
 }

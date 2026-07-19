@@ -2,22 +2,16 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../AuthProvider'
 
-function Navbar() {
+function Navbar({ theme, onToggleTheme }) {
   const location = useLocation()
   const navigate = useNavigate()
-  const { session, loading, signOut } = useAuth()
+  const { session, signOut } = useAuth()
   const [toolsOpen, setToolsOpen] = useState(false)
   const [practiceOpen, setPracticeOpen] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mobileToolsOpen, setMobileToolsOpen] = useState(false)
   const [mobilePracticeOpen, setMobilePracticeOpen] = useState(false)
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
-
-  const publicLinks = [
-    { label: 'Home', path: '/' },
-    { label: 'Jobs', path: '/jobs' },
-    { label: 'Tracker', path: '/tracker' },
-  ]
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768)
 
   const authenticated = Boolean(session)
 
@@ -54,7 +48,7 @@ function Navbar() {
   const navLink = (to, label) => (
     <Link to={to} style={{
       padding: '8px 14px',
-      color: location.pathname === to ? '#38bdf8' : '#94a3b8',
+      color: location.pathname === to ? '#38bdf8' : 'var(--text-secondary)',
       textDecoration: 'none',
       fontSize: '14px',
       fontWeight: location.pathname === to ? '600' : '500',
@@ -76,11 +70,11 @@ function Navbar() {
     top: 'calc(100% + 8px)',
     left: '0',
     width: '220px',
-    backgroundColor: '#0f1f35',
-    border: '1px solid rgba(56,189,248,0.2)',
+    backgroundColor: 'var(--bg-navbar-contrast)',
+    border: '1px solid var(--border)',
     borderRadius: '12px',
     overflow: 'hidden',
-    boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+    boxShadow: 'var(--shadow)',
     backdropFilter: 'blur(20px)',
     zIndex: '200',
   }
@@ -93,12 +87,12 @@ function Navbar() {
       style={{
         display: 'block',
         padding: '12px 16px',
-        color: location.pathname === link.path ? '#38bdf8' : '#94a3b8',
+        color: location.pathname === link.path ? '#38bdf8' : 'var(--text-secondary)',
         textDecoration: 'none',
         fontSize: '14px',
         fontWeight: location.pathname === link.path ? '600' : '400',
         backgroundColor: location.pathname === link.path ? 'rgba(56,189,248,0.08)' : 'transparent',
-        borderBottom: '1px solid rgba(255,255,255,0.05)',
+        borderBottom: '1px solid var(--border)',
         transition: 'all 0.2s ease',
       }}
       onMouseEnter={e => {
@@ -108,7 +102,7 @@ function Navbar() {
       }}
       onMouseLeave={e => {
         e.currentTarget.style.backgroundColor = location.pathname === link.path ? 'rgba(56,189,248,0.08)' : 'transparent'
-        e.currentTarget.style.color = location.pathname === link.path ? '#38bdf8' : '#94a3b8'
+        e.currentTarget.style.color = location.pathname === link.path ? '#38bdf8' : 'var(--text-secondary)'
         e.currentTarget.style.paddingLeft = '16px'
       }}
     >
@@ -116,7 +110,6 @@ function Navbar() {
     </Link>
   )
 
-  // Mobile menu link
   const mobileNavLink = (to, label) => (
     <Link
       key={to}
@@ -125,11 +118,11 @@ function Navbar() {
       style={{
         display: 'block',
         padding: '14px 20px',
-        color: location.pathname === to ? '#38bdf8' : '#94a3b8',
+        color: location.pathname === to ? '#38bdf8' : 'var(--text-secondary)',
         textDecoration: 'none',
         fontSize: '15px',
         fontWeight: location.pathname === to ? '600' : '500',
-        borderBottom: '1px solid rgba(255,255,255,0.05)',
+        borderBottom: '1px solid var(--border)',
         backgroundColor: location.pathname === to ? 'rgba(56,189,248,0.08)' : 'transparent',
       }}
     >
@@ -144,16 +137,15 @@ function Navbar() {
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: isMobile ? '14px 20px' : '16px 40px',
-        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+        backgroundColor: 'var(--bg-navbar)',
         backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(56, 189, 248, 0.15)',
+        borderBottom: '1px solid var(--border)',
         position: 'sticky',
         top: '0',
         zIndex: '100',
-        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.3)'
+        boxShadow: 'var(--shadow)'
       }}>
 
-        {/* Logo */}
         <Link to="/" style={{ textDecoration: 'none' }}>
           <div style={{
             fontSize: isMobile ? '18px' : '22px',
@@ -167,22 +159,19 @@ function Navbar() {
           </div>
         </Link>
 
-        {/* Desktop Links */}
         {!isMobile && (
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-
             {navLink('/', 'Home')}
             {authenticated && navLink('/dashboard', '🗂️ Dashboard')}
 
             {authenticated && (
               <>
-                {/* Tools Dropdown */}
                 <div style={{ position: 'relative' }}>
                   <button
                     onClick={() => { setToolsOpen(!toolsOpen); setPracticeOpen(false) }}
                     style={{
                       padding: '8px 14px',
-                      color: isToolsActive ? '#38bdf8' : '#94a3b8',
+                      color: isToolsActive ? '#38bdf8' : 'var(--text-secondary)',
                       backgroundColor: isToolsActive || toolsOpen ? 'rgba(56,189,248,0.08)' : 'transparent',
                       border: 'none',
                       fontSize: '14px',
@@ -217,13 +206,12 @@ function Navbar() {
                 {navLink('/jobs', 'Jobs')}
                 {navLink('/tracker', 'Tracker')}
 
-                {/* Practice Dropdown */}
                 <div style={{ position: 'relative' }}>
                   <button
                     onClick={() => { setPracticeOpen(!practiceOpen); setToolsOpen(false) }}
                     style={{
                       padding: '8px 14px',
-                      color: isPracticeActive ? '#38bdf8' : '#94a3b8',
+                      color: isPracticeActive ? '#38bdf8' : 'var(--text-secondary)',
                       backgroundColor: isPracticeActive || practiceOpen ? 'rgba(56,189,248,0.08)' : 'transparent',
                       border: 'none',
                       fontSize: '14px',
@@ -259,15 +247,31 @@ function Navbar() {
 
             {!authenticated && navLink('/login', 'Login')}
 
+            <button
+              onClick={onToggleTheme}
+              style={{
+                marginLeft: '8px',
+                padding: '8px 12px',
+                borderRadius: '999px',
+                border: '1px solid var(--border)',
+                backgroundColor: 'var(--bg-surface)',
+                color: 'var(--text-primary)',
+                cursor: 'pointer',
+                fontSize: '14px',
+              }}
+            >
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
+
             {authenticated && (
               <button
                 onClick={async () => { await signOut(); navigate('/') }}
                 style={{
                   padding: '8px 20px',
                   background: 'rgba(255,255,255,0.08)',
-                  border: '1px solid rgba(56,189,248,0.2)',
+                  border: '1px solid var(--border)',
                   borderRadius: '8px',
-                  color: '#f1f5f9',
+                  color: 'var(--text-primary)',
                   fontSize: '14px',
                   fontWeight: '600',
                   cursor: 'pointer',
@@ -297,17 +301,15 @@ function Navbar() {
                 {authenticated ? 'Get Started →' : 'Login to access full app'}
               </button>
             </Link>
-
           </div>
         )}
 
-        {/* Hamburger Button - Mobile only */}
         {isMobile && (
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             style={{
               background: 'none',
-              border: '1px solid rgba(56,189,248,0.3)',
+              border: '1px solid var(--border)',
               borderRadius: '8px',
               padding: '8px 10px',
               cursor: 'pointer',
@@ -341,10 +343,8 @@ function Navbar() {
             }} />
           </button>
         )}
-
       </nav>
 
-      {/* Mobile Menu Drawer */}
       {isMobile && mobileOpen && (
         <div style={{
           position: 'fixed',
@@ -352,19 +352,17 @@ function Navbar() {
           left: '0',
           right: '0',
           bottom: '0',
-          backgroundColor: 'rgba(10, 15, 28, 0.98)',
+          backgroundColor: 'var(--bg-navbar-contrast)',
           backdropFilter: 'blur(20px)',
           zIndex: '99',
           overflowY: 'auto',
-          borderTop: '1px solid rgba(56,189,248,0.15)',
+          borderTop: '1px solid var(--border)',
         }}>
-
           {mobileNavLink('/', '🏠 Home')}
           {authenticated && mobileNavLink('/dashboard', '🗂️ Dashboard')}
 
           {authenticated && (
             <>
-              {/* Tools Section */}
               <div>
                 <button
                   onClick={() => setMobileToolsOpen(!mobileToolsOpen)}
@@ -372,8 +370,8 @@ function Navbar() {
                     width: '100%', textAlign: 'left',
                     padding: '14px 20px',
                     background: 'none', border: 'none',
-                    borderBottom: '1px solid rgba(255,255,255,0.05)',
-                    color: isToolsActive ? '#38bdf8' : '#94a3b8',
+                    borderBottom: '1px solid var(--border)',
+                    color: isToolsActive ? '#38bdf8' : 'var(--text-secondary)',
                     fontSize: '15px', fontWeight: '500',
                     cursor: 'pointer',
                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -388,7 +386,7 @@ function Navbar() {
                   }}>▾</span>
                 </button>
                 {mobileToolsOpen && (
-                  <div style={{ backgroundColor: 'rgba(56,189,248,0.03)' }}>
+                  <div style={{ backgroundColor: 'var(--bg-surface)' }}>
                     {toolsLinks.map(link => (
                       <Link
                         key={link.path}
@@ -397,10 +395,10 @@ function Navbar() {
                         style={{
                           display: 'block',
                           padding: '12px 20px 12px 36px',
-                          color: location.pathname === link.path ? '#38bdf8' : '#64748b',
+                          color: location.pathname === link.path ? '#38bdf8' : 'var(--text-secondary)',
                           textDecoration: 'none',
                           fontSize: '14px',
-                          borderBottom: '1px solid rgba(255,255,255,0.03)',
+                          borderBottom: '1px solid var(--border)',
                           backgroundColor: location.pathname === link.path ? 'rgba(56,189,248,0.06)' : 'transparent',
                         }}
                       >
@@ -414,7 +412,6 @@ function Navbar() {
               {mobileNavLink('/jobs', '💼 Jobs')}
               {mobileNavLink('/tracker', '📋 Tracker')}
 
-              {/* Practice Section */}
               <div>
                 <button
                   onClick={() => setMobilePracticeOpen(!mobilePracticeOpen)}
@@ -422,8 +419,8 @@ function Navbar() {
                     width: '100%', textAlign: 'left',
                     padding: '14px 20px',
                     background: 'none', border: 'none',
-                    borderBottom: '1px solid rgba(255,255,255,0.05)',
-                    color: isPracticeActive ? '#38bdf8' : '#94a3b8',
+                    borderBottom: '1px solid var(--border)',
+                    color: isPracticeActive ? '#38bdf8' : 'var(--text-secondary)',
                     fontSize: '15px', fontWeight: '500',
                     cursor: 'pointer',
                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -438,7 +435,7 @@ function Navbar() {
                   }}>▾</span>
                 </button>
                 {mobilePracticeOpen && (
-                  <div style={{ backgroundColor: 'rgba(56,189,248,0.03)' }}>
+                  <div style={{ backgroundColor: 'var(--bg-surface)' }}>
                     {practiceLinks.map(link => (
                       <Link
                         key={link.path}
@@ -447,10 +444,10 @@ function Navbar() {
                         style={{
                           display: 'block',
                           padding: '12px 20px 12px 36px',
-                          color: location.pathname === link.path ? '#38bdf8' : '#64748b',
+                          color: location.pathname === link.path ? '#38bdf8' : 'var(--text-secondary)',
                           textDecoration: 'none',
                           fontSize: '14px',
-                          borderBottom: '1px solid rgba(255,255,255,0.03)',
+                          borderBottom: '1px solid var(--border)',
                           backgroundColor: location.pathname === link.path ? 'rgba(56,189,248,0.06)' : 'transparent',
                         }}
                       >
@@ -469,10 +466,10 @@ function Navbar() {
                   padding: '14px 20px',
                   background: 'none',
                   border: 'none',
-                  color: '#f1f5f9',
+                  color: 'var(--text-primary)',
                   fontSize: '15px',
                   cursor: 'pointer',
-                  borderBottom: '1px solid rgba(255,255,255,0.05)',
+                  borderBottom: '1px solid var(--border)',
                 }}
               >
                 Logout
@@ -482,8 +479,25 @@ function Navbar() {
 
           {!authenticated && mobileNavLink('/login', '🔐 Login')}
 
-          {/* Mobile CTA */}
           <div style={{ padding: '20px' }}>
+            <button
+              onClick={onToggleTheme}
+              style={{
+                width: '100%',
+                padding: '14px',
+                marginBottom: '12px',
+                borderRadius: '10px',
+                border: '1px solid var(--border)',
+                backgroundColor: 'var(--bg-surface)',
+                color: 'var(--text-primary)',
+                fontSize: '15px',
+                fontWeight: '600',
+                cursor: 'pointer',
+              }}
+            >
+              {theme === 'dark' ? '☀️ Switch to light mode' : '🌙 Switch to dark mode'}
+            </button>
+
             {!authenticated ? (
               <Link to="/login" style={{ textDecoration: 'none' }} onClick={() => setMobileOpen(false)}>
                 <button style={{
@@ -518,7 +532,6 @@ function Navbar() {
               </Link>
             )}
           </div>
-
         </div>
       )}
     </>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../AuthProvider'
 import { getStoredResume, getStoredTemplate, resumeTemplates } from '../utils/resumeStorage'
 import { calculateResumeScore, buildKeywordCoverage, getHealthChecklist } from '../utils/scoreUtils'
 
@@ -124,7 +125,23 @@ function ScoreRing({ score, size = 120, strokeWidth = 9 }) {
   )
 }
 
+function hasMeaningfulResumeContent(resumeData) {
+  if (!resumeData) return false
+
+  const personal = resumeData.personalInfo || {}
+  const hasText = [personal.fullName, personal.email, personal.phone, personal.location, personal.summary, personal.linkedin, personal.github, personal.portfolio]
+    .some(value => value?.toString().trim())
+
+  const hasExperience = (resumeData.experience || []).some(item => item?.company?.trim() || item?.position?.trim() || item?.description?.trim())
+  const hasProjects = (resumeData.projects || []).some(item => item?.name?.trim() || item?.description?.trim())
+  const hasEducation = (resumeData.education || []).some(item => item?.school?.trim() || item?.degree?.trim())
+  const hasSkills = (resumeData.skills || []).some(skill => skill?.trim())
+
+  return hasText || hasExperience || hasProjects || hasEducation || hasSkills
+}
+
 function Dashboard() {
+  const { user } = useAuth()
   const [resumeData] = useState(getStoredResume())
   const [selectedTemplate] = useState(getStoredTemplate())
   const [greeting, setGreeting] = useState('')
@@ -134,26 +151,54 @@ function Dashboard() {
     setGreeting(h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening')
   }, [])
 
-  const scores = useMemo(() =>
-    calculateResumeScore(resumeData, selectedTemplate, ''),
-    [resumeData, selectedTemplate]
-  )
+  const hasResumeContent = useMemo(() => hasMeaningfulResumeContent(resumeData), [resumeData])
 
-  const keywordCoverage = useMemo(() =>
-    buildKeywordCoverage(resumeData, 'javascript react node python sql cloud aws docker kubernetes'),
-    [resumeData]
-  )
+  const scores = useMemo(() => {
+    if (!hasResumeContent) {
+      return {
+        overall: 0,
+        atsCompatibility: 0,
+        completeness: 0,
+        experienceQuality: 0,
+        skillsQuality: 0,
+        projects: 0,
+        education: 0,
+        certifications: 0,
+        professionalPresence: 0,
+        templateImpact: 1,
+      }
+    }
 
-const healthItems = getHealthChecklist(resumeData).map(item => ({
-  label: item.label,
-  passed: item.status === true,
-}))
+    return calculateResumeScore(resumeData, selectedTemplate, '')
+  }, [hasResumeContent, resumeData, selectedTemplate])
 
-const healthPassed = healthItems.filter(i => i.passed).length
+  const keywordCoverage = useMemo(() => {
+    if (!hasResumeContent) {
+      return { matchedKeywords: [], missingKeywords: [], coverage: 0 }
+    }
 
-  const userName = resumeData.personalInfo.fullName
-    ? resumeData.personalInfo.fullName.split(' ')[0]
-    : 'there'
+    return buildKeywordCoverage(resumeData, 'javascript react node python sql cloud aws docker kubernetes')
+  }, [hasResumeContent, resumeData])
+
+  const healthItems = hasResumeContent
+    ? getHealthChecklist(resumeData).map(item => ({
+        label: item.label,
+        passed: item.status === true,
+      }))
+    : [
+        { label: 'Add your contact details', passed: false },
+        { label: 'Add skills and projects', passed: false },
+        { label: 'Complete your work history', passed: false },
+      ]
+
+  const healthPassed = healthItems.filter(i => i.passed).length
+
+  const userName = useMemo(() => {
+    const emailName = user?.email?.split('@')[0]?.replace(/[._-]+/g, ' ').trim() || ''
+    if (!emailName) return 'there'
+
+    return emailName.split(' ').filter(Boolean).slice(0, 2).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+  }, [user?.email])
 
   const completionTasks = [
     { done: !!resumeData.personalInfo.fullName, label: 'Personal info', path: '/resume-builder' },
@@ -218,7 +263,9 @@ const healthPassed = healthItems.filter(i => i.passed).length
           {greeting}, {userName} 👋
         </h1>
         <p style={{ fontSize: '16px', color: '#64748b', fontWeight: '400' }}>
-          Here's a snapshot of your job-hunt progress today.
+          {hasResumeContent
+            ? "Here's a snapshot of your job-hunt progress today."
+            : 'Build your first resume snapshot and these insights will appear automatically.'}
         </p>
       </div>
 

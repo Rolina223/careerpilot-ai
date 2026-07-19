@@ -28,7 +28,7 @@ function Navbar({ theme, onToggleTheme }) {
   }, [location.pathname])
 
   const toolsLinks = [
-    { label: '✨ Analyze Resume', path: '/analyze' },
+    { label: '✨ Analyze Resume', path: '/analyze#resume-analyze' },
     { label: '📊 Resume Score', path: '/resume-score' },
     { label: '🛠️ Resume Builder', path: '/resume-builder' },
     { label: '📄 Resume Templates', path: '/resume-templates' },

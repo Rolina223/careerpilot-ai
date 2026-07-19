@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import ResultSection from './ResultSection'
 import ResumeUploader from './ResumeUploader'
 import { analyzeResume } from '../services/analyzerService'
@@ -51,6 +51,14 @@ function AnalyzeSection() {
   const resultRef = useRef(null)
   const tiltResume = useTilt()
   const tiltJD = useTilt()
+
+  useEffect(() => {
+    if (window.location.hash === '#resume-analyze') {
+      window.setTimeout(() => {
+        document.getElementById('resume-analyze')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 120)
+    }
+  }, [])
 
   const handleAnalyze = async () => {
     if (!selectedRole) {

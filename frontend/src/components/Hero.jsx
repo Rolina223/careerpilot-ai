@@ -1,4 +1,6 @@
 function Hero() {
+  const navigate = useNavigate()
+
   const scrollToHowItWorks = () => {
     document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
@@ -67,7 +69,8 @@ function Hero() {
           fontSize: '16px',
           fontWeight: '700',
           letterSpacing: '0.3px'
-        }}>
+        }}
+          onClick={() => navigate('/analyze#resume-analyze')}>
           ✨ Analyze My Resume
         </button>
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { fetchQuestionSets, fetchQuestionsForSet } from '../utils/questionBankStorage'
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
 
@@ -62,6 +62,46 @@ function AptitudePrep() {
   const [loadingSets, setLoadingSets] = useState(true)
   const [loadingSetId, setLoadingSetId] = useState(null)
   const [setsError, setSetsError] = useState('')
+  const [cameraActive, setCameraActive] = useState(false)
+  const [cameraError, setCameraError] = useState('')
+  const videoRef = useRef(null)
+
+  const stopCamera = useCallback(() => {
+    if (videoRef.current?.srcObject) {
+      const stream = videoRef.current.srcObject
+      stream.getTracks().forEach(track => track.stop())
+      videoRef.current.srcObject = null
+    }
+  }, [])
+
+  const toggleCamera = useCallback(async () => {
+    if (cameraActive) {
+      stopCamera()
+      setCameraActive(false)
+      setCameraError('')
+      return
+    }
+
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setCameraError('Camera access is not available in this browser.')
+      return
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 320, height: 240 } })
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream
+      }
+      setCameraError('')
+      setCameraActive(true)
+    } catch (err) {
+      console.error('Camera access failed:', err)
+      setCameraError('Camera access was blocked. Please allow access and try again.')
+      setCameraActive(false)
+    }
+  }, [cameraActive, stopCamera])
+
+  useEffect(() => () => stopCamera(), [stopCamera])
 
   useEffect(() => {
     async function loadSets() {
@@ -152,6 +192,37 @@ function AptitudePrep() {
       setCurrentIndex(prev => prev + 1)
     }
   }
+
+  const cameraWidget = (
+    <div style={{ position: 'fixed', right: '20px', bottom: '20px', zIndex: '50', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '10px' }}>
+      <button
+        onClick={toggleCamera}
+        style={{
+          padding: '10px 14px',
+          borderRadius: '999px',
+          border: 'none',
+          background: cameraActive ? 'linear-gradient(135deg, #ef4444, #f97316)' : 'linear-gradient(135deg, #38bdf8, #818cf8)',
+          color: '#fff',
+          cursor: 'pointer',
+          fontSize: '13px',
+          fontWeight: '700',
+          boxShadow: '0 10px 30px rgba(15, 23, 42, 0.25)',
+        }}
+      >
+        {cameraActive ? '📹 Camera on' : '📹 Enable camera'}
+      </button>
+      {cameraActive && (
+        <div style={{ width: '180px', height: '140px', borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.14)', background: 'rgba(15, 23, 42, 0.9)', boxShadow: '0 12px 30px rgba(0,0,0,0.2)' }}>
+          <video ref={videoRef} autoPlay playsInline muted style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
+      )}
+      {cameraError && (
+        <div style={{ maxWidth: '220px', padding: '8px 10px', borderRadius: '10px', background: 'rgba(248,113,113,0.12)', border: '1px solid rgba(248,113,113,0.28)', color: '#fda4af', fontSize: '12px', lineHeight: '1.4' }}>
+          {cameraError}
+        </div>
+      )}
+    </div>
+  )
 
   // SETUP SCREEN — Company Selection
   if (screen === 'setup') {
@@ -376,6 +447,8 @@ function AptitudePrep() {
             <div style={{ height: '100%', width: `${progress}%`, background: 'var(--gradient)', borderRadius: '100px', transition: 'width 0.5s ease' }} />
           </div>
         </div>
+
+        {cameraWidget}
 
         <div key={currentIndex} className="fade-in" style={{
           padding: '32px', backgroundColor: 'rgba(255,255,255,0.02)',

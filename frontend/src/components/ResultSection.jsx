@@ -16,13 +16,28 @@ function ResultSection({ result }) {
 
   return (
     <div className="fade-in" style={{
-      maxWidth: '1100px',
+      maxWidth: '1180px',
       margin: '0 auto',
       padding: '0 32px 60px',
     }}>
 
       {/* Heading */}
       <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '6px 16px',
+          backgroundColor: 'rgba(56,189,248,0.1)',
+          border: '1px solid rgba(56,189,248,0.3)',
+          borderRadius: '100px',
+          fontSize: '13px',
+          color: '#38bdf8',
+          fontWeight: '500',
+          marginBottom: '16px',
+        }}>
+          ✦ Your tailored application kit
+        </div>
         <h2 style={{
           fontSize: '32px',
           fontWeight: '800',
@@ -48,12 +63,13 @@ function ResultSection({ result }) {
 
         {/* Match Score */}
         <div style={{
-          backgroundColor: 'rgba(255,255,255,0.03)',
+          background: 'linear-gradient(135deg, rgba(56,189,248,0.08), rgba(255,255,255,0.03))',
           border: '1px solid rgba(56,189,248,0.2)',
-          borderRadius: '16px',
+          borderRadius: '18px',
           padding: '32px',
           textAlign: 'center',
           backdropFilter: 'blur(20px)',
+          boxShadow: '0 20px 60px rgba(2,8,23,0.16)',
         }}>
           <p style={{
             color: 'var(--text-secondary)',
@@ -130,9 +146,10 @@ function ResultSection({ result }) {
         <div style={{
           backgroundColor: 'rgba(255,255,255,0.03)',
           border: '1px solid rgba(56,189,248,0.2)',
-          borderRadius: '16px',
+          borderRadius: '18px',
           padding: '32px',
           backdropFilter: 'blur(20px)',
+          boxShadow: '0 20px 60px rgba(2,8,23,0.12)',
         }}>
           <p style={{
             color: 'var(--text-secondary)',
@@ -438,12 +455,13 @@ function ResultSection({ result }) {
 
       {/* Row 4 — Cover Letter */}
       <div style={{
-        backgroundColor: 'rgba(255,255,255,0.03)',
+        background: 'linear-gradient(135deg, rgba(56,189,248,0.06), rgba(129,140,248,0.05))',
         border: '1px solid rgba(56,189,248,0.2)',
-        borderRadius: '16px',
+        borderRadius: '18px',
         padding: '32px',
         backdropFilter: 'blur(20px)',
-        marginBottom: '32px'
+        marginBottom: '32px',
+        boxShadow: '0 20px 60px rgba(2,8,23,0.14)',
       }}>
         <div style={{
           display: 'flex',

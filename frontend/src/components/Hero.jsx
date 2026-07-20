@@ -31,7 +31,7 @@ function Hero() {
         marginBottom: '24px',
         letterSpacing: '0.3px'
       }}>
-        ✦ AI Powered Job Assistant
+        ✦ AI Co-Pilot for Your First Job Search
       </div>
 
       <h1 style={{
@@ -42,13 +42,13 @@ function Hero() {
         lineHeight: '1.15',
         letterSpacing: '-1px'
       }}>
-        Land Your Dream Job <br />
+        Build a stronger profile, apply faster, <br />
         <span style={{
           background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
         }}>
-          10x Faster with AI ⚡
+          and land interviews with confidence.
         </span>
       </h1>
 
@@ -56,13 +56,11 @@ function Hero() {
         fontSize: '18px',
         color: 'var(--text-secondary)',
         marginBottom: '48px',
-        maxWidth: '520px',
+        maxWidth: '580px',
         lineHeight: '1.7',
         fontWeight: '400'
       }}>
-        Match resume with JD, get AI suggestions,
-        generate cover letters, and track applications —
-        all in one place.
+        From resume matching and tailored bullets to interview prep and application tracking, CareerPilot helps you stay focused and move faster from profile to opportunity.
       </p>
 
       <div style={{ display: 'flex', gap: '16px', marginBottom: '60px' }}>
@@ -113,8 +111,8 @@ function Hero() {
       }}>
         {[
           { number: '500+', label: 'Freshers Helped' },
-          { number: '95%', label: 'Resume Match Rate' },
-          { number: '10x', label: 'Faster Job Search' },
+          { number: '95%', label: 'Smarter Resume Fit' },
+          { number: '10x', label: 'Faster Momentum' },
         ].map((stat) => (
           <div key={stat.label} style={{ textAlign: 'center' }}>
             <div style={{

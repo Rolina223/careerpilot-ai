@@ -235,17 +235,17 @@ function AptitudePrep() {
             border: '1px solid rgba(56,189,248,0.3)', borderRadius: '100px',
             fontSize: '13px', color: '#38bdf8', fontWeight: '500', marginBottom: '16px',
           }}>
-            ✦ Company-wise Aptitude Practice
+            ✦ Company-style practice mode
           </div>
           <h2 style={{
             fontSize: '40px', fontWeight: '800',
             background: 'var(--gradient)', WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent', marginBottom: '12px', letterSpacing: '-1px',
           }}>
-            Aptitude Prep
+            Sharpen your reasoning for the next round
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '16px', maxWidth: '550px', margin: '0 auto', lineHeight: '1.7' }}>
-            Select a company to practice questions in their typical exam style — Quant, Logical & Verbal
+          <p style={{ color: 'var(--text-secondary)', fontSize: '16px', maxWidth: '620px', margin: '0 auto', lineHeight: '1.7' }}>
+            Practice in company-style patterns, compare your pace to the exam rhythm, and review your weak spots in a more guided way.
           </p>
         </div>
 
@@ -266,7 +266,7 @@ function AptitudePrep() {
         {/* Company Cards */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr 1fr',
+          gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
           gap: '16px',
         }}>
           {companies.map((company) => {
@@ -349,7 +349,7 @@ function AptitudePrep() {
           ) : dbSets.length === 0 ? (
             <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>No extra sets available yet.</p>
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '16px' }}>
               {dbSets.map((set) => (
                 <div
                   key={set.id}

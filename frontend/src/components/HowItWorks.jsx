@@ -66,19 +66,43 @@ function HowItWorks() {
         <p style={{
           color: 'var(--text-secondary)',
           fontSize: '16px',
-          maxWidth: '480px',
-          margin: '0 auto',
+          maxWidth: '520px',
+          margin: '0 auto 28px',
           lineHeight: '1.7',
         }}>
-          4 simple steps to land your dream job faster
+          A clear path from your first draft to stronger applications, better interviews, and a calmer job search.
         </p>
+        <div style={{
+          display: 'inline-flex',
+          padding: '8px 14px',
+          borderRadius: '999px',
+          background: 'rgba(255,255,255,0.04)',
+          border: '1px solid rgba(255,255,255,0.08)',
+          color: 'var(--text-secondary)',
+          fontSize: '13px',
+        }}>
+          Start with one resume, then build momentum step by step.
+        </div>
       </div>
 
-      <div className="how-it-works-grid" style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr 1fr 1fr',
-        gap: '20px',
-      }}>
+      <style>{`
+        .how-it-works-grid {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 20px;
+        }
+        @media (max-width: 1024px) {
+          .how-it-works-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+        @media (max-width: 640px) {
+          .how-it-works-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      `}</style>
+      <div className="how-it-works-grid">
         {steps.map((step, index) => (
           <div
             key={index}

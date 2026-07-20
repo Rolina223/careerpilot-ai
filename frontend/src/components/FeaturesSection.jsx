@@ -72,16 +72,16 @@ function FeaturesSection() {
           WebkitTextFillColor: 'transparent',
           marginBottom: '12px',
         }}>
-          All-in-One Job Assistant
+          A polished workspace for your first big break
         </h2>
         <p style={{
           color: 'var(--text-secondary)',
           fontSize: '16px',
-          maxWidth: '480px',
+          maxWidth: '520px',
           margin: '0 auto',
           lineHeight: '1.7',
         }}>
-          Everything a CSE fresher needs to land their first job — in one place
+          Everything a CSE fresher needs to sharpen their profile, apply faster, and keep momentum strong — in one place
         </p>
       </div>
 

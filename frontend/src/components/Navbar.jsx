@@ -162,7 +162,7 @@ function Navbar({ theme, onToggleTheme }) {
         {!isMobile && (
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
             {navLink('/', 'Home')}
-            {authenticated && navLink('/dashboard', '🗂️ Dashboard')}
+            {authenticated && navLink('/dashboard', 'Dashboard')}
 
             {authenticated && (
               <>
@@ -270,7 +270,7 @@ function Navbar({ theme, onToggleTheme }) {
                   padding: '8px 20px',
                   background: 'rgba(255,255,255,0.08)',
                   border: '1px solid var(--border)',
-                  borderRadius: '8px',
+                  borderRadius: '999px',
                   color: 'var(--text-primary)',
                   fontSize: '14px',
                   fontWeight: '600',
@@ -287,7 +287,7 @@ function Navbar({ theme, onToggleTheme }) {
                 padding: '8px 20px',
                 background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
                 border: 'none',
-                borderRadius: '8px',
+                borderRadius: '999px',
                 color: 'white',
                 fontSize: '14px',
                 fontWeight: '600',

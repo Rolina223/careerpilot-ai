@@ -415,7 +415,7 @@ function InterviewPractice() {
   const CELL_COLORS = ['#38bdf8', '#334155']
 
   return (
-    <div style={{ position: 'relative', minHeight: '100vh', backgroundColor: '#0f172a', color: '#f8fafc', fontFamily: 'system-ui, sans-serif', paddingBottom: '60px' }}>
+    <div style={{ position: 'relative', minHeight: '100vh', background: 'linear-gradient(180deg, rgba(15,23,42,0.98), rgba(15,23,42,0.92))', color: '#f8fafc', fontFamily: 'Inter, system-ui, sans-serif', paddingBottom: '60px' }}>
       
       {/* Floating Camera Window */}
       <div style={{ position: 'fixed', top: '88px', right: '20px', zIndex: 90, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
@@ -442,19 +442,19 @@ function InterviewPractice() {
         {screen === 'setup' && (
           <div>
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-              <span style={{ padding: '6px 16px', backgroundColor: 'rgba(56,189,248,0.1)', border: '1px solid #38bdf8', borderRadius: '100px', fontSize: '12px', color: '#38bdf8', fontWeight: '600' }}>
-                Simulator Console Active
+              <span style={{ padding: '6px 16px', backgroundColor: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '100px', fontSize: '12px', color: '#38bdf8', fontWeight: '600' }}>
+                ✦ Premium interview rehearsal
               </span>
-              <h1 style={{ fontSize: '38px', fontWeight: '800', marginTop: '16px', color: '#f8fafc' }}>
-                AI Interview Practice Module
+              <h1 style={{ fontSize: '38px', fontWeight: '800', marginTop: '16px', color: '#f8fafc', letterSpacing: '-0.7px' }}>
+                Practice like your next interview is already on the calendar
               </h1>
-              <p style={{ color: '#64748b', fontSize: '14px', marginTop: '8px' }}>
-                Every session pulls a fresh random set — practice as many times as you want without repeats
+              <p style={{ color: '#64748b', fontSize: '14px', marginTop: '8px', maxWidth: '620px', marginLeft: 'auto', marginRight: 'auto', lineHeight: '1.7' }}>
+                Build your confidence with realistic prompts, structured grading, and a pace that helps you improve with every round.
               </p>
             </div>
 
             {/* Role Track Options */}
-            <div style={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '16px', padding: '24px', marginBottom: '24px' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(56,189,248,0.16)', borderRadius: '18px', padding: '24px', marginBottom: '24px', boxShadow: '0 20px 60px rgba(2,8,23,0.18)' }}>
               <h3 style={{ fontSize: '12px', fontWeight: '700', color: '#94a3b8', letterSpacing: '1px', marginBottom: '16px' }}>SELECT INTERVIEW ROLE</h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 {roles.map(r => (
@@ -471,7 +471,7 @@ function InterviewPractice() {
             </div>
 
             {/* Levels and Progression Matrix */}
-            <div style={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '16px', padding: '24px', marginBottom: '32px' }}>
+            <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(56,189,248,0.16)', borderRadius: '18px', padding: '24px', marginBottom: '32px', boxShadow: '0 20px 60px rgba(2,8,23,0.18)' }}>
               <h3 style={{ fontSize: '12px', fontWeight: '700', color: '#94a3b8', letterSpacing: '1px', marginBottom: '16px' }}>DIFFICULTY PATHWAYS</h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 {levels.map(lvl => {

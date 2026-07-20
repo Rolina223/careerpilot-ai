@@ -270,7 +270,7 @@ function Dashboard() {
       </div>
 
       {/* Top stats row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '28px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '16px', marginBottom: '28px' }}>
         <StatCard icon="⚡" label="Resume score" value={scores.overall} sub="Out of 100" color="#38bdf8" />
         <StatCard icon="🎯" label="ATS compatibility" value={`${scores.atsCompatibility}%`} color="#818cf8" glowColor="0 0 24px rgba(129,140,248,0.2)" />
         <StatCard icon="✅" label="Profile complete" value={`${completionPct}%`} sub={`${doneCount} of ${completionTasks.length} done`} color="#34d399" glowColor="0 0 24px rgba(52,211,153,0.2)" />
@@ -278,7 +278,7 @@ function Dashboard() {
       </div>
 
       {/* Main two-col layout */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '20px', marginBottom: '20px', alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 340px', gap: '20px', marginBottom: '20px', alignItems: 'start' }}>
 
         {/* Left column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -381,7 +381,7 @@ function Dashboard() {
       </div>
 
       {/* Template quick pick */}
-      <div style={{ ...card, marginBottom: '20px' }}>
+      <div style={{ ...card, marginBottom: '20px', background: 'linear-gradient(135deg, rgba(56,189,248,0.07), rgba(255,255,255,0.02))' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
           <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#f1f5f9', margin: 0 }}>Resume templates</h2>
           <Link to="/resume-templates" style={{ fontSize: '12px', color: '#38bdf8', textDecoration: 'none', fontWeight: '500' }}>See all →</Link>
@@ -415,9 +415,9 @@ function Dashboard() {
       </div>
 
       {/* All tools grid */}
-      <div style={card}>
+      <div style={{ ...card, background: 'linear-gradient(135deg, rgba(255,255,255,0.03), rgba(56,189,248,0.04))' }}>
         <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#f1f5f9', margin: '0 0 18px 0' }}>All tools</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '12px' }}>
           {toolLinks.map(t => (
             <QuickAction key={t.to} {...t} />
           ))}

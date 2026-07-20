@@ -93,13 +93,28 @@ function AnalyzeSection() {
 
   return (
     <div style={{
-      padding: '60px 32px',
-      maxWidth: '1100px',
+      padding: '60px 32px 80px',
+      maxWidth: '1180px',
       margin: '0 auto',
     }}>
 
       {/* Section Heading */}
       <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+        <div style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '6px 16px',
+          backgroundColor: 'rgba(56,189,248,0.1)',
+          border: '1px solid rgba(56,189,248,0.3)',
+          borderRadius: '100px',
+          fontSize: '13px',
+          color: '#38bdf8',
+          fontWeight: '500',
+          marginBottom: '16px',
+        }}>
+          ✦ Turn one application into a strong launchpad
+        </div>
         <h2 style={{
           fontSize: '36px',
           fontWeight: '800',
@@ -108,10 +123,10 @@ function AnalyzeSection() {
           WebkitTextFillColor: 'transparent',
           marginBottom: '12px'
         }}>
-          Analyze Your Resume
+          Analyze your resume with precision
         </h2>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '16px' }}>
-          Paste your resume and job description — AI will do the rest
+        <p style={{ color: 'var(--text-secondary)', fontSize: '16px', maxWidth: '620px', margin: '0 auto', lineHeight: '1.7' }}>
+          Compare your profile to the role you want, uncover the gaps, and generate sharper content you can actually use.
         </p>
       </div>
 
@@ -136,7 +151,7 @@ function AnalyzeSection() {
             border: dropdownOpen
               ? '1px solid rgba(56,189,248,0.6)'
               : '1px solid rgba(56,189,248,0.2)',
-            borderRadius: '12px',
+            borderRadius: '14px',
             cursor: 'pointer',
             display: 'flex',
             justifyContent: 'space-between',
@@ -171,9 +186,9 @@ function AnalyzeSection() {
             top: 'calc(100% + 8px)',
             left: '0',
             right: '0',
-            backgroundColor: '#0f1f35',
+            backgroundColor: 'rgba(15,31,53,0.95)',
             border: '1px solid rgba(56,189,248,0.2)',
-            borderRadius: '12px',
+            borderRadius: '14px',
             overflow: 'hidden',
             zIndex: '50',
             boxShadow: '0 20px 60px rgba(0,0,0,0.5)',

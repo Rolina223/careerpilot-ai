@@ -1,4 +1,17 @@
 function Footer() {
+  const socialLinks = [
+    { label: 'GH', href: 'https://github.com/Rolina223/careerpilot-ai', color: '#e2e8f0', ariaLabel: 'GitHub' },
+    { label: 'in', href: 'https://www.linkedin.com/', color: '#0ea5e9', ariaLabel: 'LinkedIn' },
+    { label: '𝕏', href: 'https://x.com/', color: '#38bdf8', ariaLabel: 'Twitter' },
+  ]
+
+  const connectLinks = [
+    { label: 'GitHub', href: 'https://github.com/Rolina223/careerpilot-ai' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
+    { label: 'Twitter', href: 'https://x.com/' },
+    { label: 'Contact Us', href: 'mailto:hello@careerpilot.ai' },
+  ]
+
   return (
     <footer style={{
       borderTop: '1px solid rgba(56,189,248,0.1)',
@@ -98,26 +111,28 @@ function Footer() {
 
             {/* Social Icons */}
             <div style={{ display: 'flex', gap: '12px' }}>
-              {[
-                { label: '⭐', color: '#e2e8f0' },
-                { label: 'in', color: '#0ea5e9' },
-                { label: '𝕏', color: '#38bdf8' },
-              ].map((s) => (
-                <a key={s.label} href="#" style={{
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '8px',
-                  backgroundColor: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: s.color,
-                  fontSize: '11px',
-                  fontWeight: '700',
-                  textDecoration: 'none',
-                  transition: 'all 0.2s ease',
-                }}
+              {socialLinks.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={s.ariaLabel}
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '8px',
+                    backgroundColor: 'rgba(255,255,255,0.05)',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: s.color,
+                    fontSize: '11px',
+                    fontWeight: '700',
+                    textDecoration: 'none',
+                    transition: 'all 0.2s ease',
+                  }}
                   onMouseEnter={e => {
                     e.currentTarget.style.backgroundColor = 'rgba(56,189,248,0.1)'
                     e.currentTarget.style.borderColor = 'rgba(56,189,248,0.4)'
@@ -214,8 +229,8 @@ function Footer() {
             }}>
               CONNECT
             </p>
-            {['GitHub', 'LinkedIn', 'Twitter', 'Contact Us'].map((item) => (
-              <a key={item} href="#" style={{
+            {connectLinks.map((item) => (
+              <a key={item.label} href={item.href} target="_blank" rel="noreferrer" style={{
                 display: 'block',
                 color: 'var(--text-secondary)',
                 fontSize: '14px',
@@ -232,7 +247,7 @@ function Footer() {
                   e.target.style.paddingLeft = '0'
                 }}
               >
-                → {item}
+                → {item.label}
               </a>
             ))}
 

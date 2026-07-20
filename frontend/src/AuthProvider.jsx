@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { supabase } from './supabaseClient'
 
 const AuthContext = createContext({
@@ -13,14 +13,12 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Pehle URL mein token check karo
     supabase.auth.getSession().then(({ data }) => {
       setSession(data?.session ?? null)
       setLoading(false)
     })
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, currentSession) => {
-      console.log('AuthProvider event:', event, currentSession)
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, currentSession) => {
       setSession(currentSession)
       setLoading(false)
     })
@@ -30,13 +28,20 @@ export function AuthProvider({ children }) {
     }
   }, [])
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     await supabase.auth.signOut()
     setSession(null)
-  }
+  }, [])
+
+  const value = useMemo(() => ({
+    session,
+    user: session?.user ?? null,
+    loading,
+    signOut,
+  }), [loading, session, signOut])
 
   return (
-    <AuthContext.Provider value={{ session, user: session?.user ?? null, loading, signOut }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   )

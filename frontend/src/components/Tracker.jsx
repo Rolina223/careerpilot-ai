@@ -3,10 +3,10 @@ import { fetchApplications, createApplication, updateApplication, deleteApplicat
 import { useAuth } from '../AuthProvider'
 
 const statusConfig = {
-  Applied: { color: '#38bdf8', bg: 'rgba(56,189,248,0.1)', border: 'rgba(56,189,248,0.3)' },
-  Interview: { color: '#818cf8', bg: 'rgba(129,140,248,0.1)', border: 'rgba(129,140,248,0.3)' },
-  Offer: { color: '#34d399', bg: 'rgba(52,211,153,0.1)', border: 'rgba(52,211,153,0.3)' },
-  Rejected: { color: '#fb7185', bg: 'rgba(251,113,133,0.1)', border: 'rgba(251,113,133,0.3)' },
+  Applied: { color: 'var(--color-brand)', bg: 'rgba(56,189,248,0.1)', border: 'rgba(56,189,248,0.3)' },
+  Interview: { color: 'var(--color-accent)', bg: 'rgba(129,140,248,0.1)', border: 'rgba(129,140,248,0.3)' },
+  Offer: { color: 'var(--color-success)', bg: 'rgba(52,211,153,0.1)', border: 'rgba(52,211,153,0.3)' },
+  Rejected: { color: 'var(--color-danger)', bg: 'rgba(251,113,133,0.1)', border: 'rgba(251,113,133,0.3)' },
 }
 
 const emptyForm = {
@@ -148,7 +148,7 @@ const handleSubmit = async () => {
           border: '1px solid rgba(52,211,153,0.3)',
           borderRadius: '100px',
           fontSize: '13px',
-          color: '#34d399',
+          color: 'var(--color-success)',
           fontWeight: '500',
           marginBottom: '16px',
         }}>
@@ -171,7 +171,7 @@ const handleSubmit = async () => {
           <p style={{
             marginTop: '16px',
             fontSize: '14px',
-            color: '#fb7185',
+            color: 'var(--color-danger)',
             padding: '10px 16px',
             background: 'rgba(244,63,94,0.1)',
             border: '1px solid rgba(244,63,94,0.3)',
@@ -191,11 +191,11 @@ const handleSubmit = async () => {
         marginBottom: '32px',
       }}>
         {[
-          { label: 'Total', value: stats.total, color: '#f1f5f9' },
-          { label: 'Applied', value: stats.applied, color: '#38bdf8' },
-          { label: 'Interview', value: stats.interview, color: '#818cf8' },
-          { label: 'Offer', value: stats.offer, color: '#34d399' },
-          { label: 'Rejected', value: stats.rejected, color: '#fb7185' },
+          { label: 'Total', value: stats.total, color: 'var(--color-text)' },
+          { label: 'Applied', value: stats.applied, color: 'var(--color-brand)' },
+          { label: 'Interview', value: stats.interview, color: 'var(--color-accent)' },
+          { label: 'Offer', value: stats.offer, color: 'var(--color-success)' },
+          { label: 'Rejected', value: stats.rejected, color: 'var(--color-danger)' },
         ].map((stat) => (
           <div key={stat.label} style={{
             padding: '20px',
@@ -245,7 +245,7 @@ const handleSubmit = async () => {
                 backgroundColor: filterStatus === s
                   ? 'rgba(56,189,248,0.15)'
                   : 'rgba(255,255,255,0.03)',
-                color: filterStatus === s ? '#38bdf8' : '#94a3b8',
+                color: filterStatus === s ? 'var(--color-brand)' : 'var(--color-muted)',
                 border: filterStatus === s
                   ? '1px solid rgba(56,189,248,0.4)'
                   : '1px solid rgba(255,255,255,0.08)',
@@ -372,7 +372,7 @@ const handleSubmit = async () => {
                 }}
               >
                 {Object.keys(statusConfig).map(s => (
-                  <option key={s} value={s} style={{ backgroundColor: '#1e293b' }}>{s}</option>
+                  <option key={s} value={s} style={{ backgroundColor: 'var(--color-elevated)' }}>{s}</option>
                 ))}
               </select>
             </div>
@@ -568,7 +568,7 @@ const handleSubmit = async () => {
                   </div>
                   <p style={{
                     fontSize: '13px',
-                    color: '#38bdf8',
+                    color: 'var(--color-brand)',
                     marginBottom: '4px',
                   }}>
                     {app.role} {app.location && `· ${app.location}`}
@@ -591,7 +591,7 @@ const handleSubmit = async () => {
                     </p>
                   )}
                   {app.followUp && (
-                    <p style={{ fontSize: '12px', color: '#818cf8' }}>
+                    <p style={{ fontSize: '12px', color: 'var(--color-accent)' }}>
                       🔔 {app.followUp}
                     </p>
                   )}
@@ -616,7 +616,7 @@ const handleSubmit = async () => {
                     }}
                   >
                     {Object.keys(statusConfig).map(s => (
-                      <option key={s} value={s} style={{ backgroundColor: '#1e293b', color: 'white' }}>{s}</option>
+                      <option key={s} value={s} style={{ backgroundColor: 'var(--color-elevated)', color: 'white' }}>{s}</option>
                     ))}
                   </select>
 
@@ -626,7 +626,7 @@ const handleSubmit = async () => {
                     style={{
                       padding: '6px 14px',
                       backgroundColor: 'rgba(129,140,248,0.1)',
-                      color: '#818cf8',
+                      color: 'var(--color-accent)',
                       border: '1px solid rgba(129,140,248,0.3)',
                       borderRadius: '8px',
                       fontSize: '12px',
@@ -643,7 +643,7 @@ const handleSubmit = async () => {
                     style={{
                       padding: '6px 14px',
                       backgroundColor: 'rgba(251,113,133,0.1)',
-                      color: '#fb7185',
+                      color: 'var(--color-danger)',
                       border: '1px solid rgba(251,113,133,0.3)',
                       borderRadius: '8px',
                       fontSize: '12px',

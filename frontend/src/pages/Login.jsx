@@ -64,7 +64,7 @@ function Login() {
       setStep('otp')
       setMessage('✅ OTP bhej diya! Email check karo — Spam folder bhi dekho.')
 
-    } catch (err) {
+    } catch {
       setLoading(false)
       setError('Network error. Internet check karo aur dobara try karo.')
     }
@@ -127,20 +127,20 @@ function Login() {
       }
 
       setMessage('Redirecting to Google…')
-    } catch (err) {
+    } catch {
       setLoading(false)
       setError('Unable to start Google login right now. Please try again.')
     }
   }
 
   return (
-    <div style={{
+    <div className="login-page" style={{
       minHeight: '100vh',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       padding: '20px',
-      backgroundColor: '#0f172a',
+      backgroundColor: 'var(--color-canvas)',
     }}>
 
       {/* Card */}
@@ -161,7 +161,7 @@ function Login() {
             <div style={{
               fontSize: '24px',
               fontWeight: '800',
-              background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
+              background: 'linear-gradient(135deg, var(--color-brand), var(--color-accent))',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               letterSpacing: '-0.5px',
@@ -170,7 +170,7 @@ function Login() {
               ✦ CareerPilot AI
             </div>
           </Link>
-          <p style={{ fontSize: '14px', color: '#64748b' }}>
+          <p style={{ fontSize: '14px', color: 'var(--color-subtle)' }}>
             Login karke apna career accelerate karo
           </p>
         </div>
@@ -180,7 +180,7 @@ function Login() {
           <div>
             <h2 style={{
               fontSize: '20px', fontWeight: '700',
-              color: '#f1f5f9', textAlign: 'center', marginBottom: '28px',
+              color: 'var(--color-text)', textAlign: 'center', marginBottom: '28px',
             }}>
               Welcome back 👋
             </h2>
@@ -195,7 +195,7 @@ function Login() {
                 backgroundColor: 'rgba(255,255,255,0.06)',
                 border: '1px solid rgba(255,255,255,0.15)',
                 borderRadius: '12px',
-                color: '#f1f5f9',
+                color: 'var(--color-text)',
                 fontSize: '15px',
                 fontWeight: '600',
                 cursor: 'pointer',
@@ -223,7 +223,7 @@ function Login() {
               display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px',
             }}>
               <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(255,255,255,0.08)' }} />
-              <span style={{ fontSize: '13px', color: '#475569' }}>ya</span>
+              <span style={{ fontSize: '13px', color: 'var(--color-subtle)' }}>ya</span>
               <div style={{ flex: 1, height: '1px', backgroundColor: 'rgba(255,255,255,0.08)' }} />
             </div>
 
@@ -233,7 +233,7 @@ function Login() {
               style={{
                 width: '100%',
                 padding: '13px',
-                background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
+                background: 'linear-gradient(135deg, var(--color-brand), var(--color-accent))',
                 border: 'none',
                 borderRadius: '12px',
                 color: 'white',
@@ -249,9 +249,9 @@ function Login() {
               📧 Continue with Email OTP
             </button>
 
-            <p style={{ textAlign: 'center', fontSize: '12px', color: '#475569', marginTop: '24px' }}>
+            <p style={{ textAlign: 'center', fontSize: '12px', color: 'var(--color-subtle)', marginTop: '24px' }}>
               Login karke aap hamare{' '}
-              <span style={{ color: '#38bdf8', cursor: 'pointer' }}>Terms of Service</span>
+              <span style={{ color: 'var(--color-brand)', cursor: 'pointer' }}>Terms of Service</span>
               {' '}se agree karte ho
             </p>
           </div>
@@ -263,7 +263,7 @@ function Login() {
             <button
               onClick={() => { setStep('choose'); setError('') }}
               style={{
-                background: 'none', border: 'none', color: '#64748b',
+                background: 'none', border: 'none', color: 'var(--color-subtle)',
                 fontSize: '13px', cursor: 'pointer', marginBottom: '20px',
                 display: 'flex', alignItems: 'center', gap: '4px', padding: '0',
               }}
@@ -273,11 +273,11 @@ function Login() {
 
             <h2 style={{
               fontSize: '20px', fontWeight: '700',
-              color: '#f1f5f9', marginBottom: '8px',
+              color: 'var(--color-text)', marginBottom: '8px',
             }}>
               Email daalo 📧
             </h2>
-            <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '24px' }}>
+            <p style={{ fontSize: '14px', color: 'var(--color-subtle)', marginBottom: '24px' }}>
               Hum aapke email pe OTP bhejenge
             </p>
 
@@ -291,21 +291,24 @@ function Login() {
                 width: '100%',
                 padding: '13px 16px',
                 backgroundColor: 'rgba(255,255,255,0.05)',
-                border: `1px solid ${error ? '#fb7185' : 'rgba(56,189,248,0.2)'}`,
+                border: `1px solid ${error ? 'var(--color-danger)' : 'rgba(56,189,248,0.2)'}`,
                 borderRadius: '12px',
-                color: '#f1f5f9',
+                color: 'var(--color-text)',
                 fontSize: '15px',
                 outline: 'none',
                 marginBottom: '8px',
                 boxSizing: 'border-box',
                 transition: 'border-color 0.2s ease',
               }}
-              onFocus={e => e.target.style.borderColor = '#38bdf8'}
-              onBlur={e => e.target.style.borderColor = error ? '#fb7185' : 'rgba(56,189,248,0.2)'}
+              onFocus={e => e.target.style.borderColor = 'var(--color-brand)'}
+              onBlur={e => e.target.style.borderColor = error ? 'var(--color-danger)' : 'rgba(56,189,248,0.2)'}
             />
 
             {error && (
-              <p style={{ fontSize: '13px', color: '#fb7185', marginBottom: '12px' }}>{error}</p>
+              <p style={{ fontSize: '13px', color: 'var(--color-danger)', marginBottom: '12px' }}>{error}</p>
+            )}
+            {message && (
+              <p style={{ fontSize: '13px', color: 'var(--color-success)', marginBottom: '12px' }}>{message}</p>
             )}
 
             <button
@@ -314,7 +317,7 @@ function Login() {
               style={{
                 width: '100%',
                 padding: '13px',
-                background: loading ? 'rgba(56,189,248,0.3)' : 'linear-gradient(135deg, #38bdf8, #818cf8)',
+                background: loading ? 'rgba(56,189,248,0.3)' : 'linear-gradient(135deg, var(--color-brand), var(--color-accent))',
                 border: 'none',
                 borderRadius: '12px',
                 color: 'white',
@@ -336,7 +339,7 @@ function Login() {
             <button
               onClick={() => { setStep('email'); setError(''); setOtp('') }}
               style={{
-                background: 'none', border: 'none', color: '#64748b',
+                background: 'none', border: 'none', color: 'var(--color-subtle)',
                 fontSize: '13px', cursor: 'pointer', marginBottom: '20px',
                 display: 'flex', alignItems: 'center', gap: '4px', padding: '0',
               }}
@@ -346,14 +349,14 @@ function Login() {
 
             <h2 style={{
               fontSize: '20px', fontWeight: '700',
-              color: '#f1f5f9', marginBottom: '8px',
+              color: 'var(--color-text)', marginBottom: '8px',
             }}>
               OTP check karo 🔐
             </h2>
-            <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '4px' }}>
+            <p style={{ fontSize: '14px', color: 'var(--color-subtle)', marginBottom: '4px' }}>
               6 digit code bheja hai:
             </p>
-            <p style={{ fontSize: '14px', color: '#38bdf8', fontWeight: '600', marginBottom: '24px' }}>
+            <p style={{ fontSize: '14px', color: 'var(--color-brand)', fontWeight: '600', marginBottom: '24px' }}>
               {email}
             </p>
 
@@ -372,9 +375,9 @@ function Login() {
                 width: '100%',
                 padding: '13px 16px',
                 backgroundColor: 'rgba(255,255,255,0.05)',
-                border: `1px solid ${error ? '#fb7185' : 'rgba(56,189,248,0.2)'}`,
+                border: `1px solid ${error ? 'var(--color-danger)' : 'rgba(56,189,248,0.2)'}`,
                 borderRadius: '12px',
-                color: '#f1f5f9',
+                color: 'var(--color-text)',
                 fontSize: '24px',
                 fontWeight: '700',
                 letterSpacing: '8px',
@@ -383,12 +386,15 @@ function Login() {
                 marginBottom: '8px',
                 boxSizing: 'border-box',
               }}
-              onFocus={e => e.target.style.borderColor = '#38bdf8'}
-              onBlur={e => e.target.style.borderColor = error ? '#fb7185' : 'rgba(56,189,248,0.2)'}
+              onFocus={e => e.target.style.borderColor = 'var(--color-brand)'}
+              onBlur={e => e.target.style.borderColor = error ? 'var(--color-danger)' : 'rgba(56,189,248,0.2)'}
             />
 
             {error && (
-              <p style={{ fontSize: '13px', color: '#fb7185', marginBottom: '12px' }}>{error}</p>
+              <p style={{ fontSize: '13px', color: 'var(--color-danger)', marginBottom: '12px' }}>{error}</p>
+            )}
+            {message && (
+              <p style={{ fontSize: '13px', color: 'var(--color-success)', marginBottom: '12px' }}>{message}</p>
             )}
 
             <button
@@ -397,7 +403,7 @@ function Login() {
               style={{
                 width: '100%',
                 padding: '13px',
-                background: loading ? 'rgba(56,189,248,0.3)' : 'linear-gradient(135deg, #38bdf8, #818cf8)',
+                background: loading ? 'rgba(56,189,248,0.3)' : 'linear-gradient(135deg, var(--color-brand), var(--color-accent))',
                 border: 'none',
                 borderRadius: '12px',
                 color: 'white',
@@ -415,7 +421,7 @@ function Login() {
               onClick={handleEmailSubmit}
               style={{
                 width: '100%', background: 'none', border: 'none',
-                color: '#38bdf8', fontSize: '13px', cursor: 'pointer',
+                color: 'var(--color-brand)', fontSize: '13px', cursor: 'pointer',
                 marginTop: '16px', textDecoration: 'underline',
               }}
             >

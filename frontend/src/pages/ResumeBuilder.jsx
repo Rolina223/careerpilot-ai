@@ -1,12 +1,14 @@
 import UpgradeButton from '../components/upgradeButton';
 import { useEffect, useRef, useState } from 'react';
 import { validators } from '../utils/validation';
+import { calculateResumeProgress, getSmartDefaults } from '../utils/uxExperience';
 import ResumePreview from '../components/ResumePreview';
 import TemplateCard from '../components/TemplateCard';
 import { exportResumeToPdf } from '../utils/pdfExport';
 import { generateProfessionalSummary, improveExperienceDescription, suggestSkills } from '../services/aiService';
 import { defaultResumeData, getStoredResume, getStoredTemplate, resumeTemplates, saveResumeData, saveSelectedTemplate, loadResumeFromDb, saveResumeToDb } from '../utils/resumeStorage';
 import { useAuth } from '../AuthProvider';
+import { logActivity } from '../utils/activityStorage';
 
 function ResumeBuilder() {
   const { user } = useAuth();
@@ -20,6 +22,12 @@ function ResumeBuilder() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [resumeId, setResumeId] = useState(null);
   const [saveStatus, setSaveStatus] = useState(''); // '', 'saving', 'saved', 'error'
+  const [undoCount, setUndoCount] = useState(0);
+  const historyRef = useRef([]);
+  const previousDataRef = useRef(null);
+  const skipHistoryRef = useRef(false);
+  const autosaveTimerRef = useRef(null);
+  const [showGuidance, setShowGuidance] = useState(true);
 
 useEffect(() => {
   async function loadInitialResume() {
@@ -43,7 +51,52 @@ useEffect(() => {
 useEffect(() => {
   if (!isLoaded) return;
   saveResumeData(resumeData);
+  if (previousDataRef.current && !skipHistoryRef.current) {
+    historyRef.current = [...historyRef.current.slice(-19), previousDataRef.current];
+    setUndoCount(historyRef.current.length);
+  }
+  skipHistoryRef.current = false;
+  previousDataRef.current = resumeData;
 }, [resumeData, isLoaded]);
+
+useEffect(() => {
+  if (!isLoaded || !user) return;
+  window.clearTimeout(autosaveTimerRef.current);
+  autosaveTimerRef.current = window.setTimeout(async () => {
+    setSaveStatus('saving');
+    const { data, error } = await saveResumeToDb(resumeId, resumeData, selectedTemplate);
+    if (!error) {
+      if (data?.id && !resumeId) setResumeId(data.id);
+      setSaveStatus('autosaved');
+      logActivity('Resume autosaved', 'Your latest resume changes are safely stored.', '/resume-builder');
+    } else {
+      setSaveStatus('error');
+    }
+  }, 900);
+  return () => window.clearTimeout(autosaveTimerRef.current);
+}, [resumeData, selectedTemplate, resumeId, user, isLoaded]);
+
+useEffect(() => {
+  const onKeyDown = event => {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'z') {
+      event.preventDefault();
+      undoLastChange();
+    }
+  };
+  window.addEventListener('keydown', onKeyDown);
+  return () => window.removeEventListener('keydown', onKeyDown);
+});
+
+const undoLastChange = () => {
+  const previous = historyRef.current.at(-1);
+  if (!previous) return;
+  historyRef.current = historyRef.current.slice(0, -1);
+  skipHistoryRef.current = true;
+  previousDataRef.current = previous;
+  setResumeData(previous);
+  setUndoCount(historyRef.current.length);
+  setSaveStatus('restored');
+};
 
 const handleSaveToCloud = async () => {
   if (!user) {
@@ -62,6 +115,7 @@ const handleSaveToCloud = async () => {
     setResumeId(data.id);
   }
   setSaveStatus('saved');
+  logActivity('Resume saved to cloud', 'You saved a new resume version.', '/resume-builder');
   setTimeout(() => setSaveStatus(''), 2500);
 };
 
@@ -69,21 +123,15 @@ const handleSaveToCloud = async () => {
     saveSelectedTemplate(selectedTemplate);
   }, [selectedTemplate]);
 
+  const progress = calculateResumeProgress(resumeData)
+  const smartDefaults = getSmartDefaults(resumeData)
+
   const validateField = (fieldName, value, label) => {
   let errorMsg = '';
   if (validators[fieldName]) {
     errorMsg = validators[fieldName](value, label);
   }
   setErrors((prev) => ({ ...prev, [fieldName]: errorMsg }));
-  return errorMsg;
-};
-
-const validateArrayField = (section, index, field, value, validatorKey, label) => {
-  let errorMsg = '';
-  if (validators[validatorKey]) {
-    errorMsg = validators[validatorKey](value, label);
-  }
-  setErrors((prev) => ({ ...prev, [`${section}-${index}-${field}`]: errorMsg }));
   return errorMsg;
 };
 
@@ -252,7 +300,7 @@ const generateProfessionalSummaryHandler = async () => {
   };
 
   const errorTextStyle = {
-  color: '#fb7185',
+  color: 'var(--color-danger)',
   fontSize: '12px',
   marginTop: '-12px',
   marginBottom: '14px',
@@ -261,7 +309,7 @@ const generateProfessionalSummaryHandler = async () => {
 
 const getInputStyle = (hasError) => ({
   ...inputStyle,
-  border: hasError ? '1px solid #fb7185' : '1px solid var(--border)',
+  border: hasError ? '1px solid var(--color-danger)' : '1px solid var(--border)',
   marginBottom: hasError ? '6px' : '16px',
 });
 
@@ -277,23 +325,23 @@ const getInputStyle = (hasError) => ({
   const primaryButton = {
     ...buttonStyle,
     background: 'var(--primary)',
-    color: '#fff',
+    color: 'var(--color-on-brand)',
   };
 
   const secondaryButton = {
     ...buttonStyle,
     background: 'var(--secondary)',
-    color: '#fff',
+    color: 'var(--color-on-brand)',
   };
 
   const dangerButton = {
     ...buttonStyle,
-    background: '#f43f5e',
-    color: '#fff',
+    background: 'var(--color-danger)',
+    color: 'var(--color-on-brand)',
   };
 
   return (
-    <div style={{ maxWidth: '1300px', margin: '0 auto', padding: '60px 24px' }}>
+    <div className="resume-builder-page" style={{ maxWidth: '1300px', margin: '0 auto', padding: '60px 24px' }}>
       <header style={{ marginBottom: '32px' }}>
         <h1 style={{ fontSize: '48px', fontWeight: 800, background: 'var(--gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
           Resume Builder
@@ -302,21 +350,39 @@ const getInputStyle = (hasError) => ({
           Build a smarter resume with live templates, AI enhancements, and shared resume data across Builder and Templates.
         </p>
 
+        <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          <div style={{ padding: '8px 12px', borderRadius: '999px', background: 'rgba(52,211,153,0.1)', color: 'var(--color-success)', fontSize: '12px', fontWeight: '700' }}>Progress {progress.percent}%</div>
+          <div style={{ padding: '8px 12px', borderRadius: '999px', background: 'rgba(56,189,248,0.08)', color: 'var(--color-brand)', fontSize: '12px', fontWeight: '700' }}>{progress.nextMilestone.label}</div>
+        </div>
+
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginTop: '18px', flexWrap: 'wrap' }}>
+          <button onClick={() => { setResumeData(prev => ({ ...prev, personalInfo: { ...prev.personalInfo, summary: smartDefaults.summary } })) ; setShowGuidance(false) }} style={secondaryButton}>Use smart summary</button>
           <button onClick={handleSaveToCloud} disabled={saveStatus === 'saving'} style={primaryButton}>
             {saveStatus === 'saving' ? 'Saving...' : 'Save to Cloud'}
           </button>
           <UpgradeButton />
+          <button type="button" onClick={undoLastChange} disabled={!undoCount} className="secondary-button" title="Undo your latest resume edit (Ctrl/Cmd + Z)">
+            Undo {undoCount ? `(${undoCount})` : ''}
+          </button>
           {saveStatus === 'saved' && (
-            <span style={{ color: '#4ade80', fontSize: '14px', fontWeight: 600 }}>✓ Saved</span>
+            <span style={{ color: 'var(--color-success)', fontSize: '14px', fontWeight: 600 }}>✓ Saved</span>
           )}
+          {saveStatus === 'autosaved' && <span className="autosave-status">Saved automatically</span>}
+          {saveStatus === 'restored' && <span className="autosave-status">Last edit restored</span>}
           {saveStatus === 'error' && (
-            <span style={{ color: '#fb7185', fontSize: '14px', fontWeight: 600 }}>⚠ Save failed</span>
+            <span style={{ color: 'var(--color-danger)', fontSize: '14px', fontWeight: 600 }}>⚠ Save failed</span>
           )}
         </div>
 
+        {showGuidance && (
+          <div style={{ marginTop: '16px', padding: '14px 16px', borderRadius: '12px', background: 'rgba(91,67,232,0.08)', border: '1px solid rgba(91,67,232,0.16)', maxWidth: '760px' }}>
+            <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--color-brand)', marginBottom: '6px' }}>Quick start</div>
+            <div style={{ fontSize: '13px', color: 'var(--color-muted)', lineHeight: '1.5' }}>Complete the basics first, then let AI polish the summary and skills for you. You can also use the smart defaults to jumpstart the page.</div>
+          </div>
+        )}
+
         {aiError && (
-          <p style={{ color: '#fb7185', fontSize: '14px', marginTop: '12px', padding: '12px 16px', background: 'rgba(244,63,94,0.1)', border: '1px solid rgba(244,63,94,0.3)', borderRadius: '10px', maxWidth: '760px' }}>
+          <p style={{ color: 'var(--color-danger)', fontSize: '14px', marginTop: '12px', padding: '12px 16px', background: 'rgba(244,63,94,0.1)', border: '1px solid rgba(244,63,94,0.3)', borderRadius: '10px', maxWidth: '760px' }}>
             ⚠️ {aiError}
           </p>
         )}
@@ -330,6 +396,17 @@ const getInputStyle = (hasError) => ({
           ))}
         </div>
       </section>
+
+      <aside className="builder-guidance" aria-label="Resume completion guidance">
+        <div><span className="cp-eyebrow">Smart guidance</span><strong>{Math.round(([
+          resumeData.personalInfo.fullName,
+          resumeData.personalInfo.summary,
+          resumeData.experience.some(item => item.company && item.position),
+          resumeData.projects.some(item => item.name && item.description),
+          resumeData.skills.filter(Boolean).length >= 4,
+        ].filter(Boolean).length / 5) * 100)}% complete</strong></div>
+        <p>CareerPilot saves every edit automatically. Add a summary, one impact-led experience, and four core skills to unlock a strong first draft.</p>
+      </aside>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1.15fr 0.85fr', gap: '28px', alignItems: 'start' }}>
         <div>
@@ -575,9 +652,9 @@ const getInputStyle = (hasError) => ({
             <h2 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '18px', color: 'var(--primary)' }}>Skills</h2>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', marginBottom: '16px' }}>
               {resumeData.skills.filter(Boolean).map((skill, index) => (
-                <span key={index} style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', padding: '10px 14px', borderRadius: '999px', background: 'rgba(56, 189, 248, 0.18)', color: '#fff', fontSize: '13px', border: '1px solid rgba(56, 189, 248, 0.35)' }}>
+                <span key={index} style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', padding: '10px 14px', borderRadius: '999px', background: 'rgba(56, 189, 248, 0.18)', color: 'var(--color-on-brand)', fontSize: '13px', border: '1px solid rgba(56, 189, 248, 0.35)' }}>
                   {skill}
-                  <button type="button" onClick={() => removeArrayItem('skills', index)} style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer' }}>
+                  <button type="button" onClick={() => removeArrayItem('skills', index)} style={{ background: 'transparent', border: 'none', color: 'var(--color-on-brand)', cursor: 'pointer' }}>
                     ✕
                   </button>
                 </span>

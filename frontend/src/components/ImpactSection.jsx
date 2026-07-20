@@ -5,17 +5,17 @@ function ImpactSection() {
     {
       title: 'Resume-fit in seconds',
       text: 'Turn a plain resume into a recruiter-ready story with instant AI guidance.',
-      accent: '#38bdf8',
+      accent: 'var(--color-brand)',
     },
     {
       title: 'Built for first-job seekers',
       text: 'Everything you need to prepare, apply, and follow up without switching tools.',
-      accent: '#818cf8',
+      accent: 'var(--color-accent)',
     },
     {
       title: 'Momentum that compounds',
       text: 'Track every application, improve your profile, and keep interviews moving.',
-      accent: '#34d399',
+      accent: 'var(--color-success)',
     },
   ]
 
@@ -30,7 +30,7 @@ function ImpactSection() {
       }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
           <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 14px', borderRadius: '999px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: '#7dd3fc', fontSize: '12px', fontWeight: '700', marginBottom: '12px' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 14px', borderRadius: '999px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', color: 'var(--color-brand)', fontSize: '12px', fontWeight: '700', marginBottom: '12px' }}>
               ✦ Why students choose CareerPilot
             </div>
             <h3 style={{ fontSize: '28px', fontWeight: '800', color: 'var(--text-primary)', marginBottom: '8px' }}>

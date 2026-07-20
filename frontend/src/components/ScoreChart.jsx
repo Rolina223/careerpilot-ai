@@ -10,6 +10,12 @@ function ScoreChart({ score }) {
     <div className="score-chart">
       <div className="score-ring">
         <svg width={radius * 2} height={radius * 2} className="score-svg">
+          <defs>
+            <linearGradient id="score-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="var(--color-brand)" />
+              <stop offset="100%" stopColor="var(--color-accent)" />
+            </linearGradient>
+          </defs>
           <circle
             stroke="rgba(148,163,184,0.15)"
             fill="transparent"
@@ -28,14 +34,7 @@ function ScoreChart({ score }) {
             r={normalizedRadius}
             cx={radius}
             cy={radius}
-          >
-            <defs>
-              <linearGradient id="score-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#38bdf8" />
-                <stop offset="100%" stopColor="#8b5cf6" />
-              </linearGradient>
-            </defs>
-          </circle>
+          />
         </svg>
         <div className="score-center">{degree}</div>
       </div>

@@ -91,7 +91,7 @@ function JobsSection() {
           border: '1px solid rgba(56,189,248,0.3)',
           borderRadius: '100px',
           fontSize: '13px',
-          color: '#38bdf8',
+          color: 'var(--color-brand)',
           fontWeight: '500',
           marginBottom: '16px',
         }}>
@@ -133,8 +133,8 @@ function JobsSection() {
                 ? 'rgba(56,189,248,0.15)'
                 : 'rgba(255,255,255,0.03)',
               color: activeFilter === f.value
-                ? '#38bdf8'
-                : '#94a3b8',
+                ? 'var(--color-brand)'
+                : 'var(--color-muted)',
               border: activeFilter === f.value
                 ? '1px solid rgba(56,189,248,0.5)'
                 : '1px solid rgba(255,255,255,0.08)',
@@ -232,7 +232,7 @@ function JobsSection() {
                   </p>
                   <p style={{
                     fontSize: '13px',
-                    color: '#38bdf8',
+                    color: 'var(--color-brand)',
                     fontWeight: '500',
                   }}>
                     {job.role}
@@ -253,7 +253,7 @@ function JobsSection() {
                   border: savedJobs.includes(job.id)
                     ? '1px solid rgba(56,189,248,0.4)'
                     : '1px solid rgba(255,255,255,0.1)',
-                  color: savedJobs.includes(job.id) ? '#38bdf8' : '#94a3b8',
+                  color: savedJobs.includes(job.id) ? 'var(--color-brand)' : 'var(--color-muted)',
                   fontSize: '16px',
                   cursor: 'pointer',
                   display: 'flex',
@@ -305,7 +305,7 @@ function JobsSection() {
                   border: '1px solid rgba(129,140,248,0.2)',
                   borderRadius: '100px',
                   fontSize: '11px',
-                  color: '#818cf8',
+                  color: 'var(--color-accent)',
                   fontWeight: '500',
                 }}>
                   {tag}

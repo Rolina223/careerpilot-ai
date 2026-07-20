@@ -6,10 +6,10 @@ function ResultSection({ result }) {
     const btn = document.getElementById(id)
     if (btn) {
       btn.innerText = '✓ Copied!'
-      btn.style.color = '#38bdf8'
+      btn.style.color = 'var(--color-brand)'
       setTimeout(() => {
         btn.innerText = '📋 Copy'
-        btn.style.color = '#94a3b8'
+        btn.style.color = 'var(--color-muted)'
       }, 2000)
     }
   }
@@ -32,7 +32,7 @@ function ResultSection({ result }) {
           border: '1px solid rgba(56,189,248,0.3)',
           borderRadius: '100px',
           fontSize: '13px',
-          color: '#38bdf8',
+          color: 'var(--color-brand)',
           fontWeight: '500',
           marginBottom: '16px',
         }}>
@@ -99,8 +99,8 @@ function ResultSection({ result }) {
               />
               <defs>
                 <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#38bdf8" />
-                  <stop offset="100%" stopColor="#818cf8" />
+                  <stop offset="0%" stopColor="var(--color-brand)" />
+                  <stop offset="100%" stopColor="var(--color-accent)" />
                 </linearGradient>
               </defs>
             </svg>
@@ -168,7 +168,7 @@ function ResultSection({ result }) {
                 border: '1px solid rgba(251,113,133,0.3)',
                 borderRadius: '100px',
                 fontSize: '13px',
-                color: '#fb7185',
+                color: 'var(--color-danger)',
                 fontWeight: '500'
               }}>
                 {skill}
@@ -192,7 +192,7 @@ function ResultSection({ result }) {
                 border: '1px solid rgba(56,189,248,0.3)',
                 borderRadius: '100px',
                 fontSize: '13px',
-                color: '#38bdf8',
+                color: 'var(--color-brand)',
                 fontWeight: '500'
               }}>
                 {skill}
@@ -238,7 +238,7 @@ function ResultSection({ result }) {
               style={{
                 padding: '4px 12px',
                 backgroundColor: 'transparent',
-                color: '#94a3b8',
+                color: 'var(--color-muted)',
                 border: '1px solid rgba(255,255,255,0.1)',
                 borderRadius: '6px',
                 fontSize: '12px',
@@ -257,7 +257,7 @@ function ResultSection({ result }) {
                 border: '1px solid rgba(129,140,248,0.15)',
                 borderRadius: '10px',
               }}>
-                <span style={{ color: '#818cf8', fontSize: '16px' }}>→</span>
+                <span style={{ color: 'var(--color-accent)', fontSize: '16px' }}>→</span>
                 <span style={{
                   fontSize: '14px',
                   color: 'var(--text-primary)',
@@ -298,7 +298,7 @@ function ResultSection({ result }) {
               style={{
                 padding: '4px 12px',
                 backgroundColor: 'transparent',
-                color: '#94a3b8',
+                color: 'var(--color-muted)',
                 border: '1px solid rgba(255,255,255,0.1)',
                 borderRadius: '6px',
                 fontSize: '12px',
@@ -318,7 +318,7 @@ function ResultSection({ result }) {
                 borderRadius: '10px',
               }}>
                 <span style={{
-                  color: '#38bdf8',
+                  color: 'var(--color-brand)',
                   fontSize: '13px',
                   fontWeight: '700',
                   minWidth: '20px'
@@ -374,7 +374,7 @@ function ResultSection({ result }) {
               style={{
                 padding: '4px 12px',
                 backgroundColor: 'transparent',
-                color: '#94a3b8',
+                color: 'var(--color-muted)',
                 border: '1px solid rgba(255,255,255,0.1)',
                 borderRadius: '6px',
                 fontSize: '12px',
@@ -428,7 +428,7 @@ function ResultSection({ result }) {
               style={{
                 padding: '4px 12px',
                 backgroundColor: 'transparent',
-                color: '#94a3b8',
+                color: 'var(--color-muted)',
                 border: '1px solid rgba(255,255,255,0.1)',
                 borderRadius: '6px',
                 fontSize: '12px',
@@ -483,7 +483,7 @@ function ResultSection({ result }) {
             style={{
               padding: '4px 12px',
               backgroundColor: 'transparent',
-              color: '#94a3b8',
+              color: 'var(--color-muted)',
               border: '1px solid rgba(255,255,255,0.1)',
               borderRadius: '6px',
               fontSize: '12px',
@@ -514,7 +514,7 @@ function ResultSection({ result }) {
           style={{
             padding: '14px 40px',
             backgroundColor: 'transparent',
-            color: '#38bdf8',
+            color: 'var(--color-brand)',
             border: '1px solid rgba(56,189,248,0.4)',
             borderRadius: '12px',
             fontSize: '15px',
@@ -524,7 +524,7 @@ function ResultSection({ result }) {
           }}
           onMouseEnter={e => {
             e.target.style.backgroundColor = 'rgba(56,189,248,0.1)'
-            e.target.style.borderColor = '#38bdf8'
+            e.target.style.borderColor = 'var(--color-brand)'
           }}
           onMouseLeave={e => {
             e.target.style.backgroundColor = 'transparent'

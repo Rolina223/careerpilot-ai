@@ -6,13 +6,9 @@ import { exportResumeToPdf } from '../utils/pdfExport';
 import { getStoredResume, getStoredTemplate, resumeTemplates, saveSelectedTemplate } from '../utils/resumeStorage';
 
 function ResumeTemplates() {
-  const [resumeData, setResumeData] = useState(null);
+  const [resumeData] = useState(getStoredResume());
   const [selectedTemplate, setSelectedTemplate] = useState(getStoredTemplate());
   const previewRef = useRef(null);
-
-  useEffect(() => {
-    setResumeData(getStoredResume());
-  }, []);
 
   useEffect(() => {
     saveSelectedTemplate(selectedTemplate);
@@ -52,7 +48,7 @@ function ResumeTemplates() {
         <div style={{ padding: '32px', borderRadius: '24px', background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
           <h2 style={{ fontSize: '22px', color: 'var(--text-primary)' }}>No resume data found</h2>
           <p style={{ color: 'var(--text-secondary)', marginBottom: '18px' }}>Please complete the Resume Builder first so your selected template can render live content.</p>
-          <Link to="/resume-builder" style={{ display: 'inline-block', padding: '12px 20px', borderRadius: '12px', background: 'var(--primary)', color: '#fff', textDecoration: 'none' }}>
+          <Link to="/resume-builder" style={{ display: 'inline-block', padding: '12px 20px', borderRadius: '12px', background: 'var(--primary)', color: 'var(--color-on-brand)', textDecoration: 'none' }}>
             Open Resume Builder
           </Link>
         </div>
@@ -72,7 +68,7 @@ function ResumeTemplates() {
             <div style={{ padding: '24px', borderRadius: '24px', background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
               <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: 'var(--primary)' }}>Download</h3>
               <p style={{ margin: '12px 0 18px', color: 'var(--text-secondary)' }}>Export this template as a professional PDF with your saved data.</p>
-              <button onClick={downloadTemplatePdf} style={{ padding: '14px 18px', borderRadius: '14px', border: 'none', background: 'var(--primary)', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>
+              <button onClick={downloadTemplatePdf} style={{ padding: '14px 18px', borderRadius: '14px', border: 'none', background: 'var(--primary)', color: 'var(--color-on-brand)', fontWeight: 700, cursor: 'pointer' }}>
                 Download PDF
               </button>
             </div>
@@ -80,7 +76,7 @@ function ResumeTemplates() {
             <div style={{ padding: '24px', borderRadius: '24px', background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
               <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: 'var(--primary)' }}>Manage Resume Data</h3>
               <p style={{ margin: '12px 0 16px', color: 'var(--text-secondary)' }}>Your resume data is shared between Resume Builder and Templates. Any updates in the builder persist here.</p>
-              <Link to="/resume-builder" style={{ display: 'inline-block', padding: '12px 20px', borderRadius: '14px', background: 'var(--secondary)', color: '#fff', textDecoration: 'none', fontWeight: 700 }}>
+              <Link to="/resume-builder" style={{ display: 'inline-block', padding: '12px 20px', borderRadius: '14px', background: 'var(--secondary)', color: 'var(--color-on-brand)', textDecoration: 'none', fontWeight: 700 }}>
                 Edit Resume in Builder
               </Link>
             </div>

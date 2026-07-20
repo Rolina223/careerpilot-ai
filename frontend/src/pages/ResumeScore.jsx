@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { getStoredResume, getStoredTemplate, resumeTemplates } from '../utils/resumeStorage'
 import { calculateResumeScore, buildKeywordCoverage, getHealthChecklist, getRoleBenchmark, getTemplateAtsImpact } from '../utils/scoreUtils'
 import ScoreChart from '../components/ScoreChart'
 import ScoreBreakdown from '../components/ScoreBreakdown'
 import HealthChecklist from '../components/HealthChecklist'
 import InsightsPanel from '../components/InsightsPanel'
+import { AnimatedProgress } from '../components/motion/MotionPrimitives'
 
 const roles = [
   { value: 'dotnet', label: '.NET Developer' },
@@ -20,20 +21,11 @@ const roles = [
 const defaultJobDescription = `Looking for a results-driven software engineer with experience in modern web development, cloud architecture, strong communication skills, and practical project delivery.`
 
 function ResumeScore() {
-  const [resumeData, setResumeData] = useState(getStoredResume())
+  const [resumeData] = useState(getStoredResume())
   const [selectedTemplate, setSelectedTemplate] = useState(getStoredTemplate())
   const [targetRole, setTargetRole] = useState('fullstack')
-  const [jobDescription, setJobDescription] = useState(defaultJobDescription)
-  const [templateAtsImpact, setTemplateAtsImpact] = useState(getTemplateAtsImpact(selectedTemplate))
-
-  useEffect(() => {
-    const stored = getStoredResume()
-    setResumeData(stored)
-  }, [])
-
-  useEffect(() => {
-    setTemplateAtsImpact(getTemplateAtsImpact(selectedTemplate))
-  }, [selectedTemplate])
+  const [jobDescription] = useState(defaultJobDescription)
+  const templateAtsImpact = useMemo(() => getTemplateAtsImpact(selectedTemplate), [selectedTemplate])
 
   const keywordCoverage = useMemo(() => buildKeywordCoverage(resumeData, jobDescription), [resumeData, jobDescription])
   const scores = useMemo(() => calculateResumeScore(resumeData, selectedTemplate, jobDescription), [resumeData, selectedTemplate, jobDescription])
@@ -121,7 +113,7 @@ function ResumeScore() {
                   <span>{keywordCoverage.missingKeywords.length} missing</span>
                 </div>
                 <div className="progress-bar">
-                  <div className="progress-fill" style={{ width: `${keywordCoverage.coverage}%` }} />
+                  <AnimatedProgress value={keywordCoverage.coverage} />
                 </div>
                 <p>{keywordCoverage.coverage}% keyword coverage against the target role.</p>
               </div>

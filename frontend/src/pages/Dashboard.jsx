@@ -1,50 +1,44 @@
 import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { useAuth } from '../AuthProvider'
 import { getStoredResume, getStoredTemplate, resumeTemplates } from '../utils/resumeStorage'
 import { calculateResumeScore, buildKeywordCoverage, getHealthChecklist } from '../utils/scoreUtils'
+import { calculateResumeProgress, getResumeRecommendations, getPredictiveSuggestions } from '../utils/uxExperience'
+import { logActivity } from '../utils/activityStorage'
+import { AnimatedCounter, AnimatedProgress, MotionButton, MotionCard, motionTokens } from '../components/motion/MotionPrimitives'
 
-function MiniBar({ value, color = '#38bdf8', max = 100 }) {
+function MiniBar({ value, color = 'var(--color-brand)', max = 100 }) {
   return (
     <div style={{ width: '100%', height: '6px', backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: '4px', overflow: 'hidden' }}>
-      <div style={{
-        width: `${Math.min((value / max) * 100, 100)}%`,
+      <AnimatedProgress value={Math.min((value / max) * 100, 100)} className="" style={{
         height: '100%',
         background: color,
         borderRadius: '4px',
-        transition: 'width 0.8s ease',
       }} />
     </div>
   )
 }
 
-function StatCard({ icon, label, value, sub, color = '#38bdf8', glowColor }) {
+function StatCard({ icon, label, value, sub, color = 'var(--color-brand)', glowColor }) {
   return (
-    <div style={{
+    <MotionCard style={{
       padding: '22px',
       backgroundColor: 'rgba(255,255,255,0.03)',
       border: '1px solid rgba(56,189,248,0.12)',
       borderRadius: '16px',
       backdropFilter: 'blur(12px)',
-      transition: 'all 0.3s ease',
       cursor: 'default',
     }}
-      onMouseEnter={e => {
-        e.currentTarget.style.borderColor = 'rgba(56,189,248,0.35)'
-        e.currentTarget.style.transform = 'translateY(-2px)'
-        e.currentTarget.style.boxShadow = glowColor || '0 0 24px rgba(56,189,248,0.18)'
-      }}
-      onMouseLeave={e => {
-        e.currentTarget.style.borderColor = 'rgba(56,189,248,0.12)'
-        e.currentTarget.style.transform = 'translateY(0)'
-        e.currentTarget.style.boxShadow = 'none'
-      }}
+      whileHover={{ y: -3, boxShadow: glowColor || '0 0 24px rgba(56,189,248,0.18)', borderColor: 'rgba(56,189,248,0.35)' }}
     >
       <div style={{ fontSize: '22px', marginBottom: '10px' }}>{icon}</div>
-      <div style={{ fontSize: '28px', fontWeight: '800', color, letterSpacing: '-0.5px', lineHeight: '1' }}>{value}</div>
-      <div style={{ fontSize: '13px', color: '#94a3b8', marginTop: '6px', fontWeight: '500' }}>{label}</div>
-      {sub && <div style={{ fontSize: '12px', color: '#64748b', marginTop: '4px' }}>{sub}</div>}
-    </div>
+      <div style={{ fontSize: '28px', fontWeight: '800', color, letterSpacing: '-0.5px', lineHeight: '1' }}>
+        {typeof value === 'number' ? <AnimatedCounter value={value} /> : String(value).endsWith('%') ? <AnimatedCounter value={value} suffix="%" /> : value}
+      </div>
+      <div style={{ fontSize: '13px', color: 'var(--color-muted)', marginTop: '6px', fontWeight: '500' }}>{label}</div>
+      {sub && <div style={{ fontSize: '12px', color: 'var(--color-subtle)', marginTop: '4px' }}>{sub}</div>}
+    </MotionCard>
   )
 }
 
@@ -57,8 +51,8 @@ function ActivityItem({ icon, text, time, color = 'rgba(56,189,248,0.15)' }) {
         fontSize: '14px', flexShrink: 0,
       }}>{icon}</div>
       <div style={{ flex: 1 }}>
-        <div style={{ fontSize: '13px', color: '#e2e8f0', lineHeight: '1.4' }}>{text}</div>
-        <div style={{ fontSize: '11px', color: '#475569', marginTop: '2px' }}>{time}</div>
+        <div style={{ fontSize: '13px', color: 'var(--color-text)', lineHeight: '1.4' }}>{text}</div>
+        <div style={{ fontSize: '11px', color: 'var(--color-subtle)', marginTop: '2px' }}>{time}</div>
       </div>
     </div>
   )
@@ -67,29 +61,19 @@ function ActivityItem({ icon, text, time, color = 'rgba(56,189,248,0.15)' }) {
 function QuickAction({ to, icon, label, desc }) {
   return (
     <Link to={to} style={{ textDecoration: 'none' }}>
-      <div style={{
+      <MotionCard style={{
         padding: '18px',
         background: 'rgba(56,189,248,0.06)',
         border: '1px solid rgba(56,189,248,0.15)',
         borderRadius: '14px',
         cursor: 'pointer',
-        transition: 'all 0.25s ease',
       }}
-        onMouseEnter={e => {
-          e.currentTarget.style.transform = 'translateY(-3px)'
-          e.currentTarget.style.borderColor = 'rgba(56,189,248,0.4)'
-          e.currentTarget.style.boxShadow = '0 8px 30px rgba(56,189,248,0.15)'
-        }}
-        onMouseLeave={e => {
-          e.currentTarget.style.transform = 'translateY(0)'
-          e.currentTarget.style.borderColor = 'rgba(56,189,248,0.15)'
-          e.currentTarget.style.boxShadow = 'none'
-        }}
+      whileHover={{ y: -3, borderColor: 'rgba(56,189,248,0.4)', boxShadow: '0 8px 30px rgba(56,189,248,0.15)' }}
       >
         <div style={{ fontSize: '24px', marginBottom: '8px' }}>{icon}</div>
-        <div style={{ fontSize: '14px', fontWeight: '600', color: '#f1f5f9', marginBottom: '4px' }}>{label}</div>
-        <div style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.4' }}>{desc}</div>
-      </div>
+        <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--color-text)', marginBottom: '4px' }}>{label}</div>
+        <div style={{ fontSize: '12px', color: 'var(--color-subtle)', lineHeight: '1.4' }}>{desc}</div>
+      </MotionCard>
     </Link>
   )
 }
@@ -98,18 +82,19 @@ function ScoreRing({ score, size = 120, strokeWidth = 9 }) {
   const radius = (size - strokeWidth) / 2
   const circ = 2 * Math.PI * radius
   const pct = Math.min(score, 100) / 100
-  const color = score >= 80 ? '#34d399' : score >= 60 ? '#38bdf8' : '#fb7185'
+  const color = score >= 80 ? 'var(--color-success)' : score >= 60 ? 'var(--color-brand)' : 'var(--color-danger)'
 
   return (
     <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
       <circle cx={size / 2} cy={size / 2} r={radius}
         fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={strokeWidth} />
-      <circle cx={size / 2} cy={size / 2} r={radius}
+      <motion.circle cx={size / 2} cy={size / 2} r={radius}
         fill="none" stroke={color} strokeWidth={strokeWidth}
         strokeDasharray={circ}
-        strokeDashoffset={circ * (1 - pct)}
+        initial={{ strokeDashoffset: circ }}
+        animate={{ strokeDashoffset: circ * (1 - pct) }}
+        transition={{ duration: 0.9, ease: motionTokens.ease }}
         strokeLinecap="round"
-        style={{ transition: 'stroke-dashoffset 1s ease' }}
       />
       <text x={size / 2} y={size / 2 + 1}
         textAnchor="middle" dominantBaseline="middle"
@@ -119,7 +104,7 @@ function ScoreRing({ score, size = 120, strokeWidth = 9 }) {
       <text x={size / 2} y={size / 2 + 19}
         textAnchor="middle" dominantBaseline="middle"
         style={{ transform: 'rotate(90deg)', transformOrigin: `${size / 2}px ${size / 2}px` }}
-        fill="#64748b" fontSize="10" fontFamily="Inter, sans-serif"
+        fill="var(--color-subtle)" fontSize="10" fontFamily="Inter, sans-serif"
       >/ 100</text>
     </svg>
   )
@@ -214,27 +199,30 @@ function Dashboard() {
   const doneCount = completionTasks.filter(t => t.done).length
   const completionPct = Math.round((doneCount / completionTasks.length) * 100)
 
+  const progress = useMemo(() => calculateResumeProgress(resumeData), [resumeData])
+  const recommendations = useMemo(() => getResumeRecommendations(resumeData), [resumeData])
+  const predictiveSuggestions = useMemo(() => getPredictiveSuggestions(resumeData), [resumeData])
+
   const scoreBreakdown = [
-    { label: 'Overall score', val: scores.overall, color: '#38bdf8' },
-    { label: 'ATS compatibility', val: scores.atsCompatibility, color: '#818cf8' },
-    { label: 'Completeness', val: scores.completeness, color: '#34d399' },
-    { label: 'Keyword coverage', val: keywordCoverage.coverage, color: '#fb923c' },
+    { label: 'Overall score', val: scores.overall, color: 'var(--color-brand)' },
+    { label: 'ATS compatibility', val: scores.atsCompatibility, color: 'var(--color-accent)' },
+    { label: 'Completeness', val: scores.completeness, color: 'var(--color-success)' },
+    { label: 'Keyword coverage', val: keywordCoverage.coverage, color: 'var(--color-warning)' },
   ]
 
   const toolLinks = [
-    { to: '/analyze', icon: '✨', label: 'Analyze Resume', desc: 'Match with any job description' },
-    { to: '/resume-score', icon: '📊', label: 'Resume Score', desc: 'Get your ATS health score' },
-    { to: '/resume-builder', icon: '🛠️', label: 'Resume Builder', desc: 'Build or update your resume' },
-    { to: '/interview', icon: '🎯', label: 'Interview Prep', desc: 'Practice with AI mock interviews' },
-    { to: '/aptitude', icon: '🧮', label: 'Aptitude Prep', desc: 'MCQs, quants & logical reasoning' },
-    { to: '/coding', icon: '💻', label: 'Coding Prep', desc: 'DSA problems with AI hints' },
-    { to: '/tracker', icon: '📋', label: 'Job Tracker', desc: 'Track all your applications' },
-    { to: '/jobs', icon: '💼', label: 'Browse Jobs', desc: 'Find matching job listings' },
-    { to: '/messages', icon: '💬', label: 'Message Generator', desc: 'Cold DMs & follow-ups' },
-    { to: '/email-templates', icon: '📧', label: 'Email Templates', desc: 'Professional email drafts' },
-    { to: '/resume-templates', icon: '📄', label: 'Templates', desc: 'Choose an ATS-friendly layout' },
+    { to: '/analyze', icon: 'AI', label: 'Analyze resume', desc: 'Compare your profile against a target role.' },
+    { to: '/resume-score', icon: 'SC', label: 'Resume score', desc: 'Review structure, keywords, and ATS readiness.' },
+    { to: '/resume-builder', icon: 'RB', label: 'Resume builder', desc: 'Refine your resume with autosave and undo.' },
+    { to: '/interview', icon: 'IV', label: 'Interview practice', desc: 'Practice answers and improve with feedback.' },
+    { to: '/aptitude', icon: 'AP', label: 'Aptitude prep', desc: 'Build speed across reasoning and quantitative rounds.' },
+    { to: '/coding', icon: 'CP', label: 'Coding prep', desc: 'Train on practical patterns and company-style sets.' },
+    { to: '/tracker', icon: 'TR', label: 'Application tracker', desc: 'Keep status, notes, and follow-ups organized.' },
+    { to: '/jobs', icon: 'JB', label: 'Browse jobs', desc: 'Find roles worth tailoring for.' },
+    { to: '/messages', icon: 'MS', label: 'Message studio', desc: 'Draft focused outreach and follow-ups.' },
+    { to: '/email-templates', icon: 'EM', label: 'Email studio', desc: 'Create clear recruiter-ready emails.' },
+    { to: '/resume-templates', icon: 'TP', label: 'Templates', desc: 'Choose a clean ATS-friendly layout.' },
   ]
-
   const card = {
     padding: '24px',
     backgroundColor: 'rgba(255,255,255,0.03)',
@@ -244,37 +232,56 @@ function Dashboard() {
   }
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '48px 32px 80px' }}>
+    <div className="dashboard-page" style={{ maxWidth: '1100px', margin: '0 auto', padding: '48px 32px 80px' }}>
 
       {/* Header */}
       <div style={{ marginBottom: '40px' }}>
-        <div style={{
-          display: 'inline-flex', alignItems: 'center', gap: '8px',
-          padding: '6px 16px', backgroundColor: 'rgba(56,189,248,0.08)',
-          border: '1px solid rgba(56,189,248,0.2)', borderRadius: '100px',
-          fontSize: '13px', color: '#38bdf8', fontWeight: '500', marginBottom: '16px',
-        }}>
-          ✦ Your career command center
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', flexWrap: 'wrap', marginBottom: '16px' }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: '8px',
+            padding: '6px 16px', backgroundColor: 'rgba(56,189,248,0.08)',
+            border: '1px solid rgba(56,189,248,0.2)', borderRadius: '100px',
+            fontSize: '13px', color: 'var(--color-brand)', fontWeight: '500',
+          }}>
+            Career command center
+          </div>
+          <MotionButton
+            onClick={() => {
+              logActivity('Opened quick search', 'Used the command palette', '/dashboard')
+              window.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true }))
+            }}
+            aria-label="Open quick actions"
+            style={{
+              padding: '8px 12px', borderRadius: '999px', border: '1px solid var(--color-border)',
+              backgroundColor: 'rgba(255,255,255,0.04)', color: 'var(--color-muted)', cursor: 'pointer'
+            }}
+          >
+            Quick actions
+          </MotionButton>
         </div>
         <h1 style={{
-          fontSize: '40px', fontWeight: '800', color: '#f1f5f9',
+          fontSize: '40px', fontWeight: '800', color: 'var(--color-text)',
           letterSpacing: '-0.8px', lineHeight: '1.15', marginBottom: '8px',
         }}>
-          {greeting}, {userName} 👋
+          {greeting}, {userName}
         </h1>
-        <p style={{ fontSize: '16px', color: '#64748b', fontWeight: '400' }}>
+        <p style={{ fontSize: '16px', color: 'var(--color-subtle)', fontWeight: '400' }}>
           {hasResumeContent
-            ? "Here's a snapshot of your job-hunt progress today."
-            : 'Build your first resume snapshot and these insights will appear automatically.'}
+            ? "Your search is organized. Here is what needs attention today."
+            : 'Start with your resume. CareerPilot will turn it into a focused operating plan.'}
         </p>
+        <div style={{ marginTop: '16px', padding: '14px 16px', borderRadius: '14px', background: 'linear-gradient(135deg, rgba(91,67,232,0.10), rgba(56,189,248,0.08))', border: '1px solid rgba(91,67,232,0.16)', color: 'var(--color-text)' }}>
+          <div style={{ fontSize: '13px', fontWeight: '700', marginBottom: '4px' }}>Progress: {progress.percent}% complete</div>
+          <div style={{ fontSize: '12px', color: 'var(--color-muted)' }}>{progress.nextMilestone.message}</div>
+        </div>
       </div>
 
       {/* Top stats row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '16px', marginBottom: '28px' }}>
-        <StatCard icon="⚡" label="Resume score" value={scores.overall} sub="Out of 100" color="#38bdf8" />
-        <StatCard icon="🎯" label="ATS compatibility" value={`${scores.atsCompatibility}%`} color="#818cf8" glowColor="0 0 24px rgba(129,140,248,0.2)" />
-        <StatCard icon="✅" label="Profile complete" value={`${completionPct}%`} sub={`${doneCount} of ${completionTasks.length} done`} color="#34d399" glowColor="0 0 24px rgba(52,211,153,0.2)" />
-        <StatCard icon="🔑" label="Keyword coverage" value={`${keywordCoverage.coverage}%`} sub={`${keywordCoverage.matchedKeywords.length} matched`} color="#fb923c" glowColor="0 0 24px rgba(251,146,60,0.2)" />
+        <StatCard icon="SC" label="Resume score" value={scores.overall} sub="Out of 100" color="var(--color-brand)" />
+        <StatCard icon="ATS" label="ATS compatibility" value={`${scores.atsCompatibility}%`} color="var(--color-accent)" glowColor="0 0 24px rgba(129,140,248,0.2)" />
+        <StatCard icon="OK" label="Profile complete" value={`${completionPct}%`} sub={`${doneCount} of ${completionTasks.length} done`} color="var(--color-success)" glowColor="0 0 24px rgba(52,211,153,0.2)" />
+        <StatCard icon="KW" label="Keyword coverage" value={`${keywordCoverage.coverage}%`} sub={`${keywordCoverage.matchedKeywords.length} matched`} color="var(--color-warning)" glowColor="0 0 24px rgba(251,146,60,0.2)" />
       </div>
 
       {/* Main two-col layout */}
@@ -283,11 +290,29 @@ function Dashboard() {
         {/* Left column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
+          {/* Recommendations */}
+          <div style={{ ...card, background: 'linear-gradient(135deg, rgba(91,67,232,0.07), rgba(56,189,248,0.05))' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <h2 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--color-text)', margin: 0 }}>Smart recommendations</h2>
+              <span style={{ fontSize: '12px', color: 'var(--color-brand)' }}>AI guided</span>
+            </div>
+            <div style={{ display: 'grid', gap: '10px' }}>
+              {recommendations.map((item, index) => (
+                <Link key={index} to={item.to} style={{ textDecoration: 'none' }}>
+                  <div style={{ padding: '12px 14px', borderRadius: '12px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+                    <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--color-text)', marginBottom: '3px' }}>{item.title}</div>
+                    <div style={{ fontSize: '12px', color: 'var(--color-muted)', lineHeight: '1.4' }}>{item.detail}</div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
           {/* Score breakdown */}
           <div style={card}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-              <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#f1f5f9', margin: 0 }}>Score breakdown</h2>
-              <Link to="/resume-score" style={{ fontSize: '12px', color: '#38bdf8', textDecoration: 'none', fontWeight: '500' }}>Full report →</Link>
+              <h2 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--color-text)', margin: 0 }}>Score breakdown</h2>
+              <Link to="/resume-score" style={{ fontSize: '12px', color: 'var(--color-brand)', textDecoration: 'none', fontWeight: '500' }}>Full report →</Link>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '28px' }}>
               <ScoreRing score={scores.overall} />
@@ -295,7 +320,7 @@ function Dashboard() {
                 {scoreBreakdown.map(s => (
                   <div key={s.label}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-                      <span style={{ fontSize: '13px', color: '#94a3b8' }}>{s.label}</span>
+                      <span style={{ fontSize: '13px', color: 'var(--color-muted)' }}>{s.label}</span>
                       <span style={{ fontSize: '13px', fontWeight: '600', color: s.color }}>{s.val}%</span>
                     </div>
                     <MiniBar value={s.val} color={s.color} />
@@ -308,16 +333,16 @@ function Dashboard() {
           {/* Profile completion */}
           <div style={card}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-              <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#f1f5f9', margin: 0 }}>Profile completion</h2>
+              <h2 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--color-text)', margin: 0 }}>Profile completion</h2>
               <span style={{
                 fontSize: '12px', fontWeight: '600',
-                color: completionPct === 100 ? '#34d399' : '#fb923c',
+                color: completionPct === 100 ? 'var(--color-success)' : 'var(--color-warning)',
                 background: completionPct === 100 ? 'rgba(52,211,153,0.1)' : 'rgba(251,146,60,0.1)',
                 padding: '3px 10px', borderRadius: '100px',
               }}>{completionPct}%</span>
             </div>
             <div style={{ marginBottom: '14px' }}>
-              <MiniBar value={completionPct} color={completionPct === 100 ? '#34d399' : '#38bdf8'} />
+              <MiniBar value={completionPct} color={completionPct === 100 ? 'var(--color-success)' : 'var(--color-brand)'} />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
               {completionTasks.map(t => (
@@ -333,7 +358,7 @@ function Dashboard() {
                     onMouseLeave={e => e.currentTarget.style.borderColor = t.done ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.05)'}
                   >
                     <span style={{ fontSize: '13px' }}>{t.done ? '✅' : '⭕'}</span>
-                    <span style={{ fontSize: '12px', color: t.done ? '#34d399' : '#94a3b8', fontWeight: t.done ? '500' : '400' }}>{t.label}</span>
+                    <span style={{ fontSize: '12px', color: t.done ? 'var(--color-success)' : 'var(--color-muted)', fontWeight: t.done ? '500' : '400' }}>{t.label}</span>
                   </div>
                 </Link>
               ))}
@@ -347,8 +372,8 @@ function Dashboard() {
           {/* Health checks */}
           <div style={card}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-              <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#f1f5f9', margin: 0 }}>Health checks</h2>
-              <span style={{ fontSize: '12px', color: '#64748b' }}>{healthPassed}/{healthItems.length} passed</span>
+              <h2 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--color-text)', margin: 0 }}>Health checks</h2>
+              <span style={{ fontSize: '12px', color: 'var(--color-subtle)' }}>{healthPassed}/{healthItems.length} passed</span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {healthItems.map((item, i) => (
@@ -358,7 +383,7 @@ function Dashboard() {
                   backgroundColor: item.passed ? 'rgba(52,211,153,0.05)' : 'rgba(251,113,133,0.05)',
                 }}>
                   <span style={{ fontSize: '13px', flexShrink: 0 }}>{item.passed ? '✅' : '❌'}</span>
-                  <span style={{ fontSize: '12px', color: item.passed ? '#94a3b8' : '#fb7185', lineHeight: '1.3' }}>{item.label}</span>
+                  <span style={{ fontSize: '12px', color: item.passed ? 'var(--color-muted)' : 'var(--color-danger)', lineHeight: '1.3' }}>{item.label}</span>
                 </div>
               ))}
             </div>
@@ -366,15 +391,25 @@ function Dashboard() {
 
           {/* Recent activity */}
           <div style={card}>
-            <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#f1f5f9', marginBottom: '12px', marginTop: 0 }}>Recent activity</h2>
+            <h2 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--color-text)', marginBottom: '12px', marginTop: 0 }}>Recent activity</h2>
             <ActivityItem icon="📝" text="Resume builder session" time="2 hours ago" color="rgba(56,189,248,0.12)" />
             <ActivityItem icon="📊" text="Checked resume score" time="Yesterday" color="rgba(129,140,248,0.12)" />
             <ActivityItem icon="🎯" text="Interview practice session" time="2 days ago" color="rgba(52,211,153,0.12)" />
             <ActivityItem icon="💬" text="Generated a cold DM" time="3 days ago" color="rgba(251,146,60,0.12)" />
             <div style={{ marginTop: '12px' }}>
-              <Link to="/tracker" style={{ fontSize: '12px', color: '#38bdf8', textDecoration: 'none', fontWeight: '500' }}>
+              <Link to="/tracker" style={{ fontSize: '12px', color: 'var(--color-brand)', textDecoration: 'none', fontWeight: '500' }}>
                 View all activity →
               </Link>
+            </div>
+          </div>
+
+          {/* Predictive suggestions */}
+          <div style={{ ...card, background: 'rgba(255,255,255,0.025)' }}>
+            <h2 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--color-text)', margin: 0, marginBottom: '12px' }}>Next best steps</h2>
+            <div style={{ display: 'grid', gap: '8px' }}>
+              {predictiveSuggestions.map((item, idx) => (
+                <div key={idx} style={{ fontSize: '12px', color: 'var(--color-muted)', lineHeight: '1.5' }}>• {item}</div>
+              ))}
             </div>
           </div>
         </div>
@@ -383,8 +418,8 @@ function Dashboard() {
       {/* Template quick pick */}
       <div style={{ ...card, marginBottom: '20px', background: 'linear-gradient(135deg, rgba(56,189,248,0.07), rgba(255,255,255,0.02))' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-          <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#f1f5f9', margin: 0 }}>Resume templates</h2>
-          <Link to="/resume-templates" style={{ fontSize: '12px', color: '#38bdf8', textDecoration: 'none', fontWeight: '500' }}>See all →</Link>
+          <h2 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--color-text)', margin: 0 }}>Resume templates</h2>
+          <Link to="/resume-templates" style={{ fontSize: '12px', color: 'var(--color-brand)', textDecoration: 'none', fontWeight: '500' }}>See all →</Link>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '12px' }}>
           {resumeTemplates.map(t => (
@@ -399,11 +434,11 @@ function Dashboard() {
                 onMouseLeave={e => e.currentTarget.style.borderColor = selectedTemplate === t.id ? 'rgba(56,189,248,0.5)' : 'rgba(255,255,255,0.07)'}
               >
                 <div style={{ fontSize: '20px', marginBottom: '6px' }}>{t.icon}</div>
-                <div style={{ fontSize: '13px', fontWeight: '600', color: '#e2e8f0', marginBottom: '3px' }}>{t.name}</div>
-                <div style={{ fontSize: '11px', color: '#475569', lineHeight: '1.4' }}>{t.description}</div>
+                <div style={{ fontSize: '13px', fontWeight: '600', color: 'var(--color-text)', marginBottom: '3px' }}>{t.name}</div>
+                <div style={{ fontSize: '11px', color: 'var(--color-subtle)', lineHeight: '1.4' }}>{t.description}</div>
                 {selectedTemplate === t.id && (
                   <div style={{
-                    marginTop: '8px', fontSize: '11px', color: '#38bdf8',
+                    marginTop: '8px', fontSize: '11px', color: 'var(--color-brand)',
                     background: 'rgba(56,189,248,0.1)', padding: '2px 8px',
                     borderRadius: '100px', display: 'inline-block', fontWeight: '500',
                   }}>Active</div>
@@ -416,7 +451,7 @@ function Dashboard() {
 
       {/* All tools grid */}
       <div style={{ ...card, background: 'linear-gradient(135deg, rgba(255,255,255,0.03), rgba(56,189,248,0.04))' }}>
-        <h2 style={{ fontSize: '16px', fontWeight: '700', color: '#f1f5f9', margin: '0 0 18px 0' }}>All tools</h2>
+        <h2 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--color-text)', margin: '0 0 18px 0' }}>All tools</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: '12px' }}>
           {toolLinks.map(t => (
             <QuickAction key={t.to} {...t} />
@@ -429,3 +464,6 @@ function Dashboard() {
 }
 
 export default Dashboard
+
+
+

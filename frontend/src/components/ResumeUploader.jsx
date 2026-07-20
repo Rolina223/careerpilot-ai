@@ -1,5 +1,7 @@
 import { useState, useRef } from 'react'
+import { motion } from 'framer-motion'
 import * as mammoth from 'mammoth'
+import { motionTokens } from './motion/MotionPrimitives'
 
 async function extractTextFromPDF(file) {
   const pdfjsLib = await import('pdfjs-dist')
@@ -80,7 +82,7 @@ function ResumeUploader({ onTextExtracted }) {
       } else {
         onTextExtracted(text)
       }
-    } catch (err) {
+    } catch {
       setError('Could not read file. Please paste text manually.')
     } finally {
       setLoading(false)
@@ -98,34 +100,27 @@ function ResumeUploader({ onTextExtracted }) {
     <div style={{ marginBottom: '12px' }}>
 
       {/* Upload Box */}
-      <div
+      <motion.div
         onClick={() => fileRef.current.click()}
         onDragOver={e => { e.preventDefault(); setIsDragging(true) }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={handleDrop}
+        animate={{ scale: isDragging ? 1.015 : 1, borderColor: isDragging ? 'var(--color-brand)' : 'rgba(56,189,248,0.25)' }}
+        whileHover={{ y: -2, backgroundColor: 'rgba(56,189,248,0.05)', borderColor: 'rgba(56,189,248,0.5)' }}
+        whileTap={{ scale: 0.99 }}
+        transition={motionTokens.spring}
         style={{
           padding: '20px',
           backgroundColor: isDragging
             ? 'rgba(56,189,248,0.1)'
             : 'rgba(255,255,255,0.02)',
           border: isDragging
-            ? '2px dashed #38bdf8'
+            ? '2px dashed var(--color-brand)'
             : '2px dashed rgba(56,189,248,0.25)',
           borderRadius: '12px',
           textAlign: 'center',
           cursor: 'pointer',
-          transition: 'all 0.2s ease',
           marginBottom: '8px',
-        }}
-        onMouseEnter={e => {
-          e.currentTarget.style.backgroundColor = 'rgba(56,189,248,0.05)'
-          e.currentTarget.style.borderColor = 'rgba(56,189,248,0.5)'
-        }}
-        onMouseLeave={e => {
-          if (!isDragging) {
-            e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.02)'
-            e.currentTarget.style.borderColor = 'rgba(56,189,248,0.25)'
-          }
         }}
       >
         <input
@@ -138,23 +133,25 @@ function ResumeUploader({ onTextExtracted }) {
 
         {loading ? (
           <div>
-            <div style={{
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 0.85, repeat: Infinity, ease: 'linear' }}
+              style={{
               width: '28px',
               height: '28px',
               border: '3px solid rgba(56,189,248,0.2)',
-              borderTop: '3px solid #38bdf8',
+              borderTop: '3px solid var(--color-brand)',
               borderRadius: '50%',
-              animation: 'spin 1s linear infinite',
               margin: '0 auto 8px',
             }} />
-            <p style={{ color: '#38bdf8', fontSize: '13px' }}>
+            <p style={{ color: 'var(--color-brand)', fontSize: '13px' }}>
               Extracting text...
             </p>
           </div>
         ) : fileName ? (
           <div>
             <div style={{ fontSize: '24px', marginBottom: '4px' }}>✅</div>
-            <p style={{ color: '#34d399', fontSize: '13px', fontWeight: '600' }}>
+            <p style={{ color: 'var(--color-success)', fontSize: '13px', fontWeight: '600' }}>
               {fileName}
             </p>
             <p style={{ color: 'var(--text-secondary)', fontSize: '11px' }}>
@@ -164,7 +161,7 @@ function ResumeUploader({ onTextExtracted }) {
         ) : (
           <div>
             <div style={{ fontSize: '28px', marginBottom: '8px' }}>📁</div>
-            <p style={{ color: '#38bdf8', fontSize: '13px', fontWeight: '600' }}>
+            <p style={{ color: 'var(--color-brand)', fontSize: '13px', fontWeight: '600' }}>
               Upload PDF or DOC
             </p>
             <p style={{ color: 'var(--text-secondary)', fontSize: '11px', marginTop: '4px' }}>
@@ -172,12 +169,12 @@ function ResumeUploader({ onTextExtracted }) {
             </p>
           </div>
         )}
-      </div>
+      </motion.div>
 
       {/* Error */}
       {error && (
         <p style={{
-          color: '#fb7185',
+          color: 'var(--color-danger)',
           fontSize: '12px',
           marginBottom: '8px',
         }}>

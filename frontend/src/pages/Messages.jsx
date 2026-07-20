@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { generateMessage as generateMessageAI } from '../services/aiService'
 import { getCurrentUsage } from '../services/paymentService'
 import { useAuth } from '../AuthProvider'
@@ -9,28 +9,28 @@ const messageTypes = [
     icon: '🤝',
     title: 'LinkedIn Connection',
     description: 'Send to HR or employee at target company',
-    color: '#38bdf8',
+    color: 'var(--color-brand)',
   },
   {
     id: 'linkedin-referral',
     icon: '🌟',
     title: 'Referral Request',
     description: 'Ask someone to refer you internally',
-    color: '#818cf8',
+    color: 'var(--color-accent)',
   },
   {
     id: 'hr-cold',
     icon: '💼',
     title: 'HR Cold Message',
     description: 'Reach out to HR directly about opening',
-    color: '#34d399',
+    color: 'var(--color-success)',
   },
   {
     id: 'follow-up',
     icon: '🔔',
     title: 'Follow Up Message',
     description: 'Follow up after applying or interview',
-    color: '#fb7185',
+    color: 'var(--color-danger)',
   },
 ]
 
@@ -118,7 +118,7 @@ function Messages() {
   const [aiError, setAiError] = useState('')
   const [isPremium, setIsPremium] = useState(false)
 
-  useState(() => {
+  useEffect(() => {
     if (user) {
       getCurrentUsage().then(u => setIsPremium(u.isPremium))
     }
@@ -164,7 +164,7 @@ function Messages() {
   ]
 
   return (
-    <div style={{
+    <div className="messages-page" style={{
       maxWidth: '1100px',
       margin: '0 auto',
       padding: '60px 32px',
@@ -181,7 +181,7 @@ function Messages() {
           border: '1px solid rgba(56,189,248,0.3)',
           borderRadius: '100px',
           fontSize: '13px',
-          color: '#38bdf8',
+          color: 'var(--color-brand)',
           fontWeight: '500',
           marginBottom: '16px',
         }}>
@@ -306,9 +306,9 @@ function Messages() {
                     flex: 1, padding: '8px 4px', borderRadius: '8px', border: 'none',
                     cursor: 'pointer', fontSize: '11px', fontWeight: '700',
                     background: level === l.value
-                      ? 'linear-gradient(135deg, #6366f1, #8b5cf6)'
+                      ? 'linear-gradient(135deg, var(--color-brand), var(--color-accent))'
                       : 'rgba(255,255,255,0.05)',
-                    color: level === l.value ? '#fff' : 'var(--text-secondary)',
+                    color: level === l.value ? 'var(--color-on-brand)' : 'var(--text-secondary)',
                     transition: 'all 0.2s ease',
                   }}
                 >
@@ -373,8 +373,8 @@ function Messages() {
                 style={{
                   width: '100%', padding: '12px', borderRadius: '10px',
                   border: 'none', cursor: generating ? 'wait' : 'pointer',
-                  background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                  color: '#fff', fontSize: '14px', fontWeight: '700',
+                  background: 'linear-gradient(135deg, var(--color-brand), var(--color-accent))',
+                  color: 'var(--color-on-brand)', fontSize: '14px', fontWeight: '700',
                   opacity: generating ? 0.7 : 1, transition: 'opacity 0.2s',
                 }}
               >
@@ -387,7 +387,7 @@ function Messages() {
                 border: '1px solid rgba(99,102,241,0.2)',
                 textAlign: 'center',
               }}>
-                <p style={{ fontSize: '13px', color: '#818cf8', fontWeight: '600', margin: '0 0 4px' }}>
+                <p style={{ fontSize: '13px', color: 'var(--color-accent)', fontWeight: '600', margin: '0 0 4px' }}>
                   ⭐ AI Generation is Premium
                 </p>
                 <p style={{ fontSize: '12px', color: 'var(--text-secondary)', margin: 0 }}>
@@ -396,7 +396,7 @@ function Messages() {
               </div>
             )}
             {aiError && (
-              <p style={{ color: '#fb7185', fontSize: '13px', marginTop: '8px' }}>⚠️ {aiError}</p>
+              <p style={{ color: 'var(--color-danger)', fontSize: '13px', marginTop: '8px' }}>⚠️ {aiError}</p>
             )}
           </div>
         </div>
@@ -432,7 +432,7 @@ function Messages() {
                 style={{
                   padding: '6px 14px', marginRight: '8px',
                   backgroundColor: 'rgba(99,102,241,0.1)',
-                  color: '#818cf8',
+                  color: 'var(--color-accent)',
                   border: '1px solid rgba(99,102,241,0.3)',
                   borderRadius: '8px', fontSize: '13px',
                   cursor: generating ? 'wait' : 'pointer',
@@ -448,7 +448,7 @@ function Messages() {
               style={{
                 padding: '6px 16px',
                 backgroundColor: copied ? 'rgba(52,211,153,0.1)' : 'transparent',
-                color: copied ? '#34d399' : '#94a3b8',
+                color: copied ? 'var(--color-success)' : 'var(--color-muted)',
                 border: copied
                   ? '1px solid rgba(52,211,153,0.3)'
                   : '1px solid rgba(255,255,255,0.1)',

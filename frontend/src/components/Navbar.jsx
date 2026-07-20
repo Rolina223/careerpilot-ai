@@ -48,7 +48,7 @@ function Navbar({ theme, onToggleTheme }) {
   const navLink = (to, label) => (
     <Link to={to} style={{
       padding: '8px 14px',
-      color: location.pathname === to ? '#38bdf8' : 'var(--text-secondary)',
+      color: location.pathname === to ? 'var(--color-brand)' : 'var(--text-secondary)',
       textDecoration: 'none',
       fontSize: '14px',
       fontWeight: location.pathname === to ? '600' : '500',
@@ -87,7 +87,7 @@ function Navbar({ theme, onToggleTheme }) {
       style={{
         display: 'block',
         padding: '12px 16px',
-        color: location.pathname === link.path ? '#38bdf8' : 'var(--text-secondary)',
+        color: location.pathname === link.path ? 'var(--color-brand)' : 'var(--text-secondary)',
         textDecoration: 'none',
         fontSize: '14px',
         fontWeight: location.pathname === link.path ? '600' : '400',
@@ -97,12 +97,12 @@ function Navbar({ theme, onToggleTheme }) {
       }}
       onMouseEnter={e => {
         e.currentTarget.style.backgroundColor = 'rgba(56,189,248,0.08)'
-        e.currentTarget.style.color = '#38bdf8'
+        e.currentTarget.style.color = 'var(--color-brand)'
         e.currentTarget.style.paddingLeft = '20px'
       }}
       onMouseLeave={e => {
         e.currentTarget.style.backgroundColor = location.pathname === link.path ? 'rgba(56,189,248,0.08)' : 'transparent'
-        e.currentTarget.style.color = location.pathname === link.path ? '#38bdf8' : 'var(--text-secondary)'
+        e.currentTarget.style.color = location.pathname === link.path ? 'var(--color-brand)' : 'var(--text-secondary)'
         e.currentTarget.style.paddingLeft = '16px'
       }}
     >
@@ -118,7 +118,7 @@ function Navbar({ theme, onToggleTheme }) {
       style={{
         display: 'block',
         padding: '14px 20px',
-        color: location.pathname === to ? '#38bdf8' : 'var(--text-secondary)',
+        color: location.pathname === to ? 'var(--color-brand)' : 'var(--text-secondary)',
         textDecoration: 'none',
         fontSize: '15px',
         fontWeight: location.pathname === to ? '600' : '500',
@@ -150,7 +150,7 @@ function Navbar({ theme, onToggleTheme }) {
           <div style={{
             fontSize: isMobile ? '18px' : '22px',
             fontWeight: '800',
-            background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
+            background: 'linear-gradient(135deg, var(--color-brand), var(--color-accent))',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             letterSpacing: '-0.5px'
@@ -171,7 +171,7 @@ function Navbar({ theme, onToggleTheme }) {
                     onClick={() => { setToolsOpen(!toolsOpen); setPracticeOpen(false) }}
                     style={{
                       padding: '8px 14px',
-                      color: isToolsActive ? '#38bdf8' : 'var(--text-secondary)',
+                      color: isToolsActive ? 'var(--color-brand)' : 'var(--text-secondary)',
                       backgroundColor: isToolsActive || toolsOpen ? 'rgba(56,189,248,0.08)' : 'transparent',
                       border: 'none',
                       fontSize: '14px',
@@ -211,7 +211,7 @@ function Navbar({ theme, onToggleTheme }) {
                     onClick={() => { setPracticeOpen(!practiceOpen); setToolsOpen(false) }}
                     style={{
                       padding: '8px 14px',
-                      color: isPracticeActive ? '#38bdf8' : 'var(--text-secondary)',
+                      color: isPracticeActive ? 'var(--color-brand)' : 'var(--text-secondary)',
                       backgroundColor: isPracticeActive || practiceOpen ? 'rgba(56,189,248,0.08)' : 'transparent',
                       border: 'none',
                       fontSize: '14px',
@@ -285,7 +285,7 @@ function Navbar({ theme, onToggleTheme }) {
             <Link to={authenticated ? '/analyze' : '/login'} style={{ textDecoration: 'none', marginLeft: '8px' }}>
               <button style={{
                 padding: '8px 20px',
-                background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
+                background: 'linear-gradient(135deg, var(--color-brand), var(--color-accent))',
                 border: 'none',
                 borderRadius: '999px',
                 color: 'white',
@@ -322,21 +322,21 @@ function Navbar({ theme, onToggleTheme }) {
           >
             <span style={{
               display: 'block', width: '20px', height: '2px',
-              backgroundColor: '#38bdf8',
+              backgroundColor: 'var(--color-brand)',
               borderRadius: '2px',
               transition: 'all 0.3s ease',
               transform: mobileOpen ? 'rotate(45deg) translate(5px, 5px)' : 'none',
             }} />
             <span style={{
               display: 'block', width: '20px', height: '2px',
-              backgroundColor: '#38bdf8',
+              backgroundColor: 'var(--color-brand)',
               borderRadius: '2px',
               transition: 'all 0.3s ease',
               opacity: mobileOpen ? '0' : '1',
             }} />
             <span style={{
               display: 'block', width: '20px', height: '2px',
-              backgroundColor: '#38bdf8',
+              backgroundColor: 'var(--color-brand)',
               borderRadius: '2px',
               transition: 'all 0.3s ease',
               transform: mobileOpen ? 'rotate(-45deg) translate(5px, -5px)' : 'none',
@@ -371,7 +371,7 @@ function Navbar({ theme, onToggleTheme }) {
                     padding: '14px 20px',
                     background: 'none', border: 'none',
                     borderBottom: '1px solid var(--border)',
-                    color: isToolsActive ? '#38bdf8' : 'var(--text-secondary)',
+                    color: isToolsActive ? 'var(--color-brand)' : 'var(--text-secondary)',
                     fontSize: '15px', fontWeight: '500',
                     cursor: 'pointer',
                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -395,7 +395,7 @@ function Navbar({ theme, onToggleTheme }) {
                         style={{
                           display: 'block',
                           padding: '12px 20px 12px 36px',
-                          color: location.pathname === link.path ? '#38bdf8' : 'var(--text-secondary)',
+                          color: location.pathname === link.path ? 'var(--color-brand)' : 'var(--text-secondary)',
                           textDecoration: 'none',
                           fontSize: '14px',
                           borderBottom: '1px solid var(--border)',
@@ -420,7 +420,7 @@ function Navbar({ theme, onToggleTheme }) {
                     padding: '14px 20px',
                     background: 'none', border: 'none',
                     borderBottom: '1px solid var(--border)',
-                    color: isPracticeActive ? '#38bdf8' : 'var(--text-secondary)',
+                    color: isPracticeActive ? 'var(--color-brand)' : 'var(--text-secondary)',
                     fontSize: '15px', fontWeight: '500',
                     cursor: 'pointer',
                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -444,7 +444,7 @@ function Navbar({ theme, onToggleTheme }) {
                         style={{
                           display: 'block',
                           padding: '12px 20px 12px 36px',
-                          color: location.pathname === link.path ? '#38bdf8' : 'var(--text-secondary)',
+                          color: location.pathname === link.path ? 'var(--color-brand)' : 'var(--text-secondary)',
                           textDecoration: 'none',
                           fontSize: '14px',
                           borderBottom: '1px solid var(--border)',
@@ -503,7 +503,7 @@ function Navbar({ theme, onToggleTheme }) {
                 <button style={{
                   width: '100%',
                   padding: '14px',
-                  background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
+                  background: 'linear-gradient(135deg, var(--color-brand), var(--color-accent))',
                   border: 'none',
                   borderRadius: '10px',
                   color: 'white',
@@ -519,7 +519,7 @@ function Navbar({ theme, onToggleTheme }) {
                 <button style={{
                   width: '100%',
                   padding: '14px',
-                  background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
+                  background: 'linear-gradient(135deg, var(--color-brand), var(--color-accent))',
                   border: 'none',
                   borderRadius: '10px',
                   color: 'white',

@@ -1,8 +1,8 @@
 function Footer() {
   const socialLinks = [
-    { label: 'GH', href: 'https://github.com/Rolina223/careerpilot-ai', color: '#e2e8f0', ariaLabel: 'GitHub' },
-    { label: 'in', href: 'https://www.linkedin.com/', color: '#0ea5e9', ariaLabel: 'LinkedIn' },
-    { label: '𝕏', href: 'https://x.com/', color: '#38bdf8', ariaLabel: 'Twitter' },
+    { label: 'GH', href: 'https://github.com/Rolina223/careerpilot-ai', color: 'var(--color-text)', ariaLabel: 'GitHub' },
+    { label: 'in', href: 'https://www.linkedin.com/', color: 'var(--color-brand)', ariaLabel: 'LinkedIn' },
+    { label: '𝕏', href: 'https://x.com/', color: 'var(--color-brand)', ariaLabel: 'Twitter' },
   ]
 
   const connectLinks = [
@@ -44,7 +44,7 @@ function Footer() {
         <h3 style={{
           fontSize: '24px',
           fontWeight: '800',
-          background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
+          background: 'linear-gradient(135deg, var(--color-brand), var(--color-accent))',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
           marginBottom: '8px',
@@ -60,7 +60,7 @@ function Footer() {
         </p>
         <button style={{
           padding: '12px 32px',
-          background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
+          background: 'linear-gradient(135deg, var(--color-brand), var(--color-accent))',
           border: 'none',
           borderRadius: '10px',
           color: 'white',
@@ -92,7 +92,7 @@ function Footer() {
             <div style={{
               fontSize: '22px',
               fontWeight: '800',
-              background: 'linear-gradient(135deg, #38bdf8, #818cf8)',
+              background: 'linear-gradient(135deg, var(--color-brand), var(--color-accent))',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               marginBottom: '12px',
@@ -171,11 +171,11 @@ function Footer() {
                 transition: 'all 0.2s ease',
               }}
                 onMouseEnter={e => {
-                  e.target.style.color = '#38bdf8'
+                  e.target.style.color = 'var(--color-brand)'
                   e.target.style.paddingLeft = '4px'
                 }}
                 onMouseLeave={e => {
-                  e.target.style.color = '#94a3b8'
+                  e.target.style.color = 'var(--color-muted)'
                   e.target.style.paddingLeft = '0'
                 }}
               >
@@ -205,11 +205,11 @@ function Footer() {
                 transition: 'all 0.2s ease',
               }}
                 onMouseEnter={e => {
-                  e.target.style.color = '#818cf8'
+                  e.target.style.color = 'var(--color-accent)'
                   e.target.style.paddingLeft = '4px'
                 }}
                 onMouseLeave={e => {
-                  e.target.style.color = '#94a3b8'
+                  e.target.style.color = 'var(--color-muted)'
                   e.target.style.paddingLeft = '0'
                 }}
               >
@@ -239,11 +239,11 @@ function Footer() {
                 transition: 'all 0.2s ease',
               }}
                 onMouseEnter={e => {
-                  e.target.style.color = '#34d399'
+                  e.target.style.color = 'var(--color-success)'
                   e.target.style.paddingLeft = '4px'
                 }}
                 onMouseLeave={e => {
-                  e.target.style.color = '#94a3b8'
+                  e.target.style.color = 'var(--color-muted)'
                   e.target.style.paddingLeft = '0'
                 }}
               >
@@ -266,11 +266,11 @@ function Footer() {
                 width: '6px',
                 height: '6px',
                 borderRadius: '50%',
-                backgroundColor: '#34d399',
+                backgroundColor: 'var(--color-success)',
                 animation: 'pulse 2s ease-in-out infinite',
               }} />
               <span style={{
-                color: '#34d399',
+                color: 'var(--color-success)',
                 fontSize: '12px',
                 fontWeight: '600',
               }}>

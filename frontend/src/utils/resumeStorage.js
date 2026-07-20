@@ -16,7 +16,7 @@ export const resumeTemplates = [
     name: 'Modern Tech',
     icon: '💻',
     description: 'A colorful layout for product and engineering roles.',
-    accent: '#0ea5e9',
+    accent: 'var(--color-brand)',
     layout: 'modern',
   },
   {
@@ -32,7 +32,7 @@ export const resumeTemplates = [
     name: 'Creative',
     icon: '🎨',
     description: 'A visual layout for designers and marketing professionals.',
-    accent: '#f97316',
+    accent: 'var(--color-warning)',
     layout: 'creative',
   },
 ];

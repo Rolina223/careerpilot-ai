@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts'
 import { fetchQuestionSets, fetchQuestionsForSet } from '../utils/questionBankStorage'
 
@@ -87,21 +88,21 @@ const codingProblems = [
 ]
 
 const companies = [
-  { name: 'TCS', icon: '🏢', color: '#38bdf8', pattern: 'Arrays + Strings + Pseudocode' },
-  { name: 'Infosys', icon: '💼', color: '#818cf8', pattern: 'Arrays + Strings + Pseudocode' },
-  { name: 'Wipro', icon: '🌐', color: '#34d399', pattern: 'Arrays + Strings + Pseudocode' },
-  { name: 'Cognizant', icon: '⚡', color: '#f59e0b', pattern: 'Arrays + Strings + Pseudocode' },
-  { name: 'Accenture', icon: '🎯', color: '#fb7185', pattern: 'Arrays + Strings + Pseudocode' },
-  { name: 'Generic', icon: '📚', color: '#94a3b8', pattern: 'Mixed Practice' },
+  { name: 'TCS', icon: '🏢', color: 'var(--color-brand)', pattern: 'Arrays + Strings + Pseudocode' },
+  { name: 'Infosys', icon: '💼', color: 'var(--color-accent)', pattern: 'Arrays + Strings + Pseudocode' },
+  { name: 'Wipro', icon: '🌐', color: 'var(--color-success)', pattern: 'Arrays + Strings + Pseudocode' },
+  { name: 'Cognizant', icon: '⚡', color: 'var(--color-warning)', pattern: 'Arrays + Strings + Pseudocode' },
+  { name: 'Accenture', icon: '🎯', color: 'var(--color-danger)', pattern: 'Arrays + Strings + Pseudocode' },
+  { name: 'Generic', icon: '📚', color: 'var(--color-muted)', pattern: 'Mixed Practice' },
 ]
 
 const categoryInfo = {
-  arrays: { label: 'Arrays', color: '#38bdf8' },
-  strings: { label: 'Strings', color: '#818cf8' },
-  pseudocode: { label: 'Pseudocode Output', color: '#34d399' },
+  arrays: { label: 'Arrays', color: 'var(--color-brand)' },
+  strings: { label: 'Strings', color: 'var(--color-accent)' },
+  pseudocode: { label: 'Pseudocode Output', color: 'var(--color-success)' },
 }
 
-const difficultyColor = { Easy: '#34d399', Medium: '#f59e0b', Hard: '#fb7185' }
+const difficultyColor = { Easy: 'var(--color-success)', Medium: 'var(--color-warning)', Hard: 'var(--color-danger)' }
 
 const difficultyLevels = [
   { value: 'all', label: 'All Levels', desc: null },
@@ -143,7 +144,6 @@ function CodingPrep() {
   const [activeLang, setActiveLang] = useState({})
 
   const [dbMcqSets, setDbMcqSets] = useState([])
-  const [dbProblemSets, setDbProblemSets] = useState([])
   const [dbProblems, setDbProblems] = useState([])
   const [loadingSets, setLoadingSets] = useState(true)
   const [loadingSetId, setLoadingSetId] = useState(null)
@@ -197,7 +197,6 @@ function CodingPrep() {
       ])
       if (mcqRes.error || problemRes.error) setSetsError('Could not load extra question sets.')
       setDbMcqSets(mcqRes.data)
-      setDbProblemSets(problemRes.data)
       const allProblems = []
       for (const set of problemRes.data) {
         const { data } = await fetchQuestionsForSet(set.id)
@@ -221,7 +220,7 @@ function CodingPrep() {
     setLoadingSetId(null)
     if (error || data.length === 0) { setSetsError('Could not load this question set.'); return }
     const shuffled = [...data].sort(() => Math.random() - 0.5)
-    setSelectedCompany({ name: set.title, color: '#38bdf8', icon: '💻' })
+    setSelectedCompany({ name: set.title, color: 'var(--color-brand)', icon: '💻' })
     setQuestions(shuffled)
     setCurrentIndex(0); setResults([]); setSelectedOption(null); setShowAnswer(false)
     setScreen('test')
@@ -279,10 +278,10 @@ function CodingPrep() {
     <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', ...style }}>
       {difficultyLevels.map(d => (
         <button key={d.value} onClick={() => onChange(d.value)} style={{
-          padding: '8px 16px', borderRadius: '100px', border: 'none', cursor: 'pointer',
+          padding: '8px 16px', borderRadius: '100px', cursor: 'pointer',
           fontSize: '12px', fontWeight: '700',
-          background: value === d.value ? 'linear-gradient(135deg, #6366f1, #8b5cf6)' : 'rgba(255,255,255,0.05)',
-          color: value === d.value ? '#fff' : 'var(--text-secondary)',
+          background: value === d.value ? 'linear-gradient(135deg, var(--color-brand), var(--color-accent))' : 'rgba(255,255,255,0.05)',
+          color: value === d.value ? 'var(--color-on-brand)' : 'var(--text-secondary)',
           border: value === d.value ? 'none' : '1px solid rgba(255,255,255,0.1)',
           transition: 'all 0.2s ease',
         }}>
@@ -300,7 +299,7 @@ function CodingPrep() {
           backgroundColor: mainTab === tab.id ? 'rgba(56,189,248,0.12)' : 'rgba(255,255,255,0.03)',
           border: mainTab === tab.id ? '1px solid rgba(56,189,248,0.5)' : '1px solid rgba(255,255,255,0.08)',
           borderRadius: '12px', fontSize: '14px', fontWeight: '700', cursor: 'pointer',
-          color: mainTab === tab.id ? '#38bdf8' : 'var(--text-secondary)',
+          color: mainTab === tab.id ? 'var(--color-brand)' : 'var(--text-secondary)',
           boxShadow: mainTab === tab.id ? '0 0 20px rgba(56,189,248,0.15)' : 'none',
           transition: 'all 0.2s ease',
         }}>{tab.label}</button>
@@ -316,8 +315,8 @@ function CodingPrep() {
           padding: '10px 14px',
           borderRadius: '999px',
           border: 'none',
-          background: cameraActive ? 'linear-gradient(135deg, #ef4444, #f97316)' : 'linear-gradient(135deg, #38bdf8, #818cf8)',
-          color: '#fff',
+          background: cameraActive ? 'linear-gradient(135deg, var(--color-danger), var(--color-warning))' : 'linear-gradient(135deg, var(--color-brand), var(--color-accent))',
+          color: 'var(--color-on-brand)',
           cursor: 'pointer',
           fontSize: '13px',
           fontWeight: '700',
@@ -332,7 +331,7 @@ function CodingPrep() {
         </div>
       )}
       {cameraError && (
-        <div style={{ maxWidth: '220px', padding: '8px 10px', borderRadius: '10px', background: 'rgba(248,113,113,0.12)', border: '1px solid rgba(248,113,113,0.28)', color: '#fda4af', fontSize: '12px', lineHeight: '1.4' }}>
+        <div style={{ maxWidth: '220px', padding: '8px 10px', borderRadius: '10px', background: 'rgba(248,113,113,0.12)', border: '1px solid rgba(248,113,113,0.28)', color: 'var(--color-danger)', fontSize: '12px', lineHeight: '1.4' }}>
           {cameraError}
         </div>
       )}
@@ -344,7 +343,7 @@ function CodingPrep() {
     return (
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '60px 32px' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', backgroundColor: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '100px', fontSize: '13px', color: '#38bdf8', fontWeight: '500', marginBottom: '16px' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', backgroundColor: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '100px', fontSize: '13px', color: 'var(--color-brand)', fontWeight: '500', marginBottom: '16px' }}>
             ✦ Practice Coding Problems
           </div>
           <h2 style={{ fontSize: '40px', fontWeight: '800', background: 'var(--gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '12px', letterSpacing: '-1px' }}>
@@ -379,7 +378,7 @@ function CodingPrep() {
             backgroundColor: problemCompany === 'More Sets' ? 'rgba(129,140,248,0.15)' : 'rgba(255,255,255,0.03)',
             border: problemCompany === 'More Sets' ? '1px solid rgba(129,140,248,0.5)' : '1px solid rgba(255,255,255,0.08)',
             borderRadius: '100px', fontSize: '13px', fontWeight: '600', cursor: 'pointer',
-            color: problemCompany === 'More Sets' ? '#818cf8' : 'var(--text-secondary)', transition: 'all 0.2s ease',
+            color: problemCompany === 'More Sets' ? 'var(--color-accent)' : 'var(--text-secondary)', transition: 'all 0.2s ease',
           }}>
             🧠 More Sets ({dbProblems.filter(p => problemDifficulty === 'all' || p._setDifficulty === problemDifficulty).length})
           </button>
@@ -400,7 +399,7 @@ function CodingPrep() {
             const isSolutionShown = showSolution[problem.id]
             const lang = activeLang[problem.id] || 'csharp'
             return (
-              <div key={problem.id} style={{ backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(56,189,248,0.15)', borderRadius: '16px', overflow: 'hidden' }}>
+              <motion.div key={problem.id} layout style={{ backgroundColor: 'rgba(255,255,255,0.02)', border: '1px solid rgba(56,189,248,0.15)', borderRadius: '16px', overflow: 'hidden' }}>
                 <div onClick={() => setExpandedProblem(isExpanded ? null : problem.id)} style={{ padding: '20px 24px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                     <span style={{ padding: '4px 10px', borderRadius: '100px', fontSize: '11px', fontWeight: '700', backgroundColor: `${difficultyColor[problem.difficulty]}15`, color: difficultyColor[problem.difficulty], border: `1px solid ${difficultyColor[problem.difficulty]}40` }}>
@@ -408,13 +407,15 @@ function CodingPrep() {
                     </span>
                     <p style={{ fontSize: '16px', fontWeight: '700', color: 'var(--text-primary)' }}>{problem.title}</p>
                   </div>
-                  <span style={{ fontSize: '14px', color: '#38bdf8', transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }}>▾</span>
+                  <motion.span animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.18 }} style={{ fontSize: '14px', color: 'var(--color-brand)' }}>v</motion.span>
                 </div>
+                <AnimatePresence initial={false}>
                 {isExpanded && (
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }} style={{ overflow: 'hidden' }}>
                   <div style={{ padding: '0 24px 24px' }}>
                     <p style={{ fontSize: '14px', color: 'var(--text-secondary)', lineHeight: '1.7', marginBottom: '16px' }}>{problem.description}</p>
                     <div style={{ padding: '14px 18px', backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', marginBottom: '16px' }}>
-                      <p style={{ fontSize: '12px', color: '#818cf8', fontWeight: '700', marginBottom: '6px' }}>EXAMPLE</p>
+                      <p style={{ fontSize: '12px', color: 'var(--color-accent)', fontWeight: '700', marginBottom: '6px' }}>EXAMPLE</p>
                       <p style={{ fontSize: '13px', color: 'var(--text-secondary)', fontFamily: 'monospace' }}>Input: {problem.example.input}<br />Output: {problem.example.output}</p>
                     </div>
                     {!isSolutionShown ? (
@@ -425,23 +426,25 @@ function CodingPrep() {
                       <div>
                         <div style={{ display: 'flex', gap: '8px', marginBottom: '12px' }}>
                           {['csharp', 'javascript'].map(l => (
-                            <button key={l} onClick={() => setActiveLang(prev => ({ ...prev, [problem.id]: l }))} style={{ padding: '6px 16px', backgroundColor: lang === l ? 'rgba(56,189,248,0.15)' : 'rgba(255,255,255,0.04)', border: lang === l ? '1px solid rgba(56,189,248,0.4)' : '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', color: lang === l ? '#38bdf8' : 'var(--text-secondary)' }}>
+                            <button key={l} onClick={() => setActiveLang(prev => ({ ...prev, [problem.id]: l }))} style={{ padding: '6px 16px', backgroundColor: lang === l ? 'rgba(56,189,248,0.15)' : 'rgba(255,255,255,0.04)', border: lang === l ? '1px solid rgba(56,189,248,0.4)' : '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', fontSize: '12px', fontWeight: '600', cursor: 'pointer', color: lang === l ? 'var(--color-brand)' : 'var(--text-secondary)' }}>
                               {l === 'csharp' ? 'C#' : 'JavaScript'}
                             </button>
                           ))}
                         </div>
-                        <pre style={{ fontSize: '13px', color: '#e2e8f0', backgroundColor: 'rgba(0,0,0,0.3)', padding: '18px 20px', borderRadius: '12px', marginBottom: '14px', fontFamily: 'Consolas, Monaco, monospace', lineHeight: '1.7', overflowX: 'auto', whiteSpace: 'pre', border: '1px solid rgba(255,255,255,0.06)' }}>
+                        <pre style={{ fontSize: '13px', color: 'var(--color-text)', backgroundColor: 'rgba(0,0,0,0.3)', padding: '18px 20px', borderRadius: '12px', marginBottom: '14px', fontFamily: 'Consolas, Monaco, monospace', lineHeight: '1.7', overflowX: 'auto', whiteSpace: 'pre', border: '1px solid rgba(255,255,255,0.06)' }}>
                           {lang === 'csharp' ? problem.csharp : problem.javascript}
                         </pre>
                         <div style={{ padding: '14px 18px', backgroundColor: 'rgba(129,140,248,0.05)', border: '1px solid rgba(129,140,248,0.2)', borderRadius: '10px' }}>
-                          <p style={{ fontSize: '12px', color: '#818cf8', fontWeight: '700', marginBottom: '6px' }}>💡 EXPLANATION</p>
+                          <p style={{ fontSize: '12px', color: 'var(--color-accent)', fontWeight: '700', marginBottom: '6px' }}>💡 EXPLANATION</p>
                           <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>{problem.explanation}</p>
                         </div>
                       </div>
                     )}
                   </div>
+                  </motion.div>
                 )}
-              </div>
+                </AnimatePresence>
+              </motion.div>
             )
           })}
         </div>
@@ -454,7 +457,7 @@ function CodingPrep() {
     return (
       <div style={{ maxWidth: '900px', margin: '0 auto', padding: '60px 32px' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', backgroundColor: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '100px', fontSize: '13px', color: '#38bdf8', fontWeight: '500', marginBottom: '16px' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', backgroundColor: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '100px', fontSize: '13px', color: 'var(--color-brand)', fontWeight: '500', marginBottom: '16px' }}>
             ✦ Company-wise Coding Prep
           </div>
           <h2 style={{ fontSize: '40px', fontWeight: '800', background: 'var(--gradient)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '12px', letterSpacing: '-1px' }}>
@@ -470,7 +473,7 @@ function CodingPrep() {
         {cameraWidget}
 
         <div style={{ padding: '14px 20px', backgroundColor: 'rgba(245,158,11,0.06)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: '12px', marginBottom: '32px', textAlign: 'center' }}>
-          <p style={{ fontSize: '12px', color: '#f59e0b' }}>⚠️ Practice in company exam style — MCQ format, no code execution needed</p>
+          <p style={{ fontSize: '12px', color: 'var(--color-warning)' }}>⚠️ Practice in company exam style — MCQ format, no code execution needed</p>
         </div>
 
         {/* Difficulty Filter */}
@@ -515,7 +518,7 @@ function CodingPrep() {
         <div style={{ marginTop: '48px' }}>
           <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '8px', color: 'var(--text-primary)' }}>More Practice Sets</h3>
           <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '20px' }}>Freshly curated MCQ sets — arrays, strings & pseudocode</p>
-          {setsError && <p style={{ color: '#fb7185', fontSize: '14px', marginBottom: '16px' }}>⚠️ {setsError}</p>}
+          {setsError && <p style={{ color: 'var(--color-danger)', fontSize: '14px', marginBottom: '16px' }}>⚠️ {setsError}</p>}
           {loadingSets ? (
             <p style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>Loading sets...</p>
           ) : (
@@ -532,7 +535,7 @@ function CodingPrep() {
                     <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '16px' }}>
                       {set.difficulty === 'beginner' ? '🟢 Beginner' : set.difficulty === 'intermediate' ? '🟡 Intermediate' : set.difficulty === 'advanced' ? '🔴 Advanced' : 'Mixed difficulty'}
                     </p>
-                    <div style={{ display: 'inline-block', padding: '6px 14px', backgroundColor: 'rgba(56,189,248,0.12)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '100px', fontSize: '12px', color: '#38bdf8', fontWeight: '700' }}>
+                    <div style={{ display: 'inline-block', padding: '6px 14px', backgroundColor: 'rgba(56,189,248,0.12)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '100px', fontSize: '12px', color: 'var(--color-brand)', fontWeight: '700' }}>
                       {loadingSetId === set.id ? 'Loading...' : 'Start →'}
                     </div>
                   </div>
@@ -571,29 +574,29 @@ function CodingPrep() {
           </div>
         </div>
         <div style={{ padding: '32px', backgroundColor: 'rgba(255,255,255,0.02)', border: `1px solid ${catInfo?.color}30`, borderRadius: '20px', marginBottom: '20px', backdropFilter: 'blur(20px)' }}>
-          <pre style={{ fontSize: '14px', color: '#e2e8f0', backgroundColor: 'rgba(0,0,0,0.3)', padding: '18px 20px', borderRadius: '12px', marginBottom: '20px', fontFamily: 'Consolas, Monaco, monospace', lineHeight: '1.7', overflowX: 'auto', whiteSpace: 'pre-wrap', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <pre style={{ fontSize: '14px', color: 'var(--color-text)', backgroundColor: 'rgba(0,0,0,0.3)', padding: '18px 20px', borderRadius: '12px', marginBottom: '20px', fontFamily: 'Consolas, Monaco, monospace', lineHeight: '1.7', overflowX: 'auto', whiteSpace: 'pre-wrap', border: '1px solid rgba(255,255,255,0.06)' }}>
             {q.q}
           </pre>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {q.options.map((opt, i) => {
               let bgColor = 'rgba(255,255,255,0.03)', borderColor = 'rgba(255,255,255,0.08)', textColor = 'var(--text-primary)'
               if (showAnswer) {
-                if (i === q.answer) { bgColor = 'rgba(52,211,153,0.12)'; borderColor = 'rgba(52,211,153,0.5)'; textColor = '#34d399' }
-                else if (i === selectedOption) { bgColor = 'rgba(251,113,133,0.12)'; borderColor = 'rgba(251,113,133,0.5)'; textColor = '#fb7185' }
+                if (i === q.answer) { bgColor = 'rgba(52,211,153,0.12)'; borderColor = 'rgba(52,211,153,0.5)'; textColor = 'var(--color-success)' }
+                else if (i === selectedOption) { bgColor = 'rgba(251,113,133,0.12)'; borderColor = 'rgba(251,113,133,0.5)'; textColor = 'var(--color-danger)' }
               } else if (i === selectedOption) { bgColor = `${catInfo?.color}12`; borderColor = `${catInfo?.color}50`; textColor = catInfo?.color }
               return (
                 <div key={i} onClick={() => !showAnswer && setSelectedOption(i)} style={{ padding: '14px 18px', backgroundColor: bgColor, border: `1px solid ${borderColor}`, borderRadius: '12px', cursor: showAnswer ? 'default' : 'pointer', display: 'flex', alignItems: 'center', gap: '12px', transition: 'all 0.2s ease', fontFamily: 'monospace' }}>
                   <div style={{ width: '24px', height: '24px', borderRadius: '50%', border: `2px solid ${textColor}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '700', color: textColor }}>{String.fromCharCode(65 + i)}</div>
                   <span style={{ fontSize: '14px', color: textColor, fontWeight: showAnswer && (i === q.answer || i === selectedOption) ? '600' : '400' }}>{opt}</span>
-                  {showAnswer && i === q.answer && <span style={{ marginLeft: 'auto', color: '#34d399' }}>✓</span>}
-                  {showAnswer && i === selectedOption && i !== q.answer && <span style={{ marginLeft: 'auto', color: '#fb7185' }}>✗</span>}
+                  {showAnswer && i === q.answer && <span style={{ marginLeft: 'auto', color: 'var(--color-success)' }}>✓</span>}
+                  {showAnswer && i === selectedOption && i !== q.answer && <span style={{ marginLeft: 'auto', color: 'var(--color-danger)' }}>✗</span>}
                 </div>
               )
             })}
           </div>
           {showAnswer && (
             <div style={{ marginTop: '20px', padding: '16px 20px', backgroundColor: 'rgba(129,140,248,0.05)', border: '1px solid rgba(129,140,248,0.2)', borderRadius: '12px' }}>
-              <p style={{ fontSize: '12px', color: '#818cf8', fontWeight: '700', marginBottom: '6px' }}>💡 EXPLANATION:</p>
+              <p style={{ fontSize: '12px', color: 'var(--color-accent)', fontWeight: '700', marginBottom: '6px' }}>💡 EXPLANATION:</p>
               <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>{q.explanation}</p>
             </div>
           )}
@@ -601,7 +604,7 @@ function CodingPrep() {
         <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
           {!showAnswer ? (
             <>
-              <button onClick={handleSkip} style={{ padding: '12px 24px', backgroundColor: 'transparent', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '14px', fontWeight: '600', cursor: 'pointer' }}>⏭ Skip</button>
+              <button onClick={handleSkip} style={{ padding: '12px 24px', backgroundColor: 'transparent', color: 'var(--color-muted)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', fontSize: '14px', fontWeight: '600', cursor: 'pointer' }}>⏭ Skip</button>
               <button onClick={handleSubmitAnswer} disabled={selectedOption === null} className="btn-primary" style={{ padding: '12px 40px', fontSize: '15px', fontWeight: '700', borderRadius: '12px', opacity: selectedOption === null ? 0.5 : 1, cursor: selectedOption === null ? 'not-allowed' : 'pointer' }}>Submit Answer</button>
             </>
           ) : (
@@ -620,7 +623,7 @@ function CodingPrep() {
     const wrong = results.filter(r => !r.correct && !r.skipped).length
     const skipped = results.filter(r => r.skipped).length
     const percentage = Math.round((correct / questions.length) * 100)
-    const pieData = [{ name: 'Correct', value: correct, color: '#34d399' }, { name: 'Wrong', value: wrong, color: '#fb7185' }, { name: 'Skipped', value: skipped, color: '#94a3b8' }].filter(d => d.value > 0)
+    const pieData = [{ name: 'Correct', value: correct, color: 'var(--color-success)' }, { name: 'Wrong', value: wrong, color: 'var(--color-danger)' }, { name: 'Skipped', value: skipped, color: 'var(--color-muted)' }].filter(d => d.value > 0)
     const categoryStats = Object.keys(categoryInfo).map(catKey => {
       const catResults = results.filter(r => r.question.category === catKey)
       return { name: categoryInfo[catKey].label, correct: catResults.filter(r => r.correct).length, total: catResults.length, color: categoryInfo[catKey].color }
@@ -642,7 +645,7 @@ function CodingPrep() {
                 <Pie data={pieData} cx="50%" cy="50%" innerRadius={55} outerRadius={80} paddingAngle={3} dataKey="value">
                   {pieData.map((entry, index) => (<Cell key={index} fill={entry.color} stroke="none" />))}
                 </Pie>
-                <Tooltip contentStyle={{ backgroundColor: '#0f1f35', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '8px', color: '#fff' }} />
+                <Tooltip contentStyle={{ backgroundColor: 'var(--color-elevated)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '8px', color: 'var(--color-on-brand)' }} />
               </PieChart>
             </ResponsiveContainer>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '12px' }}>
@@ -653,9 +656,9 @@ function CodingPrep() {
             <p style={{ color: 'var(--text-secondary)', fontSize: '12px', fontWeight: '700', letterSpacing: '1px', marginBottom: '16px', textAlign: 'center' }}>CATEGORY-WISE SCORE</p>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={categoryStats} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} />
-                <YAxis stroke="#94a3b8" fontSize={11} />
-                <Tooltip contentStyle={{ backgroundColor: '#0f1f35', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '8px', color: '#fff' }} />
+                <XAxis dataKey="name" stroke="var(--color-muted)" fontSize={11} />
+                <YAxis stroke="var(--color-muted)" fontSize={11} />
+                <Tooltip contentStyle={{ backgroundColor: 'var(--color-elevated)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '8px', color: 'var(--color-on-brand)' }} />
                 <Bar dataKey="correct" radius={[6, 6, 0, 0]}>{categoryStats.map((entry, index) => (<Cell key={index} fill={entry.color} />))}</Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -667,7 +670,7 @@ function CodingPrep() {
             {results.map((r, i) => (
               <div key={i} style={{ padding: '14px 18px', backgroundColor: r.correct ? 'rgba(52,211,153,0.05)' : r.skipped ? 'rgba(148,163,184,0.05)' : 'rgba(251,113,133,0.05)', border: `1px solid ${r.correct ? 'rgba(52,211,153,0.2)' : r.skipped ? 'rgba(148,163,184,0.2)' : 'rgba(251,113,133,0.2)'}`, borderRadius: '10px', display: 'flex', justifyContent: 'space-between', gap: '12px' }}>
                 <p style={{ fontSize: '13px', color: 'var(--text-primary)', flex: 1, fontFamily: 'monospace', whiteSpace: 'pre-wrap' }}>Q{i + 1}: {r.question.q.split('\n')[0]}</p>
-                <span style={{ fontSize: '12px', fontWeight: '700', color: r.correct ? '#34d399' : r.skipped ? '#94a3b8' : '#fb7185', minWidth: 'fit-content' }}>
+                <span style={{ fontSize: '12px', fontWeight: '700', color: r.correct ? 'var(--color-success)' : r.skipped ? 'var(--color-muted)' : 'var(--color-danger)', minWidth: 'fit-content' }}>
                   {r.correct ? '✓ Correct' : r.skipped ? '⏭ Skipped' : '✗ Wrong'}
                 </span>
               </div>
@@ -675,7 +678,7 @@ function CodingPrep() {
           </div>
         </div>
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
-          <button onClick={() => setScreen('setup')} style={{ padding: '14px 32px', backgroundColor: 'transparent', color: '#38bdf8', border: '1px solid rgba(56,189,248,0.4)', borderRadius: '12px', fontSize: '15px', fontWeight: '600', cursor: 'pointer' }}>← Choose Another Company</button>
+          <button onClick={() => setScreen('setup')} style={{ padding: '14px 32px', backgroundColor: 'transparent', color: 'var(--color-brand)', border: '1px solid rgba(56,189,248,0.4)', borderRadius: '12px', fontSize: '15px', fontWeight: '600', cursor: 'pointer' }}>← Choose Another Company</button>
           <button onClick={() => startTest(selectedCompany)} className="btn-primary" style={{ padding: '14px 32px', fontSize: '15px', fontWeight: '700', borderRadius: '12px' }}>🔄 Try Again</button>
         </div>
       </div>
@@ -684,3 +687,5 @@ function CodingPrep() {
 }
 
 export default CodingPrep
+
+

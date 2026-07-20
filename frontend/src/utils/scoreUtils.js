@@ -87,7 +87,6 @@
     const hasSkills = resumeData.skills.some((skill) => !!skill);
     const hasExperience = resumeData.experience.some((item) => item.company && item.position);
     const hasAchievements = resumeData.experience.some((item) => (item.achievements || []).some(Boolean));
-    const hasEducation = resumeData.education.some((item) => item.school && item.degree);
     const hasCertifications = resumeData.certifications.some((item) => item.name && item.issuer);
 
     return [
@@ -106,10 +105,6 @@
 
   export function getIndustryBenchmark(roleValue = 'fullstack') {
     return roleBenchmarks[roleValue] || roleBenchmarks.fullstack;
-  }
-
-  function safeDivide(numerator, denominator) {
-    return denominator === 0 ? 0 : numerator / denominator;
   }
 
   function getCompletenessScore(resumeData) {

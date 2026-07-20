@@ -62,7 +62,7 @@ export function startRazorpayCheckout({ userEmail, userName, onSuccess, onFailur
       email: userEmail || '',
       name: userName || '',
     },
-    theme: { color: '#6366f1' },
+    theme: { color: 'var(--color-brand)' },
     handler: async function (response) {
       try {
         const headers = await getAuthHeaders();
@@ -82,7 +82,7 @@ export function startRazorpayCheckout({ userEmail, userName, onSuccess, onFailur
           const err = await res.json();
           onFailure(err.message || 'Payment verification failed.');
         }
-      } catch (e) {
+      } catch {
         onFailure('Payment verification failed. Please contact support.');
       }
     },

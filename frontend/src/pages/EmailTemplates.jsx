@@ -6,7 +6,7 @@ const emailTypes = [
     icon: '🔔',
     title: 'Follow Up',
     description: 'After applying for a job',
-    color: '#38bdf8',
+    color: 'var(--color-brand)',
     gradient: 'linear-gradient(135deg, rgba(56,189,248,0.15), rgba(56,189,248,0.02))',
   },
   {
@@ -14,7 +14,7 @@ const emailTypes = [
     icon: '🙏',
     title: 'Thank You',
     description: 'After interview',
-    color: '#818cf8',
+    color: 'var(--color-accent)',
     gradient: 'linear-gradient(135deg, rgba(129,140,248,0.15), rgba(129,140,248,0.02))',
   },
   {
@@ -22,7 +22,7 @@ const emailTypes = [
     icon: '✅',
     title: 'Offer Acceptance',
     description: 'Accept a job offer',
-    color: '#34d399',
+    color: 'var(--color-success)',
     gradient: 'linear-gradient(135deg, rgba(52,211,153,0.15), rgba(52,211,153,0.02))',
   },
   {
@@ -30,7 +30,7 @@ const emailTypes = [
     icon: '📅',
     title: 'Joining Delay',
     description: 'Request date extension',
-    color: '#fb7185',
+    color: 'var(--color-danger)',
     gradient: 'linear-gradient(135deg, rgba(251,113,133,0.15), rgba(251,113,133,0.02))',
   },
   {
@@ -38,7 +38,7 @@ const emailTypes = [
     icon: '💰',
     title: 'Salary Negotiation',
     description: 'Negotiate your offer',
-    color: '#f59e0b',
+    color: 'var(--color-warning)',
     gradient: 'linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.02))',
   },
   {
@@ -46,7 +46,7 @@ const emailTypes = [
     icon: '↩️',
     title: 'Withdrawal',
     description: 'Withdraw application',
-    color: '#94a3b8',
+    color: 'var(--color-muted)',
     gradient: 'linear-gradient(135deg, rgba(148,163,184,0.15), rgba(148,163,184,0.02))',
   },
 ]
@@ -139,7 +139,7 @@ function EmailTemplates() {
   }
 
   return (
-    <div style={{
+    <div className="email-studio-page" style={{
       maxWidth: '1200px',
       margin: '0 auto',
       padding: '60px 32px',
@@ -179,7 +179,7 @@ function EmailTemplates() {
           border: '1px solid rgba(56,189,248,0.3)',
           borderRadius: '100px',
           fontSize: '13px',
-          color: '#38bdf8',
+          color: 'var(--color-brand)',
           fontWeight: '500',
           marginBottom: '16px',
           boxShadow: '0 0 20px rgba(56,189,248,0.1)',
@@ -461,7 +461,7 @@ function EmailTemplates() {
                 background: copiedAll
                   ? 'linear-gradient(135deg, rgba(52,211,153,0.2), rgba(52,211,153,0.05))'
                   : `linear-gradient(135deg, ${selectedTypeData?.color}20, ${selectedTypeData?.color}05)`,
-                color: copiedAll ? '#34d399' : selectedTypeData?.color,
+                color: copiedAll ? 'var(--color-success)' : selectedTypeData?.color,
                 border: copiedAll
                   ? '1px solid rgba(52,211,153,0.4)'
                   : `1px solid ${selectedTypeData?.color}40`,
@@ -502,7 +502,7 @@ function EmailTemplates() {
                 style={{
                   padding: '3px 10px',
                   backgroundColor: 'transparent',
-                  color: copiedSubject ? '#34d399' : '#94a3b8',
+                  color: copiedSubject ? 'var(--color-success)' : 'var(--color-muted)',
                   border: '1px solid rgba(255,255,255,0.1)',
                   borderRadius: '6px',
                   fontSize: '11px',

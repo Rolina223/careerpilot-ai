@@ -49,7 +49,7 @@ export default function UpgradeButton({ onUpgraded }) {
         padding: '8px 16px', borderRadius: '100px',
         background: 'rgba(99,102,241,0.12)',
         border: '1px solid rgba(99,102,241,0.3)',
-        fontSize: '13px', color: '#818cf8', fontWeight: '600',
+        fontSize: '13px', color: 'var(--color-accent)', fontWeight: '600',
       }}>
         ⭐ Premium — Unlimited
       </div>
@@ -69,7 +69,7 @@ export default function UpgradeButton({ onUpgraded }) {
           border: `1px solid ${usage.remaining === 0
             ? 'rgba(244,63,94,0.3)' : 'rgba(255,255,255,0.12)'}`,
           fontSize: '13px',
-          color: usage.remaining === 0 ? '#fb7185' : 'var(--text-secondary)',
+          color: usage.remaining === 0 ? 'var(--color-danger)' : 'var(--text-secondary)',
           fontWeight: '600',
         }}>
           {usage.remaining === 0
@@ -82,9 +82,9 @@ export default function UpgradeButton({ onUpgraded }) {
           disabled={paying}
           style={{
             padding: '8px 20px', borderRadius: '100px',
-            background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+            background: 'linear-gradient(135deg, var(--color-brand), var(--color-accent))',
             border: 'none', cursor: paying ? 'wait' : 'pointer',
-            fontSize: '13px', color: '#fff', fontWeight: '700',
+            fontSize: '13px', color: 'var(--color-on-brand)', fontWeight: '700',
             opacity: paying ? 0.7 : 1, transition: 'opacity 0.2s',
           }}
         >
@@ -95,7 +95,7 @@ export default function UpgradeButton({ onUpgraded }) {
       {message && (
         <p style={{
           fontSize: '13px', margin: 0,
-          color: message.startsWith('🎉') ? '#4ade80' : '#fb7185',
+          color: message.startsWith('🎉') ? 'var(--color-success)' : 'var(--color-danger)',
         }}>
           {message}
         </p>

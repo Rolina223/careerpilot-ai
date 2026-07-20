@@ -35,18 +35,18 @@ const questionBank = [
 ]
 
 const companies = [
-  { name: 'TCS', icon: '🏢', color: '#38bdf8', pattern: 'Quant + Logical + Verbal', duration: '~90 min (actual exam)' },
-  { name: 'Infosys', icon: '💼', color: '#818cf8', pattern: 'Quant + Logical + Verbal', duration: '~95 min (actual exam)' },
-  { name: 'Wipro', icon: '🌐', color: '#34d399', pattern: 'Quant + Logical + Verbal', duration: '~60 min (actual exam)' },
-  { name: 'Cognizant', icon: '⚡', color: '#f59e0b', pattern: 'Quant + Logical + Verbal', duration: '~70 min (actual exam)' },
-  { name: 'Accenture', icon: '🎯', color: '#fb7185', pattern: 'Quant + Logical + Verbal', duration: '~80 min (actual exam)' },
-  { name: 'Generic', icon: '📚', color: '#94a3b8', pattern: 'Mixed Practice', duration: 'Self-paced' },
+  { name: 'TCS', icon: '🏢', color: 'var(--color-brand)', pattern: 'Quant + Logical + Verbal', duration: '~90 min (actual exam)' },
+  { name: 'Infosys', icon: '💼', color: 'var(--color-accent)', pattern: 'Quant + Logical + Verbal', duration: '~95 min (actual exam)' },
+  { name: 'Wipro', icon: '🌐', color: 'var(--color-success)', pattern: 'Quant + Logical + Verbal', duration: '~60 min (actual exam)' },
+  { name: 'Cognizant', icon: '⚡', color: 'var(--color-warning)', pattern: 'Quant + Logical + Verbal', duration: '~70 min (actual exam)' },
+  { name: 'Accenture', icon: '🎯', color: 'var(--color-danger)', pattern: 'Quant + Logical + Verbal', duration: '~80 min (actual exam)' },
+  { name: 'Generic', icon: '📚', color: 'var(--color-muted)', pattern: 'Mixed Practice', duration: 'Self-paced' },
 ]
 
 const categoryInfo = {
-  quant: { label: 'Quantitative', color: '#38bdf8' },
-  logical: { label: 'Logical Reasoning', color: '#818cf8' },
-  verbal: { label: 'Verbal Ability', color: '#34d399' },
+  quant: { label: 'Quantitative', color: 'var(--color-brand)' },
+  logical: { label: 'Logical Reasoning', color: 'var(--color-accent)' },
+  verbal: { label: 'Verbal Ability', color: 'var(--color-success)' },
 }
 
 function AptitudePrep() {
@@ -128,7 +128,7 @@ function AptitudePrep() {
     }
 
     const shuffled = [...data].sort(() => Math.random() - 0.5)
-    setSelectedCompany({ name: set.title, color: '#818cf8', icon: '🧠' })
+    setSelectedCompany({ name: set.title, color: 'var(--color-accent)', icon: '🧠' })
     setQuestions(shuffled)
     setCurrentIndex(0)
     setResults([])
@@ -201,8 +201,8 @@ function AptitudePrep() {
           padding: '10px 14px',
           borderRadius: '999px',
           border: 'none',
-          background: cameraActive ? 'linear-gradient(135deg, #ef4444, #f97316)' : 'linear-gradient(135deg, #38bdf8, #818cf8)',
-          color: '#fff',
+          background: cameraActive ? 'linear-gradient(135deg, var(--color-danger), var(--color-warning))' : 'linear-gradient(135deg, var(--color-brand), var(--color-accent))',
+          color: 'var(--color-on-brand)',
           cursor: 'pointer',
           fontSize: '13px',
           fontWeight: '700',
@@ -217,7 +217,7 @@ function AptitudePrep() {
         </div>
       )}
       {cameraError && (
-        <div style={{ maxWidth: '220px', padding: '8px 10px', borderRadius: '10px', background: 'rgba(248,113,113,0.12)', border: '1px solid rgba(248,113,113,0.28)', color: '#fda4af', fontSize: '12px', lineHeight: '1.4' }}>
+        <div style={{ maxWidth: '220px', padding: '8px 10px', borderRadius: '10px', background: 'rgba(248,113,113,0.12)', border: '1px solid rgba(248,113,113,0.28)', color: 'var(--color-danger)', fontSize: '12px', lineHeight: '1.4' }}>
           {cameraError}
         </div>
       )}
@@ -233,7 +233,7 @@ function AptitudePrep() {
             display: 'inline-flex', alignItems: 'center', gap: '8px',
             padding: '6px 16px', backgroundColor: 'rgba(56,189,248,0.1)',
             border: '1px solid rgba(56,189,248,0.3)', borderRadius: '100px',
-            fontSize: '13px', color: '#38bdf8', fontWeight: '500', marginBottom: '16px',
+            fontSize: '13px', color: 'var(--color-brand)', fontWeight: '500', marginBottom: '16px',
           }}>
             ✦ Company-style practice mode
           </div>
@@ -258,7 +258,7 @@ function AptitudePrep() {
           marginBottom: '32px',
           textAlign: 'center',
         }}>
-          <p style={{ fontSize: '12px', color: '#f59e0b' }}>
+          <p style={{ fontSize: '12px', color: 'var(--color-warning)' }}>
             ⚠️ Practice questions in company exam style — not actual leaked papers
           </p>
         </div>
@@ -341,7 +341,7 @@ function AptitudePrep() {
           </p>
 
           {setsError && (
-            <p style={{ color: '#fb7185', fontSize: '14px', marginBottom: '16px' }}>⚠️ {setsError}</p>
+            <p style={{ color: 'var(--color-danger)', fontSize: '14px', marginBottom: '16px' }}>⚠️ {setsError}</p>
           )}
 
           {loadingSets ? (
@@ -394,7 +394,7 @@ function AptitudePrep() {
                     border: '1px solid rgba(129,140,248,0.3)',
                     borderRadius: '100px',
                     fontSize: '12px',
-                    color: '#818cf8',
+                    color: 'var(--color-accent)',
                     fontWeight: '700',
                   }}>
                     {loadingSetId === set.id ? 'Loading...' : 'Start →'}
@@ -469,11 +469,11 @@ function AptitudePrep() {
                 if (i === q.answer) {
                   bgColor = 'rgba(52,211,153,0.12)'
                   borderColor = 'rgba(52,211,153,0.5)'
-                  textColor = '#34d399'
+                  textColor = 'var(--color-success)'
                 } else if (i === selectedOption) {
                   bgColor = 'rgba(251,113,133,0.12)'
                   borderColor = 'rgba(251,113,133,0.5)'
-                  textColor = '#fb7185'
+                  textColor = 'var(--color-danger)'
                 }
               } else if (i === selectedOption) {
                 bgColor = `${catInfo?.color}12`
@@ -503,8 +503,8 @@ function AptitudePrep() {
                   <span style={{ fontSize: '14px', color: textColor, fontWeight: showAnswer && (i === q.answer || i === selectedOption) ? '600' : '400' }}>
                     {opt}
                   </span>
-                  {showAnswer && i === q.answer && <span style={{ marginLeft: 'auto', color: '#34d399' }}>✓</span>}
-                  {showAnswer && i === selectedOption && i !== q.answer && <span style={{ marginLeft: 'auto', color: '#fb7185' }}>✗</span>}
+                  {showAnswer && i === q.answer && <span style={{ marginLeft: 'auto', color: 'var(--color-success)' }}>✓</span>}
+                  {showAnswer && i === selectedOption && i !== q.answer && <span style={{ marginLeft: 'auto', color: 'var(--color-danger)' }}>✗</span>}
                 </div>
               )
             })}
@@ -516,7 +516,7 @@ function AptitudePrep() {
               backgroundColor: 'rgba(129,140,248,0.05)',
               border: '1px solid rgba(129,140,248,0.2)', borderRadius: '12px',
             }}>
-              <p style={{ fontSize: '12px', color: '#818cf8', fontWeight: '700', marginBottom: '6px' }}>
+              <p style={{ fontSize: '12px', color: 'var(--color-accent)', fontWeight: '700', marginBottom: '6px' }}>
                 💡 EXPLANATION:
               </p>
               <p style={{ fontSize: '13px', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
@@ -530,7 +530,7 @@ function AptitudePrep() {
           {!showAnswer ? (
             <>
               <button onClick={handleSkip} style={{
-                padding: '12px 24px', backgroundColor: 'transparent', color: '#94a3b8',
+                padding: '12px 24px', backgroundColor: 'transparent', color: 'var(--color-muted)',
                 border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px',
                 fontSize: '14px', fontWeight: '600', cursor: 'pointer',
               }}>
@@ -569,9 +569,9 @@ function AptitudePrep() {
     const percentage = Math.round((correct / questions.length) * 100)
 
     const pieData = [
-      { name: 'Correct', value: correct, color: '#34d399' },
-      { name: 'Wrong', value: wrong, color: '#fb7185' },
-      { name: 'Skipped', value: skipped, color: '#94a3b8' },
+      { name: 'Correct', value: correct, color: 'var(--color-success)' },
+      { name: 'Wrong', value: wrong, color: 'var(--color-danger)' },
+      { name: 'Skipped', value: skipped, color: 'var(--color-muted)' },
     ].filter(d => d.value > 0)
 
     const categoryStats = Object.keys(categoryInfo).map(catKey => {
@@ -622,7 +622,7 @@ function AptitudePrep() {
                     <Cell key={index} fill={entry.color} stroke="none" />
                   ))}
                 </Pie>
-                <Tooltip contentStyle={{ backgroundColor: '#0f1f35', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '8px', color: '#fff' }} />
+                <Tooltip contentStyle={{ backgroundColor: 'var(--color-elevated)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '8px', color: 'var(--color-on-brand)' }} />
               </PieChart>
             </ResponsiveContainer>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', marginTop: '12px' }}>
@@ -645,9 +645,9 @@ function AptitudePrep() {
             </p>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={categoryStats} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <XAxis dataKey="name" stroke="#94a3b8" fontSize={11} />
-                <YAxis stroke="#94a3b8" fontSize={11} />
-                <Tooltip contentStyle={{ backgroundColor: '#0f1f35', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '8px', color: '#fff' }} />
+                <XAxis dataKey="name" stroke="var(--color-muted)" fontSize={11} />
+                <YAxis stroke="var(--color-muted)" fontSize={11} />
+                <Tooltip contentStyle={{ backgroundColor: 'var(--color-elevated)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '8px', color: 'var(--color-on-brand)' }} />
                 <Bar dataKey="correct" radius={[6, 6, 0, 0]}>
                   {categoryStats.map((entry, index) => (
                     <Cell key={index} fill={entry.color} />
@@ -679,7 +679,7 @@ function AptitudePrep() {
                 </p>
                 <span style={{
                   fontSize: '12px', fontWeight: '700',
-                  color: r.correct ? '#34d399' : r.skipped ? '#94a3b8' : '#fb7185',
+                  color: r.correct ? 'var(--color-success)' : r.skipped ? 'var(--color-muted)' : 'var(--color-danger)',
                   minWidth: 'fit-content',
                 }}>
                   {r.correct ? '✓ Correct' : r.skipped ? '⏭ Skipped' : '✗ Wrong'}
@@ -691,7 +691,7 @@ function AptitudePrep() {
 
         <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
           <button onClick={() => setScreen('setup')} style={{
-            padding: '14px 32px', backgroundColor: 'transparent', color: '#38bdf8',
+            padding: '14px 32px', backgroundColor: 'transparent', color: 'var(--color-brand)',
             border: '1px solid rgba(56,189,248,0.4)', borderRadius: '12px',
             fontSize: '15px', fontWeight: '600', cursor: 'pointer',
           }}>

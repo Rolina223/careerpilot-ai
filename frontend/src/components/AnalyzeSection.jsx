@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import ResultSection from './ResultSection'
 import ResumeUploader from './ResumeUploader'
 import { analyzeResume } from '../services/analyzerService'
-import UpgradeButton from './upgradeButton';
+import UpgradeButton from './upgradeButton'
+import { getPredictiveSuggestions } from '../utils/uxExperience'
+import { logActivity } from '../utils/activityStorage'
 
 function useTilt() {
   const ref = useRef(null)
@@ -47,6 +49,7 @@ function AnalyzeSection() {
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
   const [analyzeError, setAnalyzeError] = useState('')
+  const [stage, setStage] = useState('input')
 
   const resultRef = useRef(null)
   const tiltResume = useTilt()
@@ -62,34 +65,40 @@ function AnalyzeSection() {
 
   const handleAnalyze = async () => {
     if (!selectedRole) {
-      alert('Please select your target role first!')
+      setAnalyzeError('Choose a target role to personalize the analysis.')
       return
     }
     if (!resume.trim()) {
-      alert('Please paste your resume!')
+      setAnalyzeError('Add your resume text or upload a document to continue.')
       return
     }
     if (!jobDescription.trim()) {
-      alert('Please paste the job description!')
+      setAnalyzeError('Paste the job description so the AI can compare your fit.')
       return
     }
 
     setLoading(true)
+    setStage('analyzing')
     setResult(null)
     setAnalyzeError('')
 
     try {
       const aiResult = await analyzeResume(resume, jobDescription, selectedRole.label)
       setResult(aiResult)
+      setStage('complete')
+      logActivity('Resume analysis completed', `Compared your resume for ${selectedRole.label}.`, '/analyze')
       setTimeout(() => {
         resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }, 100)
     } catch (err) {
       setAnalyzeError(err.message || 'Something went wrong. Please try again.')
+      setStage('input')
     } finally {
       setLoading(false)
     }
   }
+
+  const suggestions = getPredictiveSuggestions({ experience: [], projects: [], skills: [] })
 
   return (
     <div style={{
@@ -109,7 +118,7 @@ function AnalyzeSection() {
           border: '1px solid rgba(56,189,248,0.3)',
           borderRadius: '100px',
           fontSize: '13px',
-          color: '#38bdf8',
+          color: 'var(--color-brand)',
           fontWeight: '500',
           marginBottom: '16px',
         }}>
@@ -128,6 +137,11 @@ function AnalyzeSection() {
         <p style={{ color: 'var(--text-secondary)', fontSize: '16px', maxWidth: '620px', margin: '0 auto', lineHeight: '1.7' }}>
           Compare your profile to the role you want, uncover the gaps, and generate sharper content you can actually use.
         </p>
+      </div>
+
+      <div style={{ marginBottom: '24px', padding: '16px 18px', borderRadius: '14px', border: '1px solid rgba(56,189,248,0.16)', background: 'rgba(56,189,248,0.06)', color: 'var(--color-muted)' }}>
+        <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--color-brand)', marginBottom: '6px' }}>3-step flow</div>
+        <div style={{ fontSize: '13px', lineHeight: '1.5' }}>1. Pick the role you want. 2. Paste your resume and the job description. 3. Review the AI feedback and action plan.</div>
       </div>
 
       {/* Custom Dropdown */}
@@ -422,7 +436,6 @@ Requirements:
       </div>
 
       {/* Analyze Button */}
-{/* Analyze Button */}
       <div style={{ textAlign: 'center' }}>
         <button
           className="btn-primary"
@@ -442,8 +455,13 @@ Requirements:
           fontSize: '13px',
           color: 'var(--text-secondary)'
         }}>
-          Free to use · Login required
+          {stage === 'analyzing' ? 'We are matching your content to the role now…' : 'Free to use · Login required'}
         </p>
+        <div style={{ marginTop: '14px', display: 'flex', justifyContent: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          {suggestions.map((item, idx) => (
+            <span key={idx} style={{ padding: '6px 10px', borderRadius: '999px', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', color: 'var(--color-muted)', fontSize: '12px' }}>{item}</span>
+          ))}
+        </div>
         <div style={{ marginTop: '16px', display: 'flex', justifyContent: 'center' }}>
           <UpgradeButton />
         </div>
@@ -451,7 +469,7 @@ Requirements:
           <p style={{
             marginTop: '16px',
             fontSize: '14px',
-            color: '#fb7185',
+            color: 'var(--color-danger)',
             padding: '12px 16px',
             background: 'rgba(244,63,94,0.1)',
             border: '1px solid rgba(244,63,94,0.3)',
@@ -475,7 +493,7 @@ Requirements:
             width: '48px',
             height: '48px',
             border: '3px solid rgba(56,189,248,0.2)',
-            borderTop: '3px solid #38bdf8',
+            borderTop: '3px solid var(--color-brand)',
             borderRadius: '50%',
             animation: 'spin 1s linear infinite',
             margin: '0 auto 16px',

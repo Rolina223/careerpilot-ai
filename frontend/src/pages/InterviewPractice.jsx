@@ -412,10 +412,10 @@ function InterviewPractice() {
     return Math.max(0, Math.min(100, Math.round(score)))
   }
 
-  const CELL_COLORS = ['#38bdf8', '#334155']
+  const CELL_COLORS = ['var(--color-brand)', 'var(--color-border)']
 
   return (
-    <div style={{ position: 'relative', minHeight: '100vh', background: 'linear-gradient(180deg, rgba(15,23,42,0.98), rgba(15,23,42,0.92))', color: '#f8fafc', fontFamily: 'Inter, system-ui, sans-serif', paddingBottom: '60px' }}>
+    <div style={{ position: 'relative', minHeight: '100vh', background: 'linear-gradient(180deg, rgba(15,23,42,0.98), rgba(15,23,42,0.92))', color: 'var(--color-text)', fontFamily: 'Inter, system-ui, sans-serif', paddingBottom: '60px' }}>
       
       {/* Floating Camera Window */}
       <div style={{ position: 'fixed', top: '88px', right: '20px', zIndex: 90, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '8px' }}>
@@ -423,14 +423,14 @@ function InterviewPractice() {
           onClick={() => setCameraActive(!cameraActive)}
           style={{
             padding: '8px 14px', borderRadius: '8px', fontSize: '12px', fontWeight: '600',
-            backgroundColor: cameraActive ? '#ef4444' : '#3b82f6', color: '#fff', border: 'none', cursor: 'pointer',
+            backgroundColor: cameraActive ? 'var(--color-danger)' : 'var(--color-brand)', color: 'var(--color-on-brand)', border: 'none', cursor: 'pointer',
             boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
           }}
         >
           {cameraActive ? '🎥 Close Cam' : '📹 Toggle Camera Feed'}
         </button>
         {cameraActive && (
-          <div style={{ width: '180px', height: '135px', borderRadius: '12px', overflow: 'hidden', border: '2px solid #38bdf8', backgroundColor: '#000' }}>
+          <div style={{ width: '180px', height: '135px', borderRadius: '12px', overflow: 'hidden', border: '2px solid var(--color-brand)', backgroundColor: '#000' }}>
             <video ref={videoRef} autoPlay playsInline muted style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
         )}
@@ -442,27 +442,27 @@ function InterviewPractice() {
         {screen === 'setup' && (
           <div>
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-              <span style={{ padding: '6px 16px', backgroundColor: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '100px', fontSize: '12px', color: '#38bdf8', fontWeight: '600' }}>
+              <span style={{ padding: '6px 16px', backgroundColor: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '100px', fontSize: '12px', color: 'var(--color-brand)', fontWeight: '600' }}>
                 ✦ Premium interview rehearsal
               </span>
-              <h1 style={{ fontSize: '38px', fontWeight: '800', marginTop: '16px', color: '#f8fafc', letterSpacing: '-0.7px' }}>
+              <h1 style={{ fontSize: '38px', fontWeight: '800', marginTop: '16px', color: 'var(--color-text)', letterSpacing: '-0.7px' }}>
                 Practice like your next interview is already on the calendar
               </h1>
-              <p style={{ color: '#64748b', fontSize: '14px', marginTop: '8px', maxWidth: '620px', marginLeft: 'auto', marginRight: 'auto', lineHeight: '1.7' }}>
+              <p style={{ color: 'var(--color-subtle)', fontSize: '14px', marginTop: '8px', maxWidth: '620px', marginLeft: 'auto', marginRight: 'auto', lineHeight: '1.7' }}>
                 Build your confidence with realistic prompts, structured grading, and a pace that helps you improve with every round.
               </p>
             </div>
 
             {/* Role Track Options */}
             <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(56,189,248,0.16)', borderRadius: '18px', padding: '24px', marginBottom: '24px', boxShadow: '0 20px 60px rgba(2,8,23,0.18)' }}>
-              <h3 style={{ fontSize: '12px', fontWeight: '700', color: '#94a3b8', letterSpacing: '1px', marginBottom: '16px' }}>SELECT INTERVIEW ROLE</h3>
+              <h3 style={{ fontSize: '12px', fontWeight: '700', color: 'var(--color-muted)', letterSpacing: '1px', marginBottom: '16px' }}>SELECT INTERVIEW ROLE</h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 {roles.map(r => (
                   <div key={r.value} onClick={() => setSelectedRole(r.value)} style={{
                     padding: '16px', borderRadius: '12px', cursor: 'pointer', textAlign: 'center',
-                    backgroundColor: selectedRole === r.value ? 'rgba(56,189,248,0.1)' : '#111827',
-                    border: selectedRole === r.value ? '2px solid #38bdf8' : '1px solid #334155',
-                    color: selectedRole === r.value ? '#38bdf8' : '#f8fafc', fontWeight: '600'
+                    backgroundColor: selectedRole === r.value ? 'rgba(56,189,248,0.1)' : 'var(--color-surface)',
+                    border: selectedRole === r.value ? '2px solid var(--color-brand)' : '1px solid var(--color-border)',
+                    color: selectedRole === r.value ? 'var(--color-brand)' : 'var(--color-text)', fontWeight: '600'
                   }}>
                     {r.label}
                   </div>
@@ -472,7 +472,7 @@ function InterviewPractice() {
 
             {/* Levels and Progression Matrix */}
             <div style={{ backgroundColor: 'rgba(255,255,255,0.03)', border: '1px solid rgba(56,189,248,0.16)', borderRadius: '18px', padding: '24px', marginBottom: '32px', boxShadow: '0 20px 60px rgba(2,8,23,0.18)' }}>
-              <h3 style={{ fontSize: '12px', fontWeight: '700', color: '#94a3b8', letterSpacing: '1px', marginBottom: '16px' }}>DIFFICULTY PATHWAYS</h3>
+              <h3 style={{ fontSize: '12px', fontWeight: '700', color: 'var(--color-muted)', letterSpacing: '1px', marginBottom: '16px' }}>DIFFICULTY PATHWAYS</h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                 {levels.map(lvl => {
                   const isSelected = currentLevel === lvl.value
@@ -482,25 +482,25 @@ function InterviewPractice() {
                       onClick={() => setCurrentLevel(lvl.value)}
                       style={{
                         padding: '20px', borderRadius: '12px', cursor: 'pointer', position: 'relative',
-                        backgroundColor: isSelected ? 'rgba(56,189,248,0.05)' : '#111827',
-                        border: isSelected ? '2px solid #38bdf8' : '1px solid #334155',
+                        backgroundColor: isSelected ? 'rgba(56,189,248,0.05)' : 'var(--color-surface)',
+                        border: isSelected ? '2px solid var(--color-brand)' : '1px solid var(--color-border)',
                         boxShadow: lvl.isPremium ? '0 0 15px rgba(168,85,247,0.4)' : 'none',
                       }}
                     >
                       {lvl.isPremium && (
                         <div style={{
                           position: 'absolute', top: '10px', right: '10px',
-                          backgroundColor: '#a855f7', color: '#fff', fontSize: '9px',
+                          backgroundColor: 'var(--color-accent)', color: 'var(--color-on-brand)', fontSize: '9px',
                           padding: '2px 8px', borderRadius: '100px', fontWeight: 'bold',
-                          boxShadow: '0 0 8px #a855f7'
+                          boxShadow: '0 0 8px var(--color-accent)'
                         }}>
                           ⭐ PREMIUM UNLOCKED
                         </div>
                       )}
-                      <div style={{ fontWeight: '700', fontSize: '16px', color: '#f8fafc' }}>
+                      <div style={{ fontWeight: '700', fontSize: '16px', color: 'var(--color-text)' }}>
                         {lvl.label}
                       </div>
-                      <p style={{ fontSize: '12px', color: '#64748b', marginTop: '4px', margin: 0 }}>
+                      <p style={{ fontSize: '12px', color: 'var(--color-subtle)', marginTop: '4px', margin: 0 }}>
                         {lvl.isPremium
                           ? 'Advanced Architecture & System Challenges.'
                           : (() => {
@@ -524,8 +524,8 @@ function InterviewPractice() {
                 onClick={() => startPracticeSession()}
                 style={{
                   padding: '16px 40px', fontSize: '16px', fontWeight: '700',
-                  borderRadius: '12px', border: 'none', color: '#0f172a',
-                  backgroundColor: '#38bdf8', cursor: 'pointer', boxShadow: '0 4px 14px rgba(56,189,248,0.3)'
+                  borderRadius: '12px', border: 'none', color: 'var(--color-canvas)',
+                  backgroundColor: 'var(--color-brand)', cursor: 'pointer', boxShadow: '0 4px 14px rgba(56,189,248,0.3)'
                 }}
               >
                 Start Practice Session
@@ -539,14 +539,14 @@ function InterviewPractice() {
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
               <div>
-                <span style={{ fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', color: '#38bdf8', marginRight: '12px' }}>
+                <span style={{ fontSize: '14px', fontWeight: '700', textTransform: 'uppercase', color: 'var(--color-brand)', marginRight: '12px' }}>
                   {levels.find(l => l.value === currentLevel)?.label}
                 </span>
-                <span style={{ backgroundColor: '#334155', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: '600' }}>
+                <span style={{ backgroundColor: 'var(--color-border)', padding: '4px 10px', borderRadius: '6px', fontSize: '12px', fontWeight: '600' }}>
                   Question {currentIndex + 1}/5
                 </span>
               </div>
-              <span style={{ color: '#94a3b8', fontSize: '14px' }}>
+              <span style={{ color: 'var(--color-muted)', fontSize: '14px' }}>
                 Track: {roles.find(r => r.value === selectedRole)?.label}
               </span>
             </div>
@@ -555,8 +555,8 @@ function InterviewPractice() {
             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
               <span style={{
                 fontFamily: 'monospace', fontSize: '22px', fontWeight: '700',
-                padding: '6px 20px', borderRadius: '100px', backgroundColor: '#111827',
-                border: '1px solid #334155', color: timeLeft < 30 ? '#f43f5e' : '#10b981'
+                padding: '6px 20px', borderRadius: '100px', backgroundColor: 'var(--color-surface)',
+                border: '1px solid var(--color-border)', color: timeLeft < 30 ? 'var(--color-danger)' : 'var(--color-success)'
               }}>
                 ⏱ {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
               </span>
@@ -564,10 +564,10 @@ function InterviewPractice() {
 
             {/* Main Question Window */}
             <div style={{
-              backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '16px',
+              backgroundColor: 'var(--color-elevated)', border: '1px solid var(--color-border)', borderRadius: '16px',
               padding: '28px', marginBottom: '24px', boxShadow: currentLevel === 'premium' ? '0 0 25px rgba(168,85,247,0.15)' : 'none'
             }}>
-              <p style={{ fontSize: '20px', fontWeight: '600', lineHeight: '1.6', color: '#f8fafc', margin: 0 }}>
+              <p style={{ fontSize: '20px', fontWeight: '600', lineHeight: '1.6', color: 'var(--color-text)', margin: 0 }}>
                 {questions[currentIndex]?.q}
               </p>
             </div>
@@ -575,12 +575,12 @@ function InterviewPractice() {
             {/* Textarea Entry and Dictation */}
             <div style={{ marginBottom: '24px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <label style={{ fontSize: '12px', fontWeight: '700', color: '#94a3b8' }}>YOUR RESPONSE</label>
+                <label style={{ fontSize: '12px', fontWeight: '700', color: 'var(--color-muted)' }}>YOUR RESPONSE</label>
                 <button 
                   onClick={isListening ? stopListening : startListening}
                   style={{
                     padding: '6px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: '600',
-                    backgroundColor: isListening ? '#ef4444' : '#10b981', color: '#fff'
+                    backgroundColor: isListening ? 'var(--color-danger)' : 'var(--color-success)', color: 'var(--color-on-brand)'
                   }}
                 >
                   {isListening ? '🛑 Stop Recording' : '🎤 Speech to Text'}
@@ -592,8 +592,8 @@ function InterviewPractice() {
                 onChange={(e) => setCurrentAnswer(e.target.value)}
                 placeholder="Type your explanation or core technical statements here..."
                 style={{
-                  width: '100%', height: '160px', backgroundColor: '#0f172a', border: '1px solid #334155',
-                  borderRadius: '12px', color: '#f8fafc', padding: '16px', fontSize: '15px', lineHeight: '1.6',
+                  width: '100%', height: '160px', backgroundColor: 'var(--color-canvas)', border: '1px solid var(--color-border)',
+                  borderRadius: '12px', color: 'var(--color-text)', padding: '16px', fontSize: '15px', lineHeight: '1.6',
                   resize: 'none', outline: 'none', boxSizing: 'border-box'
                 }}
               />
@@ -601,22 +601,22 @@ function InterviewPractice() {
 
             {showIdeal && (
               <div style={{ padding: '20px', backgroundColor: 'rgba(56,189,248,0.05)', border: '1px solid rgba(56,189,248,0.2)', borderRadius: '12px', marginBottom: '24px' }}>
-                <h5 style={{ margin: '0 0 6px 0', color: '#38bdf8', fontSize: '13px', fontWeight: '700' }}>💡 IDEAL REFERENCE GUIDE</h5>
-                <p style={{ margin: 0, fontSize: '14px', color: '#94a3b8', lineHeight: '1.5' }}>{questions[currentIndex]?.ideal}</p>
+                <h5 style={{ margin: '0 0 6px 0', color: 'var(--color-brand)', fontSize: '13px', fontWeight: '700' }}>💡 IDEAL REFERENCE GUIDE</h5>
+                <p style={{ margin: 0, fontSize: '14px', color: 'var(--color-muted)', lineHeight: '1.5' }}>{questions[currentIndex]?.ideal}</p>
               </div>
             )}
 
             {/* Controls */}
             <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-              <button onClick={() => setShowIdeal(!showIdeal)} style={{ padding: '12px 20px', borderRadius: '10px', backgroundColor: 'transparent', color: '#94a3b8', border: '1px solid #334155', cursor: 'pointer' }}>
+              <button onClick={() => setShowIdeal(!showIdeal)} style={{ padding: '12px 20px', borderRadius: '10px', backgroundColor: 'transparent', color: 'var(--color-muted)', border: '1px solid var(--color-border)', cursor: 'pointer' }}>
                 {showIdeal ? 'Hide Guide' : 'Reveal Reference Guide'}
               </button>
-              <button onClick={() => handleNextQuestion(true)} style={{ padding: '12px 20px', borderRadius: '10px', backgroundColor: 'transparent', color: '#f43f5e', border: 'none', cursor: 'pointer' }}>
+              <button onClick={() => handleNextQuestion(true)} style={{ padding: '12px 20px', borderRadius: '10px', backgroundColor: 'transparent', color: 'var(--color-danger)', border: 'none', cursor: 'pointer' }}>
                 Skip
               </button>
               <button 
                 onClick={() => handleNextQuestion(false)}
-                style={{ padding: '12px 28px', borderRadius: '10px', backgroundColor: '#38bdf8', color: '#0f172a', fontWeight: '700', border: 'none', cursor: 'pointer' }}
+                style={{ padding: '12px 28px', borderRadius: '10px', backgroundColor: 'var(--color-brand)', color: 'var(--color-canvas)', fontWeight: '700', border: 'none', cursor: 'pointer' }}
               >
                 {currentIndex + 1 >= questions.length ? 'Finish & Grade' : 'Next Question'}
               </button>
@@ -631,14 +631,14 @@ function InterviewPractice() {
             <h2 style={{ fontSize: '28px', fontWeight: '800', marginBottom: '8px' }}>
               {levels.find(l => l.value === currentLevel)?.label} Tier Complete!
             </h2>
-            <p style={{ color: '#94a3b8', fontSize: '15px', marginBottom: '32px' }}>
+            <p style={{ color: 'var(--color-muted)', fontSize: '15px', marginBottom: '32px' }}>
               Your answers have been graded. Review your breakdown metrics now or advance to the next difficulty level.
             </p>
 
             <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
               <button 
                 onClick={() => setScreen('result')}
-                style={{ padding: '14px 24px', borderRadius: '10px', border: '1px solid #334155', backgroundColor: '#1e293b', color: '#f8fafc', cursor: 'pointer', fontWeight: '600' }}
+                style={{ padding: '14px 24px', borderRadius: '10px', border: '1px solid var(--color-border)', backgroundColor: 'var(--color-elevated)', color: 'var(--color-text)', cursor: 'pointer', fontWeight: '600' }}
               >
                 📊 View Analytics Dashboard
               </button>
@@ -646,14 +646,14 @@ function InterviewPractice() {
               {currentLevel !== 'premium' ? (
                 <button 
                   onClick={proceedToNextLevel}
-                  style={{ padding: '14px 28px', borderRadius: '10px', border: 'none', backgroundColor: '#10b981', color: '#fff', fontWeight: '700', cursor: 'pointer' }}
+                  style={{ padding: '14px 28px', borderRadius: '10px', border: 'none', backgroundColor: 'var(--color-success)', color: 'var(--color-on-brand)', fontWeight: '700', cursor: 'pointer' }}
                 >
                   Continue to Next Level →
                 </button>
               ) : (
                 <button 
                   onClick={() => setScreen('result')}
-                  style={{ padding: '14px 28px', borderRadius: '10px', border: 'none', backgroundColor: '#a855f7', color: '#fff', fontWeight: '700', cursor: 'pointer' }}
+                  style={{ padding: '14px 28px', borderRadius: '10px', border: 'none', backgroundColor: 'var(--color-accent)', color: 'var(--color-on-brand)', fontWeight: '700', cursor: 'pointer' }}
                 >
                   Inspect Final Report
                 </button>
@@ -666,7 +666,7 @@ function InterviewPractice() {
         {screen === 'result' && (
           <div>
             <h2 style={{ fontSize: '28px', fontWeight: '800', marginBottom: '6px' }}>Interview Performance Metrics</h2>
-            <p style={{ color: '#94a3b8', marginBottom: '32px', marginTop: 0 }}>Automated grading results matching structural patterns and keyword matrices.</p>
+            <p style={{ color: 'var(--color-muted)', marginBottom: '32px', marginTop: 0 }}>Automated grading results matching structural patterns and keyword matrices.</p>
 
             {/* Responsive Donut Chart Array */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '16px', marginBottom: '40px' }}>
@@ -681,7 +681,7 @@ function InterviewPractice() {
                 const circumference = 2 * Math.PI * radius
                 const strokeOffset = circumference - (safeScore / 100) * circumference
                 return (
-                <div key={idx} style={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '16px', padding: '20px 10px', textAlign: 'center' }}>
+                <div key={idx} style={{ backgroundColor: 'var(--color-elevated)', border: '1px solid var(--color-border)', borderRadius: '16px', padding: '20px 10px', textAlign: 'center' }}>
                   <div style={{ width: '100px', height: '100px', position: 'relative', margin: '0 auto' }}>
                     <svg width="100" height="100" viewBox="0 0 100 100" style={{ display: 'block', transform: 'rotate(-90deg)' }}>
                       <circle
@@ -704,47 +704,47 @@ function InterviewPractice() {
                         strokeDashoffset={strokeOffset}
                       />
                     </svg>
-                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '15px', fontWeight: '800', color: '#f8fafc' }}>
+                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', fontSize: '15px', fontWeight: '800', color: 'var(--color-text)' }}>
                       {safeScore}%
                     </div>
                   </div>
-                  <div style={{ fontSize: '12px', fontWeight: '700', color: '#94a3b8', marginTop: '8px' }}>{chart.label}</div>
+                  <div style={{ fontSize: '12px', fontWeight: '700', color: 'var(--color-muted)', marginTop: '8px' }}>{chart.label}</div>
                 </div>
               )})}
             </div>
 
             {/* Keyword Strengths and Weaknesses */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '40px' }}>
-              <div style={{ backgroundColor: '#1e293b', borderRadius: '16px', padding: '24px', border: '1px solid #334155' }}>
-                <h4 style={{ margin: '0 0 12px 0', color: '#10b981', fontSize: '13px', fontWeight: '700', letterSpacing: '0.5px' }}>💪 KEY STRENGTH AREAS</h4>
+              <div style={{ backgroundColor: 'var(--color-elevated)', borderRadius: '16px', padding: '24px', border: '1px solid var(--color-border)' }}>
+                <h4 style={{ margin: '0 0 12px 0', color: 'var(--color-success)', fontSize: '13px', fontWeight: '700', letterSpacing: '0.5px' }}>💪 KEY STRENGTH AREAS</h4>
                 {sessionResults.strengths.length > 0 ? sessionResults.strengths.map((s, i) => (
-                  <div key={i} style={{ padding: '10px 12px', backgroundColor: '#111827', borderRadius: '8px', marginBottom: '8px', fontSize: '13px', fontWeight: '500' }}>
-                    ✦ Demonstrated fluency: <span style={{ color: '#38bdf8' }}>{s}</span>
+                  <div key={i} style={{ padding: '10px 12px', backgroundColor: 'var(--color-surface)', borderRadius: '8px', marginBottom: '8px', fontSize: '13px', fontWeight: '500' }}>
+                    ✦ Demonstrated fluency: <span style={{ color: 'var(--color-brand)' }}>{s}</span>
                   </div>
-                )) : <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>No primary strengths matched during this round.</p>}
+                )) : <p style={{ fontSize: '13px', color: 'var(--color-subtle)', margin: 0 }}>No primary strengths matched during this round.</p>}
               </div>
 
-              <div style={{ backgroundColor: '#1e293b', borderRadius: '16px', padding: '24px', border: '1px solid #334155' }}>
-                <h4 style={{ margin: '0 0 12px 0', color: '#f43f5e', fontSize: '13px', fontWeight: '700', letterSpacing: '0.5px' }}>💡 IMPROVEMENT SUGGESTIONS</h4>
+              <div style={{ backgroundColor: 'var(--color-elevated)', borderRadius: '16px', padding: '24px', border: '1px solid var(--color-border)' }}>
+                <h4 style={{ margin: '0 0 12px 0', color: 'var(--color-danger)', fontSize: '13px', fontWeight: '700', letterSpacing: '0.5px' }}>💡 IMPROVEMENT SUGGESTIONS</h4>
                 {sessionResults.weaknesses.length > 0 ? sessionResults.weaknesses.map((w, i) => (
-                  <div key={i} style={{ padding: '10px 12px', backgroundColor: '#111827', borderRadius: '8px', marginBottom: '8px', fontSize: '13px', fontWeight: '500' }}>
-                    ⚠️ Focus more on: <span style={{ color: '#f43f5e' }}>{w}</span>
+                  <div key={i} style={{ padding: '10px 12px', backgroundColor: 'var(--color-surface)', borderRadius: '8px', marginBottom: '8px', fontSize: '13px', fontWeight: '500' }}>
+                    ⚠️ Focus more on: <span style={{ color: 'var(--color-danger)' }}>{w}</span>
                   </div>
-                )) : <p style={{ fontSize: '13px', color: '#10b981', margin: 0 }}>Excellent! You hit all major verification criteria parameters.</p>}
+                )) : <p style={{ fontSize: '13px', color: 'var(--color-success)', margin: 0 }}>Excellent! You hit all major verification criteria parameters.</p>}
               </div>
             </div>
 
             {/* Answer Itemized Logs */}
-            <div style={{ backgroundColor: '#1e293b', borderRadius: '16px', padding: '24px', border: '1px solid #334155', marginBottom: '32px' }}>
+            <div style={{ backgroundColor: 'var(--color-elevated)', borderRadius: '16px', padding: '24px', border: '1px solid var(--color-border)', marginBottom: '32px' }}>
               <h3 style={{ margin: '0 0 20px 0', fontSize: '16px', fontWeight: '700' }}>Granular Question Log Breakdown</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 {sessionResults.logs.map((item, idx) => (
-                  <div key={idx} style={{ backgroundColor: '#111827', borderRadius: '12px', padding: '18px', border: '1px solid #334155' }}>
-                    <p style={{ margin: '0 0 10px 0', fontWeight: '600', fontSize: '14px', color: '#f8fafc' }}>Q{idx + 1}: {item.question}</p>
-                    <p style={{ margin: '0 0 14px 0', fontSize: '13px', color: '#94a3b8', fontStyle: 'italic', backgroundColor: '#0f172a', padding: '10px', borderRadius: '6px' }}>
+                  <div key={idx} style={{ backgroundColor: 'var(--color-surface)', borderRadius: '12px', padding: '18px', border: '1px solid var(--color-border)' }}>
+                    <p style={{ margin: '0 0 10px 0', fontWeight: '600', fontSize: '14px', color: 'var(--color-text)' }}>Q{idx + 1}: {item.question}</p>
+                    <p style={{ margin: '0 0 14px 0', fontSize: '13px', color: 'var(--color-muted)', fontStyle: 'italic', backgroundColor: 'var(--color-canvas)', padding: '10px', borderRadius: '6px' }}>
                       Your Answer: "{item.answer || '[Question skipped or left blank]'}"
                     </p>
-                    <div style={{ display: 'flex', gap: '20px', fontSize: '12px', color: '#38bdf8', fontWeight: '600' }}>
+                    <div style={{ display: 'flex', gap: '20px', fontSize: '12px', color: 'var(--color-brand)', fontWeight: '600' }}>
                       <span>Technical Score: {item.evaluation?.techAccuracy}%</span>
                       <span>Keyword Match: {item.evaluation?.keywordCoverage}%</span>
                       <span>Overall Answer Rank: {item.evaluation?.score}/100</span>
@@ -757,7 +757,7 @@ function InterviewPractice() {
             <div style={{ textAlign: 'center' }}>
               <button 
                 onClick={() => { setScreen('setup'); setCurrentLevel('beginner'); }}
-                style={{ padding: '14px 36px', borderRadius: '10px', border: 'none', backgroundColor: '#38bdf8', color: '#0f172a', fontWeight: '700', cursor: 'pointer' }}
+                style={{ padding: '14px 36px', borderRadius: '10px', border: 'none', backgroundColor: 'var(--color-brand)', color: 'var(--color-canvas)', fontWeight: '700', cursor: 'pointer' }}
               >
                 🔄 Reset Practice Module
               </button>

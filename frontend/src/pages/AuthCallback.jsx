@@ -67,7 +67,7 @@ function AuthCallback() {
         width: '48px',
         height: '48px',
         border: '3px solid rgba(56,189,248,0.2)',
-        borderTop: '3px solid #38bdf8',
+        borderTop: '3px solid var(--color-brand)',
         borderRadius: '50%',
         animation: 'spin 0.8s linear infinite',
       }} />
